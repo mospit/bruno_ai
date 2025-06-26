@@ -1,0 +1,46 @@
+# Google Agent Development Kit (includes A2A Protocol integration)
+google-adk>=1.0.0
+
+# AI dependencies
+# openai>=1.0.0  # Removed - using Google Gemini via ADK
+litellm>=1.0.0
+
+# Web framework and API
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+httpx>=0.25.0
+pydantic>=2.0.0
+
+# Web scraping and automation
+selenium>=4.15.0
+beautifulsoup4>=4.12.0
+requests>=2.31.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+
+# Environment and configuration
+python-dotenv>=1.0.0
+pyyaml>=6.0.0
+
+# Logging and monitoring
+loguru>=0.7.0
+
+# Date and time handling
+python-dateutil>=2.8.0
+
+# Async support
+aiofiles>=23.0.0
+aiohttp>=3.9.0
+
+# Database (if needed for persistence)
+sqlalchemy>=2.0.0
+alembic>=1.12.0
+
+# External API integrations (implemented directly in agents)
+# Note: Instacart integration implemented directly in InstacartAPIAgent
