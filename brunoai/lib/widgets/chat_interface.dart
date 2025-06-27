@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/bruno_provider.dart';
-import 'liquid_glass_container.dart';
+import '../widgets/liquid_glass_container.dart';
+import '../widgets/shopping_cart.dart';
 import 'dart:math' as math;
 
 class ChatInterface extends StatefulWidget {
@@ -342,43 +343,241 @@ class _ChatInterfaceState extends State<ChatInterface>
   }
 
   Widget _buildMessageInput() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Expanded(
-            child: LiquidGlassContainer(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              borderRadius: BorderRadius.circular(24),
-              child: TextField(
-                controller: _messageController,
-                decoration: InputDecoration(
-                  hintText: 'Ask Bruno anything...',
-                  border: InputBorder.none,
-                  hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
-                  ),
+    return Consumer<BrunoProvider>(
+      builder: (context, provider, child) {
+        return Container(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 4),
+                  spreadRadius: 0,
                 ),
-                style: Theme.of(context).textTheme.bodyLarge,
-                maxLines: null,
-                textCapitalization: TextCapitalization.sentences,
-                onSubmitted: (_) => _sendMessage(),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 40,
+                  offset: const Offset(0, 8),
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Text input field at the top
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: TextField(
+                      controller: _messageController,
+                      decoration: InputDecoration(
+                        hintText: 'Ask Bruno anything...',
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                        hintStyle: TextStyle(
+                          color: Colors.grey[500],
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black87,
+                      ),
+                      maxLines: null,
+                      textCapitalization: TextCapitalization.sentences,
+                      textInputAction: TextInputAction.send,
+                      onSubmitted: (_) => _sendMessage(),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                // Buttons row at the bottom
+                  Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   children: [
+                     // Shopping cart button (Enhanced ChatGPT style)
+                     Stack(
+                       children: [
+                         Container(
+                           decoration: BoxDecoration(
+                             color: Colors.white,
+                             borderRadius: BorderRadius.circular(24),
+                             border: Border.all(
+                               color: Colors.grey[200]!,
+                               width: 1.5,
+                             ),
+                             boxShadow: [
+                               BoxShadow(
+                                 color: Colors.black.withOpacity(0.06),
+                                 blurRadius: 12,
+                                 offset: const Offset(0, 2),
+                                 spreadRadius: 0,
+                               ),
+                             ],
+                           ),
+                           child: Material(
+                             color: Colors.transparent,
+                             child: InkWell(
+                               onTap: () => _showShoppingCart(context),
+                               borderRadius: BorderRadius.circular(24),
+                               splashColor: Colors.grey[100],
+                               highlightColor: Colors.grey[50],
+                               child: Padding(
+                                 padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                                 child: Row(
+                                   mainAxisSize: MainAxisSize.min,
+                                   children: [
+                                     Icon(
+                                       Icons.shopping_cart_rounded,
+                                       color: Colors.grey[600],
+                                       size: 20,
+                                     ),
+                                     const SizedBox(width: 8),
+                                     Text(
+                                       'Cart',
+                                       style: TextStyle(
+                                         color: Colors.grey[700],
+                                         fontSize: 15,
+                                         fontWeight: FontWeight.w500,
+                                         letterSpacing: 0.2,
+                                       ),
+                                     ),
+                                   ],
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ),
+                         if (provider.shoppingList.isNotEmpty)
+                           Positioned(
+                             right: -3,
+                             top: -3,
+                             child: Container(
+                               padding: const EdgeInsets.all(5),
+                               decoration: BoxDecoration(
+                                 gradient: LinearGradient(
+                                   colors: [Colors.red[400]!, Colors.red[600]!],
+                                   begin: Alignment.topLeft,
+                                   end: Alignment.bottomRight,
+                                 ),
+                                 borderRadius: BorderRadius.circular(12),
+                                 border: Border.all(
+                                   color: Colors.white,
+                                   width: 2.5,
+                                 ),
+                                 boxShadow: [
+                                   BoxShadow(
+                                     color: Colors.red.withOpacity(0.3),
+                                     blurRadius: 8,
+                                     offset: const Offset(0, 2),
+                                   ),
+                                 ],
+                               ),
+                               constraints: const BoxConstraints(
+                                 minWidth: 22,
+                                 minHeight: 22,
+                               ),
+                               child: Text(
+                                 '${provider.shoppingList.length}',
+                                 style: const TextStyle(
+                                   color: Colors.white,
+                                   fontSize: 11,
+                                   fontWeight: FontWeight.w700,
+                                 ),
+                                 textAlign: TextAlign.center,
+                               ),
+                             ),
+                           ),
+                       ],
+                     ),
+                     // Send button (Enhanced ChatGPT style)
+                     Container(
+                       decoration: BoxDecoration(
+                         gradient: _messageController.text.trim().isEmpty 
+                             ? null
+                             : LinearGradient(
+                                 colors: [
+                                   Theme.of(context).primaryColor,
+                                   Theme.of(context).primaryColor.withOpacity(0.8),
+                                 ],
+                                 begin: Alignment.topLeft,
+                                 end: Alignment.bottomRight,
+                               ),
+                         color: _messageController.text.trim().isEmpty 
+                             ? Colors.grey[200]
+                             : null,
+                         borderRadius: BorderRadius.circular(24),
+                         boxShadow: _messageController.text.trim().isEmpty 
+                             ? null
+                             : [
+                                 BoxShadow(
+                                   color: Colors.black.withOpacity(0.2),
+                                   blurRadius: 12,
+                                   offset: const Offset(0, 3),
+                                   spreadRadius: 0,
+                                 ),
+                               ],
+                       ),
+                       child: Material(
+                         color: Colors.transparent,
+                         child: InkWell(
+                           onTap: _messageController.text.trim().isEmpty ? null : _sendMessage,
+                           borderRadius: BorderRadius.circular(24),
+                           splashColor: _messageController.text.trim().isEmpty 
+                               ? null 
+                               : Colors.white.withOpacity(0.1),
+                           child: Padding(
+                             padding: const EdgeInsets.all(12),
+                             child: Icon(
+                               Icons.arrow_upward_rounded,
+                               color: _messageController.text.trim().isEmpty 
+                                   ? Colors.grey[500]
+                                   : Colors.white,
+                               size: 22,
+                             ),
+                           ),
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+                ],
               ),
             ),
           ),
-          const SizedBox(width: 12),
-          LiquidGlassButton(
-            onPressed: _sendMessage,
-            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
-            padding: const EdgeInsets.all(12),
-            borderRadius: BorderRadius.circular(20),
-            child: const Icon(
-              Icons.send_rounded,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
-        ],
+        );
+      },
+    );
+  }
+
+  void _showShoppingCart(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.9,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (context, scrollController) => Container(
+           decoration: BoxDecoration(
+             color: Theme.of(context).scaffoldBackgroundColor,
+             borderRadius: const BorderRadius.vertical(
+               top: Radius.circular(20),
+             ),
+           ),
+           child: const ShoppingCart(),
+         ),
       ),
     );
   }

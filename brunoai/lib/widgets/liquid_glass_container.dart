@@ -25,7 +25,7 @@ class LiquidGlassContainer extends StatelessWidget {
     this.margin,
     this.borderRadius,
     this.backgroundColor,
-    this.borderColor,
+     this.borderColor,
     this.borderWidth = 1.0,
     this.shadows,
     this.enableBlur = true,
