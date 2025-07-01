@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../models/chat_message.dart';
+import '../models/shopping_item.dart';
 
 class BrunoProvider extends ChangeNotifier {
   // Chat state
@@ -321,42 +323,6 @@ class BrunoProvider extends ChangeNotifier {
   }
 }
 
-class ChatMessage {
-  final String text;
-  final String message;
-  final bool isFromUser;
-  final bool isUser;
-  final DateTime timestamp;
-  final List<String> suggestions;
-  final bool hasShoppingAction;
-  
-  ChatMessage({
-    required this.text,
-    required this.isFromUser,
-    required this.timestamp,
-    this.suggestions = const [],
-    this.hasShoppingAction = false,
-  }) : message = text,
-       isUser = isFromUser;
-}
-
-class ShoppingItem {
-  final String name;
-  final double price;
-  final int quantity;
-  final String category;
-  final String unit;
-  final String notes;
-
-  ShoppingItem({
-    required this.name,
-    required this.price,
-    required this.quantity,
-    this.category = 'Other',
-    this.unit = 'item',
-    this.notes = '',
-  });
-}
 
 // Data Models
 class FavoriteMeal {

@@ -1,17 +1,18 @@
 # **Bruno AI Agent Architecture Document**
-# **Multi-Agent System with Google A2A Protocol**
+# **Optimized Multi-Agent System with Google A2A Protocol**
 
 ---
 
 ## **1. Overview**
 
-Bruno AI utilizes Google's Agent Development Kit (ADK) with the Agent-to-Agent (A2A) protocol to create a distributed, scalable multi-agent system for budget-first meal planning. Each agent specializes in specific domains while communicating through standardized A2A protocols.
+Bruno AI utilizes Google's Agent Development Kit (ADK) with the Agent-to-Agent (A2A) protocol to create a streamlined, efficient multi-agent system for budget-first meal planning. The optimized architecture eliminates redundant web scraping by leveraging Instacart API as the primary data source, resulting in improved reliability and performance.
 
 ### **Architecture Benefits**
 - **Modularity**: Each agent can be developed, tested, and deployed independently
-- **Scalability**: Agents can be scaled based on demand and workload
-- **Resilience**: System continues operating even if individual agents fail
-- **Extensibility**: New agents can be added without modifying existing ones
+- **Efficiency**: Streamlined 6-agent system with clear responsibilities
+- **Reliability**: Single source of truth through Instacart API eliminates web scraping issues
+- **Scalability**: Cloud-native architecture with horizontal scaling capabilities
+- **Cost-Effective**: Reduced infrastructure needs and optimized API usage
 
 ---
 
@@ -36,8 +37,8 @@ Bruno AI utilizes Google's Agent Development Kit (ADK) with the Agent-to-Agent (
         ┌────────────────────┼────────────────────┐
         │                    │                    │
    ┌────▼────┐         ┌────▼────┐         ┌────▼────┐
-   │ Bruno   │         │Grocery  │         │Recipe   │
-   │ Master  │◄────────┤Browser  │◄────────┤Chef     │
+   │ Bruno   │         │Instacart│         │Recipe   │
+   │ Master  │◄────────┤Integration │◄────┤Chef     │
    │ Agent   │         │Agent    │         │Agent    │
    │(Primary)│         │         │         │         │
    └─────────┘         └─────────┘         └─────────┘
@@ -259,61 +260,82 @@ def create_bruno_master_server():
 
 ---
 
-### **3.2 Grocery Browser Agent (Web-Based Price Discovery)**
+### **3.2 Instacart Integration Agent (Central Data Provider)**
 
-This agent uses browser automation to gather real-time pricing data from grocery store websites, addressing the API limitations you mentioned.
+This agent integrates directly with Instacart API to provide comprehensive grocery data, pricing, and ordering capabilities, eliminating the need for unreliable web scraping.
 
 #### **Agent Card Definition**
 ```python
-GROCERY_BROWSER_CARD = AgentCard(
-    name="Grocery Browser Agent",
-    version="1.0.0", 
-    description="Bruno's deal-hunting specialist that browses grocery store websites for real-time prices",
+INSTACART_INTEGRATION_CARD = AgentCard(
+    name="Instacart Integration Agent",
+    version="2.0.0",
+    description="Bruno's comprehensive Instacart specialist - pricing, products, and ordering",
     capabilities={
         "skills": [
             {
-                "id": "browse_store_prices",
-                "name": "Browse Store Prices",
-                "description": "Scrapes real-time prices from grocery store websites",
+                "id": "comprehensive_product_search",
+                "name": "Comprehensive Product Search & Pricing",
+                "description": "Advanced product discovery with real-time pricing and availability",
                 "examples": [
-                    "Get chicken prices at Walmart in Chicago",
-                    "Find produce deals at Kroger this week",
-                    "Compare milk prices across Target and Safeway"
+                    "Find organic chicken breast prices across all local stores",
+                    "Search for gluten-free pasta options under $3",
+                    "Compare produce prices and quality ratings"
                 ],
-                "tags": ["price-scraping", "real-time", "comparison"]
+                "tags": ["product-search", "real-time-pricing", "comparison"]
             },
             {
-                "id": "discover_weekly_deals",
-                "name": "Discover Weekly Deals",
-                "description": "Finds current sales, promotions, and weekly specials",
+                "id": "intelligent_shopping_optimization",
+                "name": "Intelligent Shopping List Optimization",
+                "description": "Smart shopping list creation with store optimization and delivery scheduling",
                 "examples": [
-                    "What's on sale at Target this week?",
-                    "Find BOGO deals on meat",
-                    "Digital coupons available at Kroger"
+                    "Create optimized shopping list for $75 budget with fastest delivery",
+                    "Optimize across multiple stores for best prices and single delivery",
+                    "Schedule recurring weekly orders with budget tracking"
                 ],
-                "tags": ["deals", "promotions", "weekly-ads"]
+                "tags": ["optimization", "scheduling", "multi-store"]
             },
             {
-                "id": "verify_inventory",
-                "name": "Verify Inventory",
-                "description": "Checks if items are in stock at specific store locations",
+                "id": "real_time_deal_monitoring",
+                "name": "Real-time Deal Monitoring & Alerts",
+                "description": "Continuous monitoring of price changes and promotional offers",
                 "examples": [
-                    "Is organic chicken available at Walmart on 5th St?",
-                    "Check stock of gluten-free bread at Target"
+                    "Alert when chicken goes on sale below $2.99/lb",
+                    "Monitor weekly deals for user's favorite products",
+                    "Track seasonal price patterns for budget planning"
                 ],
-                "tags": ["inventory", "stock-check", "availability"]
+                "tags": ["monitoring", "alerts", "deals"]
+            },
+            {
+                "id": "advanced_order_management",
+                "name": "Advanced Order Management",
+                "description": "Complete order lifecycle management with tracking and optimization",
+                "examples": [
+                    "Place order with specific delivery window and dietary notes",
+                    "Track order status and delivery updates",
+                    "Manage recurring orders and subscription modifications"
+                ],
+                "tags": ["order-management", "tracking", "automation"]
             }
         ]
     },
-    data_sources=[
-        "walmart.com", "target.com", "kroger.com", "safeway.com", 
-        "shoprite.com", "wegmans.com", "publix.com"
-    ],
-    browser_capabilities={
-        "headless": True,
-        "javascript": True,
-        "cookies": True,
-        "location_spoofing": True
+    api_integrations={
+        "instacart_connect_api": {
+            "version": "v1",
+            "endpoints": ["products", "stores", "orders", "pricing"],
+            "rate_limits": "1000 requests/hour",
+            "caching_strategy": "aggressive_with_ttl"
+        },
+        "instacart_partner_api": {
+            "version": "beta",
+            "enhanced_features": ["real_time_inventory", "bulk_pricing", "delivery_optimization"],
+            "availability": "pending_approval"
+        }
+    },
+    performance_targets={
+        "product_search_time": "< 1 second",
+        "pricing_accuracy": "> 99%",
+        "order_success_rate": "> 98%",
+        "cache_hit_ratio": "> 85%"
     }
 )
 ```

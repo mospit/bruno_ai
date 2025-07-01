@@ -26,9 +26,10 @@ from pathlib import Path
 from typing import Optional
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 # Add the current directory to Python path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -38,6 +39,148 @@ from bruno_master_agent import BrunoMasterAgent
 from grocery_browser_agent import GroceryBrowserAgent
 from recipe_chef_agent import RecipeChefAgent
 from instacart_api_agent import InstacartAPIAgent, InstacartConfig
+
+# API Models
+class ProductSearchRequest(BaseModel):
+    """Request model for product search."""
+    query: str
+    max_results: int = 20
+    sort_by: str = "relevance"
+    category: Optional[str] = None
+
+class ProductSearchResponse(BaseModel):
+    """Response model for product search."""
+    success: bool
+    products: list
+    total_results: int
+    query: str
+    filters: dict
+    error: Optional[str] = None
+
+# Global Instacart API agent instance
+_instacart_agent: Optional[InstacartAPIAgent] = None
+
+def setup_instacart_routes(app: FastAPI) -> None:
+    """
+    Setup Instacart API routes for product search and ordering.
+    
+    Args:
+        app: FastAPI application instance
+    """
+    global _instacart_agent
+    
+    # Initialize Instacart agent if not already done
+    if _instacart_agent is None:
+        instacart_config = InstacartConfig(
+            api_key=os.getenv('INSTACART_API_KEY', 'demo_key')
+        )
+        _instacart_agent = InstacartAPIAgent(instacart_config)
+    
+    @app.post("/api/v1/agents/instacart/search", response_model=ProductSearchResponse)
+    async def search_products(request: ProductSearchRequest):
+        """
+        Search for products using the Instacart API.
+        
+        Args:
+            request: Product search request with query and filters
+            
+        Returns:
+            ProductSearchResponse: Search results with products and metadata
+        """
+        try:
+            logger.info(f"Searching for products: '{request.query}'")
+            
+            # Use the Instacart agent's search functionality
+            search_tool = _instacart_agent._search_products_tool()
+            search_results = await search_tool.func(
+                query=request.query,
+                store_id=None,  # Search across all stores
+                category=request.category,
+                max_results=request.max_results,
+                sort_by=request.sort_by
+            )
+            
+            if search_results.get('success', False):
+                return ProductSearchResponse(
+                    success=True,
+                    products=search_results['products'],
+                    total_results=search_results['total_results'],
+                    query=request.query,
+                    filters=search_results['filters']
+                )
+            else:
+                error_message = search_results.get('error', 'Unknown search error')
+                logger.error(f"Product search failed: {error_message}")
+                return ProductSearchResponse(
+                    success=False,
+                    products=[],
+                    total_results=0,
+                    query=request.query,
+                    filters={},
+                    error=error_message
+                )
+                
+        except Exception as e:
+            logger.error(f"Error in product search: {e}")
+            return ProductSearchResponse(
+                success=False,
+                products=[],
+                total_results=0,
+                query=request.query,
+                filters={},
+                error=str(e)
+            )
+    
+    @app.get("/api/v1/agents/instacart/stores")
+    async def get_stores(zip_code: str = "90210", radius_miles: float = 10.0):
+        """
+        Get available stores near a location.
+        
+        Args:
+            zip_code: ZIP code to search near
+            radius_miles: Search radius in miles
+            
+        Returns:
+            List of available stores with delivery information
+        """
+        try:
+            stores_tool = _instacart_agent._find_stores_tool()
+            stores_results = await stores_tool.func(
+                zip_code=zip_code,
+                radius_miles=radius_miles,
+                delivery_only=True
+            )
+            
+            return stores_results
+            
+        except Exception as e:
+            logger.error(f"Error getting stores: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+    
+    @app.get("/api/v1/agents/instacart/deals")
+    async def get_weekly_deals(store_id: Optional[str] = None, category: Optional[str] = None):
+        """
+        Get current weekly deals and promotions.
+        
+        Args:
+            store_id: Specific store to get deals for (optional)
+            category: Product category filter (optional)
+            
+        Returns:
+            List of current deals and promotions
+        """
+        try:
+            deals_tool = _instacart_agent._get_weekly_deals_tool()
+            deals_results = await deals_tool.func(
+                store_id=store_id,
+                category=category
+            )
+            
+            return deals_results
+            
+        except Exception as e:
+            logger.error(f"Error getting deals: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
 
 
 # Configure logging
@@ -176,6 +319,9 @@ async def create_bruno_ai_server(config: ServerConfig) -> BrunoAIServer:
         # Setup middleware and error handlers
         setup_cors_middleware(server.app)
         setup_error_handlers(server.app)
+        
+        # Add Instacart API routes
+        setup_instacart_routes(server.app)
         
         logger.info("Bruno AI server initialized successfully")
         logger.info(f"Available agents: {list(server.agents.keys())}")

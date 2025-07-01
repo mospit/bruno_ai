@@ -83,11 +83,11 @@ class TestRunner:
     
     def setup_environment(self) -> bool:
         """Setup test environment and dependencies."""
-        print("🔧 Setting up test environment...")
+        print("Setting up test environment...")
         
         # Check if we're in the correct directory
         if not self.server_dir.exists():
-            print(f"❌ Server directory not found: {self.server_dir}")
+            print(f"Server directory not found: {self.server_dir}")
             return False
         
         # Check for required test files
@@ -98,7 +98,7 @@ class TestRunner:
                 missing_files.append(config["file"])
         
         if missing_files:
-            print(f"❌ Missing test files: {', '.join(missing_files)}")
+            print(f"Missing test files: {', '.join(missing_files)}")
             return False
         
         # Check Python dependencies
@@ -110,11 +110,11 @@ class TestRunner:
             try:
                 __import__(package)
             except ImportError:
-                print(f"❌ Missing required package: {package}")
+                print(f"Missing required package: {package}")
                 print(f"   Install with: pip install {package}")
                 return False
         
-        print("✅ Test environment setup complete")
+        print("Test environment setup complete")
         return True
     
     def run_test_suite(self, suite_name: str, config: Dict[str, Any], 
@@ -122,7 +122,7 @@ class TestRunner:
         """Run a single test suite."""
         test_file = self.server_dir / config["file"]
         
-        print(f"\n🧪 Running {config['description']}...")
+        print(f"\nRunning {config['description']}...")
         print(f"   File: {config['file']}")
         print(f"   Timeout: {config['timeout']}s")
         print(f"   Critical: {'Yes' if config['critical'] else 'No'}")
@@ -173,9 +173,9 @@ class TestRunner:
             
             # Print immediate results
             if test_result.is_successful:
-                print(f"✅ {config['description']} - PASSED")
+                print(f"{config['description']} - PASSED")
             else:
-                print(f"❌ {config['description']} - FAILED")
+                print(f"{config['description']} - FAILED")
             
             print(f"   Tests: {test_result.total_tests} | "
                   f"Passed: {test_result.passed} | "
@@ -183,7 +183,7 @@ class TestRunner:
                   f"Duration: {duration:.1f}s")
             
             if not test_result.is_successful and verbose:
-                print(f"\n📋 Error Output:")
+                print(f"\nError Output:")
                 print(output[-1000:])  # Last 1000 characters
             
             return test_result
@@ -192,7 +192,7 @@ class TestRunner:
             end_time = time.time()
             duration = end_time - start_time
             
-            print(f"⏰ {config['description']} - TIMEOUT ({config['timeout']}s)")
+            print(f"{config['description']} - TIMEOUT ({config['timeout']}s)")
             
             return TestResult(
                 suite_name=suite_name,
@@ -209,7 +209,7 @@ class TestRunner:
             end_time = time.time()
             duration = end_time - start_time
             
-            print(f"💥 {config['description']} - ERROR: {str(e)}")
+            print(f"{config['description']} - ERROR: {str(e)}")
             
             return TestResult(
                 suite_name=suite_name,
@@ -256,7 +256,7 @@ class TestRunner:
     def run_all_tests(self, suites: Optional[List[str]] = None, 
                      verbose: bool = False, fail_fast: bool = False) -> bool:
         """Run all or specified test suites."""
-        print("🚀 Starting Bruno AI Server Test Suite")
+        print("Starting Bruno AI Server Test Suite")
         print(f"   Project Root: {self.project_root}")
         print(f"   Server Directory: {self.server_dir}")
         print(f"   Timestamp: {datetime.now().isoformat()}")
@@ -267,14 +267,14 @@ class TestRunner:
         # Determine which suites to run
         suites_to_run = suites if suites else list(self.test_suites.keys())
         
-        print(f"\n📋 Test Suites to Run: {', '.join(suites_to_run)}")
+        print(f"\nTest Suites to Run: {', '.join(suites_to_run)}")
         
         # Run each test suite
         overall_success = True
         
         for suite_name in suites_to_run:
             if suite_name not in self.test_suites:
-                print(f"⚠️  Unknown test suite: {suite_name}")
+                print(f"Unknown test suite: {suite_name}")
                 continue
             
             config = self.test_suites[suite_name]
@@ -283,7 +283,7 @@ class TestRunner:
             
             # Check if we should fail fast
             if fail_fast and not result.is_successful and config["critical"]:
-                print(f"\n🛑 Failing fast due to critical test failure: {suite_name}")
+                print(f"\nFailing fast due to critical test failure: {suite_name}")
                 overall_success = False
                 break
             
@@ -298,7 +298,7 @@ class TestRunner:
     def _print_summary(self):
         """Print comprehensive test results summary."""
         print("\n" + "="*80)
-        print("📊 TEST EXECUTION SUMMARY")
+        print("TEST EXECUTION SUMMARY")
         print("="*80)
         
         total_tests = sum(r.total_tests for r in self.results)
@@ -308,7 +308,7 @@ class TestRunner:
         total_errors = sum(r.errors for r in self.results)
         total_duration = sum(r.duration for r in self.results)
         
-        print(f"\n📈 Overall Statistics:")
+        print(f"\nOverall Statistics:")
         print(f"   Total Tests: {total_tests}")
         print(f"   Passed: {total_passed} ({(total_passed/total_tests*100) if total_tests > 0 else 0:.1f}%)")
         print(f"   Failed: {total_failed}")
@@ -316,10 +316,10 @@ class TestRunner:
         print(f"   Errors: {total_errors}")
         print(f"   Total Duration: {total_duration:.1f}s")
         
-        print(f"\n📋 Suite Results:")
+        print(f"\nSuite Results:")
         for result in self.results:
-            status = "✅ PASS" if result.is_successful else "❌ FAIL"
-            critical = "🔴 CRITICAL" if self.test_suites[result.suite_name]["critical"] else "🟡 NON-CRITICAL"
+            status = "PASS" if result.is_successful else "FAIL"
+            critical = "CRITICAL" if self.test_suites[result.suite_name]["critical"] else "NON-CRITICAL"
             
             print(f"   {status} {result.suite_name.upper():12} | "
                   f"{result.total_tests:3} tests | "
@@ -334,12 +334,12 @@ class TestRunner:
         ]
         
         if critical_failures:
-            print(f"\n🚨 OVERALL RESULT: FAILED")
+            print(f"\nOVERALL RESULT: FAILED")
             print(f"   Critical test failures detected: {len(critical_failures)}")
             for failure in critical_failures:
                 print(f"   - {failure.suite_name}: {failure.failed} failed, {failure.errors} errors")
         else:
-            print(f"\n🎉 OVERALL RESULT: PASSED")
+            print(f"\nOVERALL RESULT: PASSED")
             print(f"   All critical tests passed successfully!")
         
         print("\n" + "="*80)

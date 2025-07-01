@@ -78,26 +78,7 @@ class RecipeChefAgent(LlmAgent):
     """Recipe Chef Agent for intelligent meal planning and recipe optimization."""
 
     def __init__(self, model: str = "gemini-2.0-flash-exp"):
-        self._recipe_database: Dict[str, Recipe] = {}
-        self._meal_plans: Dict[str, MealPlan] = {}
-        self._ingredient_costs: Dict[str, Decimal] = {}
-        
-        # Initialize with some basic recipes
-        self._initialize_recipe_database()
-        self._initialize_ingredient_costs()
-        
-        # Define tools for the recipe chef agent
-        tools = [
-            self._create_meal_plan_tool(),
-            self._optimize_recipe_for_budget_tool(),
-            self._suggest_recipe_substitutions_tool(),
-            self._calculate_recipe_nutrition_tool(),
-            self._generate_shopping_list_tool(),
-            self._find_recipes_by_ingredients_tool(),
-            self._scale_recipe_tool(),
-            self._get_cooking_tips_tool()
-        ]
-
+        # Initialize parent class first
         super().__init__(
             model=model,
             name="recipe_chef_agent",
@@ -123,8 +104,29 @@ class RecipeChefAgent(LlmAgent):
             When creating meal plans, consider the user's dietary preferences, cooking
             experience, available time, and budget constraints. Provide alternatives
             and substitutions when possible.""",
-            tools=tools
+            tools=[]
         )
+        
+        # Initialize data after parent class is ready
+        self._recipe_database: Dict[str, Recipe] = {}
+        self._meal_plans: Dict[str, MealPlan] = {}
+        self._ingredient_costs: Dict[str, Decimal] = {}
+        
+        # Initialize with some basic recipes
+        self._initialize_recipe_database()
+        self._initialize_ingredient_costs()
+        
+        # Now add tools after everything is initialized
+        self.tools = [
+            self._create_meal_plan_tool(),
+            self._optimize_recipe_for_budget_tool(),
+            self._suggest_recipe_substitutions_tool(),
+            self._calculate_recipe_nutrition_tool(),
+            self._generate_shopping_list_tool(),
+            self._find_recipes_by_ingredients_tool(),
+            self._scale_recipe_tool(),
+            self._get_cooking_tips_tool()
+        ]
 
     def _initialize_recipe_database(self) -> None:
         """Initialize the recipe database with basic recipes."""

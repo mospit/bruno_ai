@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/bruno_provider.dart';
-import '../widgets/liquid_glass_container.dart';
-import '../widgets/shopping_cart.dart';
+import '../models/chat_message.dart';
+import 'liquid_glass_container.dart';
+import 'shopping_cart.dart';
 import 'dart:math' as math;
 
 class ChatInterface extends StatefulWidget {
@@ -503,46 +504,35 @@ class _ChatInterfaceState extends State<ChatInterface>
                      // Send button (Enhanced ChatGPT style)
                      Container(
                        decoration: BoxDecoration(
-                         gradient: _messageController.text.trim().isEmpty 
-                             ? null
-                             : LinearGradient(
-                                 colors: [
-                                   Theme.of(context).primaryColor,
-                                   Theme.of(context).primaryColor.withOpacity(0.8),
-                                 ],
-                                 begin: Alignment.topLeft,
-                                 end: Alignment.bottomRight,
-                               ),
-                         color: _messageController.text.trim().isEmpty 
-                             ? Colors.grey[200]
-                             : null,
+                         gradient: LinearGradient(
+                           colors: [
+                             Theme.of(context).primaryColor,
+                             Theme.of(context).primaryColor.withOpacity(0.8),
+                           ],
+                           begin: Alignment.topLeft,
+                           end: Alignment.bottomRight,
+                         ),
                          borderRadius: BorderRadius.circular(24),
-                         boxShadow: _messageController.text.trim().isEmpty 
-                             ? null
-                             : [
-                                 BoxShadow(
-                                   color: Colors.black.withOpacity(0.2),
-                                   blurRadius: 12,
-                                   offset: const Offset(0, 3),
-                                   spreadRadius: 0,
-                                 ),
-                               ],
+                         boxShadow: [
+                           BoxShadow(
+                             color: Colors.black.withOpacity(0.2),
+                             blurRadius: 12,
+                             offset: const Offset(0, 3),
+                             spreadRadius: 0,
+                           ),
+                         ],
                        ),
                        child: Material(
                          color: Colors.transparent,
                          child: InkWell(
                            onTap: _messageController.text.trim().isEmpty ? null : _sendMessage,
                            borderRadius: BorderRadius.circular(24),
-                           splashColor: _messageController.text.trim().isEmpty 
-                               ? null 
-                               : Colors.white.withOpacity(0.1),
+                           splashColor: Colors.white.withOpacity(0.1),
                            child: Padding(
                              padding: const EdgeInsets.all(12),
                              child: Icon(
                                Icons.arrow_upward_rounded,
-                               color: _messageController.text.trim().isEmpty 
-                                   ? Colors.grey[500]
-                                   : Colors.white,
+                               color: Colors.white,
                                size: 22,
                              ),
                            ),

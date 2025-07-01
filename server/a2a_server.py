@@ -17,9 +17,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import uvicorn
 
-from google.adk.agents import LlmAgent
-from google.adk.agents import Agent, LlmAgent
+from google.adk.agents import LlmAgent, Agent
 from google.adk.tools import FunctionTool
+from google.adk.runners import Runner
+from google.adk.events import Event
 
 # Import our custom agents
 from bruno_master_agent import BrunoMasterAgent, BudgetTracker
@@ -135,11 +136,20 @@ class BrunoAIServer:
         # Initialize budget tracker for bruno_master
         # This is done here to avoid Pydantic field validation issues during __init__
         budget_tracker = BudgetTracker(
-            max_budget=self.config.max_budget,
-            family_size=self.config.default_family_size
+            weekly_budget=Decimal(str(self.config.max_budget))
         )
         # Set the budget tracker on the master agent
-        self.bruno_master._budget_tracker = budget_tracker
+        self.bruno_master.budget_tracker = budget_tracker
+        
+        # Initialize A2A communication using Google ADK Runner
+        try:
+            # For now, we'll handle agent coordination directly rather than using ADK Runner
+            # since the A2A protocol is already implemented through our custom server
+            self.runner = None
+            logger.info("Agent coordination configured for direct communication")
+        except Exception as e:
+            logger.warning(f"Failed to initialize ADK Runner: {e}. Continuing with direct agent communication.")
+            self.runner = None
         
         logger.info("Bruno AI server initialization complete")
 
@@ -537,7 +547,7 @@ class BrunoAIServer:
 
     async def start(self) -> None:
         """Start the server."""
-        await self.initialize_agents()
+        await self.initialize()
         
         logger.info(f"Starting Bruno AI server on {self.config.host}:{self.config.port}")
         

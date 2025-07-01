@@ -34,14 +34,23 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return LiquidGlassContainer(
+    return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back_rounded),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: Theme.of(context).primaryColor,
+              size: 24,
+            ),
+            style: IconButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(40, 40),
+            ),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -49,12 +58,14 @@ class SettingsScreen extends StatelessWidget {
               'Settings',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
               ),
             ),
           ),
           Icon(
             Icons.settings_rounded,
             color: Theme.of(context).primaryColor,
+            size: 24,
           ),
         ],
       ),
