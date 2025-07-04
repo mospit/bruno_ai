@@ -15,7 +15,8 @@ class ShoppingCart extends StatefulWidget {
   State<ShoppingCart> createState() => _ShoppingCartState();
 }
 
-class _ShoppingCartState extends State<ShoppingCart> {
+class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   String _selectedCategory = 'All';
@@ -140,7 +141,14 @@ class _ShoppingCartState extends State<ShoppingCart> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
   void dispose() {
+    _tabController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -167,12 +175,31 @@ class _ShoppingCartState extends State<ShoppingCart> {
           body: Column(
             children: [
               _buildHeader(context, provider),
-              _buildSearchAndFilter(context, provider),
-              _buildStoreSelector(context, provider),
-              Expanded(
-                child: _buildShoppingList(context, provider),
+              // Tab Bar positioned right after header
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                child: TabBar(
+                  controller: _tabController,
+                  labelColor: Theme.of(context).primaryColor,
+                  unselectedLabelColor: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                  indicatorColor: Theme.of(context).primaryColor,
+                  indicatorWeight: 3,
+                  tabs: const [
+                    Tab(icon: Icon(Icons.shopping_cart), text: 'Cart'),
+                    Tab(icon: Icon(Icons.search), text: 'Search'),
+                  ],
+                ),
               ),
-              _buildCheckoutSection(context, provider),
+              // Tab Content
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _buildCartTab(context, provider),
+                    _buildSearchTab(context, provider),
+                  ],
+                ),
+              ),
             ],
           ),
         );
@@ -453,46 +480,46 @@ class _ShoppingCartState extends State<ShoppingCart> {
     }
   }
 
-  Widget _buildShoppingList(BuildContext context, BrunoProvider provider) {
-    // Show search results when searching
-    if (_isSearching && _searchQuery.isNotEmpty) {
-      return _buildSearchResults(context, provider);
-    }
+  Widget _buildCartTab(BuildContext context, BrunoProvider provider) {
+    return Column(
+      children: [
+        Expanded(
+          child: _buildShoppingList(context, provider),
+        ),
+        _buildCheckoutSection(context, provider),
+      ],
+    );
+  }
 
+  Widget _buildSearchTab(BuildContext context, BrunoProvider provider) {
+    return Column(
+      children: [
+        _buildSearchAndFilter(context, provider),
+        _buildStoreSelector(context, provider),
+        Expanded(
+          child: _buildSearchResults(context, provider),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShoppingList(BuildContext context, BrunoProvider provider) {
     if (provider.shoppingList.isEmpty) {
       return _buildEmptyState(context);
     }
 
-    // Filter items based on search and category
-    final filteredItems = provider.shoppingList.where((item) {
-      final matchesSearch = _searchQuery.isEmpty || 
-          item.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          item.category.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          item.notes.toLowerCase().contains(_searchQuery.toLowerCase());
-      
-      final matchesCategory = _selectedCategory == 'All' || 
-          item.category == _selectedCategory;
-      
-      return matchesSearch && matchesCategory;
-    }).toList();
-
-    if (filteredItems.isEmpty) {
-      return _buildNoResultsState(context);
-    }
-
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: filteredItems.length,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      itemCount: provider.shoppingList.length,
       itemBuilder: (context, index) {
-        final item = filteredItems[index];
-        final originalIndex = provider.shoppingList.indexOf(item);
-        return _buildShoppingItem(context, provider, item, originalIndex);
+        final item = provider.shoppingList[index];
+        return _buildShoppingItem(context, provider, item, index);
       },
     );
   }
 
   Widget _buildSearchResults(BuildContext context, BrunoProvider provider) {
-    if (_searchResults.isEmpty) {
+    if (_searchQuery.isEmpty) {
       return Center(
         child: LiquidGlassContainer(
           margin: const EdgeInsets.all(32),
@@ -502,6 +529,46 @@ class _ShoppingCartState extends State<ShoppingCart> {
             children: [
               Icon(
                 Icons.search_rounded,
+                size: 64,
+                color: Theme.of(context).primaryColor.withOpacity(0.5),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Search for products',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).textTheme.titleLarge?.color?.withOpacity(0.7),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Use the search bar above to find products to add to your cart',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_isSearching) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (_searchResults.isEmpty) {
+      return Center(
+        child: LiquidGlassContainer(
+          margin: const EdgeInsets.all(32),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.search_off_rounded,
                 size: 64,
                 color: Theme.of(context).primaryColor.withOpacity(0.5),
               ),

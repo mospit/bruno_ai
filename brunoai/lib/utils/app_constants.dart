@@ -1,7 +1,7 @@
 class AppConstants {
   // API Configuration
-  static const String apiBaseUrl = 'https://api.brunoai.app/v1';
-  static const String websocketUrl = 'wss://api.brunoai.app/ws';
+  static const String apiBaseUrl = 'http://localhost:8000/api/v1';
+  static const String websocketUrl = 'ws://localhost:8000/ws';
   
   // Environment
   static const bool isProduction = bool.fromEnvironment('dart.vm.product');

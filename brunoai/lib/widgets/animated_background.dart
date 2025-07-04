@@ -281,23 +281,28 @@ class LiquidGlassPainter extends CustomPainter {
     final paint = Paint()
       ..style = PaintingStyle.fill;
     
-    // Create liquid glass effect with multiple layers
-    _drawLiquidLayer(canvas, size, paint, 0, 0.05);
-    _drawLiquidLayer(canvas, size, paint, 0.3, 0.03);
-    _drawLiquidLayer(canvas, size, paint, 0.6, 0.02);
+    // Create ultra-soft liquid glass effect with many subtle layers
+    _drawLiquidLayer(canvas, size, paint, 0, 0.08);
+    _drawLiquidLayer(canvas, size, paint, 0.2, 0.06);
+    _drawLiquidLayer(canvas, size, paint, 0.4, 0.04);
+    _drawLiquidLayer(canvas, size, paint, 0.6, 0.03);
+    _drawLiquidLayer(canvas, size, paint, 0.8, 0.02);
   }
   
   void _drawLiquidLayer(Canvas canvas, Size size, Paint paint, double offset, double opacity) {
     final path = Path();
-    final waveHeight = size.height * 0.1;
-    final waveLength = size.width * 0.3;
+    final waveHeight = size.height * 0.06; // Even smaller waves for ultra-smooth effect
+    final waveLength = size.width * 0.5; // Longer waves for gentler curves
     
     path.moveTo(0, size.height);
     
-    for (double x = 0; x <= size.width; x += 5) {
-      final y = size.height * 0.8 + 
-          math.sin((x / waveLength + animationValue * 2 + offset) * 2 * math.pi) * waveHeight * 0.5 +
-          math.sin((x / (waveLength * 0.7) + animationValue * 1.5 + offset) * 2 * math.pi) * waveHeight * 0.3;
+    for (double x = 0; x <= size.width; x += 2) { // Even smaller steps for maximum smoothness
+      final primaryWave = math.sin((x / waveLength + animationValue * 1.5 + offset) * 2 * math.pi) * waveHeight * 0.3;
+      final secondaryWave = math.sin((x / (waveLength * 0.7) + animationValue * 1.0 + offset) * 2 * math.pi) * waveHeight * 0.2;
+      final tertiaryWave = math.sin((x / (waveLength * 1.4) + animationValue * 0.6 + offset) * 2 * math.pi) * waveHeight * 0.1;
+      final quaternaryWave = math.sin((x / (waveLength * 2.1) + animationValue * 0.3 + offset) * 2 * math.pi) * waveHeight * 0.05;
+      
+      final y = size.height * 0.9 + primaryWave + secondaryWave + tertiaryWave + quaternaryWave;
       
       path.lineTo(x, y);
     }
@@ -305,17 +310,33 @@ class LiquidGlassPainter extends CustomPainter {
     path.lineTo(size.width, size.height);
     path.close();
     
-    paint.color = (isDark ? Colors.white : Colors.black).withOpacity(opacity);
-    canvas.drawPath(path, paint);
+    // Create ultra-smooth exponential fade gradient
+    final gradientPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          (isDark ? Colors.white : Colors.black).withOpacity(opacity * 0.02),
+          (isDark ? Colors.white : Colors.black).withOpacity(opacity * 0.05),
+          (isDark ? Colors.white : Colors.black).withOpacity(opacity * 0.1),
+          (isDark ? Colors.white : Colors.black).withOpacity(opacity * 0.2),
+          (isDark ? Colors.white : Colors.black).withOpacity(opacity * 0.4),
+          (isDark ? Colors.white : Colors.black).withOpacity(opacity * 0.7),
+          (isDark ? Colors.white : Colors.black).withOpacity(opacity),
+        ],
+        stops: const [0.0, 0.1, 0.2, 0.35, 0.5, 0.75, 1.0],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
     
-    // Add shimmer effect
+    canvas.drawPath(path, gradientPaint);
+    
+    // Add ultra-subtle shimmer effect
     final shimmerPaint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
           Colors.transparent,
-          (isDark ? Colors.white : Colors.black).withOpacity(opacity * 0.5),
+          (isDark ? Colors.white : Colors.black).withOpacity(opacity * 0.1),
           Colors.transparent,
         ],
         stops: [

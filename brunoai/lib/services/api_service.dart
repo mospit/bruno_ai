@@ -5,7 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import '../models/chat_message.dart';
 import '../models/shopping_item.dart';
-import '../utils/app_constants.dart';
+import '../utils/app_constants.dart' as constants;
 
 class ApiService {
   static final ApiService _instance = ApiService._internal();
@@ -19,7 +19,7 @@ class ApiService {
     if (_isInitialized) return;
     
     _dio = Dio(BaseOptions(
-      baseUrl: AppConstants.apiBaseUrl,
+      baseUrl: constants.AppConstants.apiBaseUrl,
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),
@@ -82,6 +82,11 @@ class ApiService {
     required String message,
     String? userId,
     Map<String, dynamic>? context,
+    double? budgetLimit,
+    int? familySize,
+    List<String>? dietaryRestrictions,
+    String? zipCode,
+    List<String>? preferredStores,
   }) async {
     try {
       if (!await _checkConnectivity()) {
@@ -89,14 +94,35 @@ class ApiService {
       }
 
       final response = await _dio.post('/chat', data: {
+        'user_id': userId ?? 'anonymous_user',
         'message': message,
-        'user_id': userId,
         'context': context ?? {},
-        'timestamp': DateTime.now().toIso8601String(),
+        'budget_limit': budgetLimit,
+        'family_size': familySize,
+        'dietary_restrictions': dietaryRestrictions ?? [],
+        'zip_code': zipCode,
+        'preferred_stores': preferredStores ?? [],
       });
 
       if (response.statusCode == 200) {
-        final brunoMessage = ChatMessage.fromJson(response.data['message']);
+        // Extract the primary response from Bruno AI server
+        final responseData = response.data;
+        final brunoMessage = ChatMessage(
+          text: responseData['primary_response'] ?? 'I apologize, but I had trouble processing that request.',
+          isFromUser: false,
+          timestamp: DateTime.parse(responseData['timestamp'] ?? DateTime.now().toIso8601String()),
+          hasShoppingAction: responseData['shopping_list'] != null,
+          type: responseData['shopping_list'] != null ? MessageType.shoppingList : MessageType.text,
+          metadata: {
+            'request_id': responseData['request_id'],
+            'agent_responses': responseData['agent_responses'],
+            'budget_info': responseData['budget_info'],
+            'recommendations': responseData['recommendations'],
+            'shopping_list': responseData['shopping_list'],
+            'total_cost': responseData['total_cost'],
+            'processing_time_ms': responseData['processing_time_ms'],
+          },
+        );
         return ApiResponse.success(brunoMessage);
       } else {
         return ApiResponse.error('Failed to get response from Bruno');
