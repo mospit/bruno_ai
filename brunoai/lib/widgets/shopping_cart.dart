@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/bruno_provider.dart';
 import '../models/shopping_item.dart';
 import 'liquid_glass_container.dart';
+import 'bruno_avatar.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -219,17 +220,10 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
-            ),
-            child: Icon(
-              Icons.shopping_cart_rounded,
-              color: Theme.of(context).primaryColor,
-              size: 24,
-            ),
+          BrunoAvatar(
+            mood: provider.shoppingList.isNotEmpty ? BrunoMood.helpful : BrunoMood.friendly,
+            size: 50,
+            animate: true,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -237,7 +231,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Shopping Cart',
+                  'Bruno\'s Smart Cart',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),

@@ -6,10 +6,40 @@ import '../providers/bruno_provider.dart';
 import '../widgets/animated_background.dart';
 import '../widgets/chat_interface.dart';
 import '../widgets/shopping_cart.dart';
+import '../widgets/smart_dashboard.dart';
 import 'settings_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _isDashboardCollapsed = false;
+
+  void _showShoppingCart(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.9,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (context, scrollController) => Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
+          ),
+          child: const ShoppingCart(),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +91,98 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                     actions: [
+                      // Enhanced Shopping Cart Button
+                      Container(
+                        margin: const EdgeInsets.only(right: 4),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: provider.shoppingList.isNotEmpty
+                                    ? Theme.of(context).primaryColor.withOpacity(0.1)
+                                    : Colors.grey.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: provider.shoppingList.isNotEmpty
+                                      ? Theme.of(context).primaryColor.withOpacity(0.3)
+                                      : Colors.grey.withOpacity(0.3),
+                                  width: 1.5,
+                                ),
+                                boxShadow: [
+                                  if (provider.shoppingList.isNotEmpty)
+                                    BoxShadow(
+                                      color: Theme.of(context).primaryColor.withOpacity(0.2),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                ],
+                              ),
+                              child: Semantics(
+                                button: true,
+                                label: 'Shopping Cart',
+                                child: IconButton(
+                                  onPressed: () {
+                                    HapticFeedback.lightImpact();
+                                    _showShoppingCart(context);
+                                  },
+                                  icon: Icon(
+                                    Icons.shopping_cart_rounded,
+                                    color: provider.shoppingList.isNotEmpty 
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.grey[600],
+                                    size: 24,
+                                  ),
+                                  tooltip: 'Shopping Cart',
+                                  splashRadius: 20,
+                                ),
+                              ),
+                            ),
+                            // Enhanced Cart badge
+                            if (provider.shoppingList.isNotEmpty)
+                              Positioned(
+                                right: 4,
+                                top: 4,
+                                child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [Colors.red[500]!, Colors.red[700]!],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.red.withOpacity(0.4),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 22,
+                                    minHeight: 22,
+                                  ),
+                                  child: Text(
+                                    '${provider.shoppingList.length}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
                       // Settings Button
                       Semantics(
                         button: true,
@@ -110,10 +232,26 @@ class HomeScreen extends StatelessWidget {
           body: AnimatedBackground(
             child: SafeArea(
               top: false,
-              child: const ChatInterface(),
+              child: Column(
+                children: [
+                  // Smart Dashboard
+                  SmartDashboard(
+                    isCollapsed: _isDashboardCollapsed,
+                    onToggle: () {
+                      setState(() {
+                        _isDashboardCollapsed = !_isDashboardCollapsed;
+                      });
+                    },
+                  ),
+                  
+                  // Chat Interface
+                  const Expanded(
+                    child: ChatInterface(),
+                  ),
+                ],
+              ),
             ),
           ),
-
         );
       },
     );
