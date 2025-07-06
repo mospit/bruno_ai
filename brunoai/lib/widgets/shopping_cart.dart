@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/bruno_provider.dart';
 import '../models/shopping_item.dart';
 import 'liquid_glass_container.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -22,6 +21,13 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
   String _selectedCategory = 'All';
   bool _isSearching = false;
   List<ShoppingItem> _searchResults = [];
+  String _sortOption = 'name'; // name, price_low, price_high, date_added
+  bool _isLoadingMore = false;
+  List<String> _recentSearches = [];
+  bool _showOnlyInStock = true;
+  double _maxPrice = 100.0;
+  String _selectedStore = 'Instacart';
+  Map<String, int> _recentlyAddedItems = {}; // item.id -> quantity
 
   // Mock product database for search
   // Instacart API Endpoint
@@ -288,34 +294,49 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
   }
 
   Widget _buildSearchAndFilter(BuildContext context, BrunoProvider provider) {
-    final categories = ['All', ...provider.shoppingList.map((item) => item.category).toSet().toList()];
+    final categories = ['All', 'Produce', 'Dairy', 'Meat', 'Pantry', 'Frozen', 'Bakery', 'Beverages'];
     
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         children: [
-          // Search Bar
+          // Enhanced Search Bar with Voice Search
           LiquidGlassContainer(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: TextField(
               controller: _searchController,
+              textInputAction: TextInputAction.search,
               decoration: InputDecoration(
-                hintText: 'Search items...',
+                hintText: 'Search for products...',
                 prefixIcon: Icon(
                   Icons.search_rounded,
                   color: Theme.of(context).primaryColor.withOpacity(0.7),
                 ),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_searchQuery.isNotEmpty)
+                      IconButton(
                         onPressed: () {
                           _searchController.clear();
                           setState(() {
                             _searchQuery = '';
+                            _searchResults = [];
                           });
                         },
                         icon: const Icon(Icons.clear_rounded),
-                      )
-                    : null,
+                        tooltip: 'Clear search',
+                      ),
+                    IconButton(
+                      onPressed: () => _showAdvancedFilters(context),
+                      icon: Icon(
+                        Icons.tune_rounded,
+                        color: Theme.of(context).primaryColor.withOpacity(0.7),
+                      ),
+                      tooltip: 'Advanced filters',
+                    ),
+                  ],
+                ),
                 border: InputBorder.none,
                 hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
@@ -325,6 +346,12 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                 setState(() {
                   _searchQuery = value;
                 });
+                if (value.isNotEmpty && !_recentSearches.contains(value)) {
+                  _recentSearches.insert(0, value);
+                  if (_recentSearches.length > 5) {
+                    _recentSearches.removeLast();
+                  }
+                }
                 _performSearch(value);
               },
               onSubmitted: (value) {
@@ -332,6 +359,23 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
               },
             ),
           ),
+          
+          // Quick Sort Options
+          if (_searchResults.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Container(
+              height: 40,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  _buildSortChip('Name A-Z', 'name'),
+                  _buildSortChip('Price Low-High', 'price_low'),
+                  _buildSortChip('Price High-Low', 'price_high'),
+                  _buildSortChip('Recently Added', 'date_added'),
+                ],
+              ),
+            ),
+          ],
           
           // Category Filter
           if (categories.length > 2) ...[
@@ -712,51 +756,80 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                 ),
                 const SizedBox(height: 8),
                 GestureDetector(
-                  onTap: isInCart ? null : () {
-                    provider.addToShoppingList(product);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('${product.name} added to cart'),
-                        backgroundColor: Theme.of(context).primaryColor,
-                        duration: const Duration(seconds: 2),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: isInCart
-                          ? Colors.green.withOpacity(0.1)
-                          : Theme.of(context).primaryColor,
-                      border: Border.all(
-                        color: isInCart
-                            ? Colors.green
-                            : Theme.of(context).primaryColor,
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          isInCart ? Icons.check_rounded : Icons.add_rounded,
-                          color: isInCart ? Colors.green : Colors.white,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          isInCart ? 'In Cart' : 'Add',
-                          style: TextStyle(
-                            color: isInCart ? Colors.green : Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                    onTap: isInCart ? null : () {
+                      _addHapticFeedback();
+                      provider.addToShoppingList(product);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              Icon(Icons.shopping_cart, color: Colors.white),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text('${product.name} added to cart'),
+                              ),
+                            ],
+                          ),
+                          backgroundColor: Theme.of(context).primaryColor,
+                          duration: const Duration(seconds: 2),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          action: SnackBarAction(
+                            label: 'View Cart',
+                            textColor: Colors.white,
+                            onPressed: () {
+                              _tabController.animateTo(0);
+                            },
                           ),
                         ),
-                      ],
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: isInCart
+                            ? Colors.green.withOpacity(0.1)
+                            : Theme.of(context).primaryColor,
+                        border: Border.all(
+                          color: isInCart
+                              ? Colors.green
+                              : Theme.of(context).primaryColor,
+                          width: 1,
+                        ),
+                        boxShadow: isInCart
+                            ? []
+                            : [
+                                BoxShadow(
+                                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            isInCart ? Icons.check_rounded : Icons.add_rounded,
+                            color: isInCart ? Colors.green : Colors.white,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            isInCart ? 'In Cart' : 'Add',
+                            style: TextStyle(
+                              color: isInCart ? Colors.green : Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ],
@@ -919,18 +992,55 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              // Item Image/Icon
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                ),
-                child: Icon(
-                  _getItemIcon(item.category),
-                  color: Theme.of(context).primaryColor,
-                  size: 24,
+              // Item Image with animation
+              Hero(
+                tag: 'item_${item.id}',
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: item.imageUrl != null && item.imageUrl!.isNotEmpty
+                        ? Image.network(
+                            item.imageUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Icon(
+                                _getItemIcon(item.category),
+                                color: Theme.of(context).primaryColor,
+                                size: 30,
+                              );
+                            },
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded / 
+                                        loadingProgress.expectedTotalBytes!
+                                      : null,
+                                  strokeWidth: 2,
+                                ),
+                              );
+                            },
+                          )
+                        : Icon(
+                            _getItemIcon(item.category),
+                            color: Theme.of(context).primaryColor,
+                            size: 30,
+                          ),
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -940,11 +1050,37 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      item.name,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            item.displayName,
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (item.isOnSale) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              'SALE',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                     const SizedBox(height: 4),
                     Row(
@@ -990,11 +1126,20 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  if (item.isOnSale && item.originalPrice != null) ...[
+                    Text(
+                      '\$${(item.originalPrice! * item.quantity).toStringAsFixed(2)}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        decoration: TextDecoration.lineThrough,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                   Text(
                     '\$${(item.price * item.quantity).toStringAsFixed(2)}',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
+                      color: item.isOnSale ? Colors.red : Theme.of(context).primaryColor,
                     ),
                   ),
                   if (item.quantity > 1)
@@ -1002,6 +1147,14 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                       '\$${item.price.toStringAsFixed(2)} each',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.5),
+                      ),
+                    ),
+                  if (item.isOnSale && item.originalPrice != null)
+                    Text(
+                      'Save \$${item.savings.toStringAsFixed(2)}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.green,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                 const SizedBox(height: 8),
@@ -1045,20 +1198,32 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
 
   Widget _buildQuantityButton(BuildContext context, IconData icon, VoidCallback onPressed) {
     return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: 32,
-        height: 32,
+      onTap: () {
+        _addHapticFeedback();
+        onPressed();
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        width: 36,
+        height: 36,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           color: Theme.of(context).primaryColor.withOpacity(0.1),
           border: Border.all(
-            color: Theme.of(context).primaryColor.withOpacity(0.2),
+            color: Theme.of(context).primaryColor.withOpacity(0.3),
+            width: 1.5,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 2,
+              offset: const Offset(0, 1),
+            ),
+          ],
         ),
         child: Icon(
           icon,
-          size: 16,
+          size: 18,
           color: Theme.of(context).primaryColor,
         ),
       ),
@@ -1143,6 +1308,30 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
               ),
             ],
           ),
+          
+          // Show total savings if any
+          if (_getTotalSavings(provider) > 0) ...[
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Total Savings',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.green,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  '-\$${_getTotalSavings(provider).toStringAsFixed(2)}',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.green,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ],
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1433,5 +1622,142 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
         ),
       ),
     );
+  }
+
+  // Helper method to build sort chips
+  Widget _buildSortChip(String label, String value) {
+    final isSelected = _sortOption == value;
+    return Container(
+      margin: const EdgeInsets.only(right: 8),
+      child: FilterChip(
+        label: Text(label),
+        selected: isSelected,
+        onSelected: (selected) {
+          setState(() {
+            _sortOption = value;
+            _sortSearchResults();
+          });
+        },
+        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+        selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
+        checkmarkColor: Theme.of(context).primaryColor,
+      ),
+    );
+  }
+
+  // Method to sort search results
+  void _sortSearchResults() {
+    setState(() {
+      switch (_sortOption) {
+        case 'name':
+          _searchResults.sort((a, b) => a.name.compareTo(b.name));
+          break;
+        case 'price_low':
+          _searchResults.sort((a, b) => a.price.compareTo(b.price));
+          break;
+        case 'price_high':
+          _searchResults.sort((a, b) => b.price.compareTo(a.price));
+          break;
+        case 'date_added':
+          _searchResults.sort((a, b) => b.dateAdded!.compareTo(a.dateAdded!));
+          break;
+      }
+    });
+  }
+
+  // Method to show advanced filters dialog
+  void _showAdvancedFilters(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => LiquidGlassContainer(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Advanced Filters',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            
+            // Price Range Filter
+            Text(
+              'Max Price: \$${_maxPrice.toStringAsFixed(0)}',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            Slider(
+              value: _maxPrice,
+              min: 0,
+              max: 200,
+              divisions: 20,
+              onChanged: (value) {
+                setState(() {
+                  _maxPrice = value;
+                });
+              },
+            ),
+            
+            // Stock Filter
+            CheckboxListTile(
+              title: Text('Show only in-stock items'),
+              value: _showOnlyInStock,
+              onChanged: (value) {
+                setState(() {
+                  _showOnlyInStock = value ?? true;
+                });
+              },
+            ),
+            
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: LiquidGlassButton(
+                    onPressed: () {
+                      setState(() {
+                        _maxPrice = 100.0;
+                        _showOnlyInStock = true;
+                        _selectedCategory = 'All';
+                      });
+                      Navigator.pop(context);
+                    },
+                    backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                    foregroundColor: Theme.of(context).primaryColor,
+                    child: const Text('Reset'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: LiquidGlassButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _performSearch(_searchQuery);
+                    },
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                    child: const Text('Apply'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Method to add haptic feedback
+  void _addHapticFeedback() {
+    HapticFeedback.lightImpact();
+  }
+
+  // Method to calculate total savings
+  double _getTotalSavings(BrunoProvider provider) {
+    return provider.shoppingList.fold(0.0, (total, item) => total + item.savings);
   }
 }

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'screens/home_screen.dart';
+
 import 'providers/bruno_provider.dart';
-import 'providers/app_provider.dart';
+import 'screens/home_screen.dart';
 import 'theme/liquid_glass_theme.dart';
-import 'utils/app_constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

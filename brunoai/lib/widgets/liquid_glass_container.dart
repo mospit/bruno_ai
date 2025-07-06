@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import 'dart:math' as math;
 
 class LiquidGlassContainer extends StatelessWidget {
   final Widget child;
@@ -30,7 +29,7 @@ class LiquidGlassContainer extends StatelessWidget {
     this.borderWidth = 1.0,
     this.shadows,
     this.enableBlur = true,
-    this.blurSigma = 10.0,
+    this.blurSigma = 3.0,
     this.gradient,
   });
 
@@ -39,28 +38,30 @@ class LiquidGlassContainer extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final defaultBackgroundColor = backgroundColor ?? 
         (isDark 
-            ? Colors.black.withOpacity(0.3)
-            : Colors.white.withOpacity(0.7));
+            ? Colors.white.withOpacity(0.05)
+            : Colors.white.withOpacity(0.85));
     
     final defaultBorderColor = borderColor ?? 
         (isDark 
-            ? Colors.white.withOpacity(0.1)
-            : Colors.white.withOpacity(0.3));
+            ? Colors.white.withOpacity(0.08)
+            : Colors.white.withOpacity(0.4));
     
     final defaultShadows = shadows ?? [
       BoxShadow(
         color: isDark 
-            ? Colors.black.withOpacity(0.3)
-            : Colors.black.withOpacity(0.1),
+            ? Colors.black.withOpacity(0.4)
+            : Colors.black.withOpacity(0.06),
         blurRadius: 20,
-        offset: const Offset(0, 10),
+        offset: const Offset(0, 4),
+        spreadRadius: 0,
       ),
       BoxShadow(
         color: isDark 
-            ? Colors.white.withOpacity(0.05)
-            : Colors.white.withOpacity(0.8),
-        blurRadius: 1,
-        offset: const Offset(0, 1),
+            ? Colors.black.withOpacity(0.2)
+            : Colors.black.withOpacity(0.02),
+        blurRadius: 40,
+        offset: const Offset(0, 8),
+        spreadRadius: 0,
       ),
     ];
     
@@ -139,7 +140,7 @@ class LiquidGlassCard extends StatelessWidget {
   }
 }
 
-class LiquidGlassButton extends StatelessWidget {
+class LiquidGlassButton extends StatefulWidget {
   final Widget child;
   final VoidCallback? onPressed;
   final Color? backgroundColor;
@@ -147,6 +148,7 @@ class LiquidGlassButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final BorderRadius? borderRadius;
   final bool isLoading;
+  final bool isPrimary;
   
   const LiquidGlassButton({
     super.key,
@@ -157,46 +159,161 @@ class LiquidGlassButton extends StatelessWidget {
     this.padding,
     this.borderRadius,
     this.isLoading = false,
+    this.isPrimary = false,
   });
+
+  @override
+  State<LiquidGlassButton> createState() => _LiquidGlassButtonState();
+}
+
+class _LiquidGlassButtonState extends State<LiquidGlassButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  bool _isPressed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 150),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _handleTapDown(TapDownDetails details) {
+    if (widget.onPressed != null && !widget.isLoading) {
+      setState(() => _isPressed = true);
+      _animationController.forward();
+    }
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    _handleTapEnd();
+  }
+
+  void _handleTapCancel() {
+    _handleTapEnd();
+  }
+
+  void _handleTapEnd() {
+    if (_isPressed) {
+      setState(() => _isPressed = false);
+      _animationController.reverse();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return GestureDetector(
-      onTap: isLoading ? null : onPressed,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        child: LiquidGlassContainer(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          borderRadius: borderRadius ?? BorderRadius.circular(16),
-          backgroundColor: backgroundColor ?? 
-              (isDark 
-                  ? Colors.white.withOpacity(0.1)
-                  : Colors.white.withOpacity(0.9)),
-          borderColor: backgroundColor ?? 
-              (isDark 
-                  ? Colors.white.withOpacity(0.2)
-                  : Colors.white.withOpacity(0.5)),
-          child: isLoading 
-              ? SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      foregroundColor ?? Theme.of(context).primaryColor,
-                    ),
-                  ),
-                )
-              : DefaultTextStyle(
-                  style: TextStyle(
-                    color: foregroundColor ?? Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  child: child,
+      onTap: widget.isLoading ? null : widget.onPressed,
+      onTapDown: _handleTapDown,
+      onTapUp: _handleTapUp,
+      onTapCancel: _handleTapCancel,
+      child: AnimatedBuilder(
+        animation: _scaleAnimation,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: _scaleAnimation.value,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                gradient: widget.isPrimary
+                    ? LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Theme.of(context).primaryColor,
+                          Theme.of(context).primaryColor.withOpacity(0.8),
+                        ],
+                      )
+                    : null,
+                color: widget.isPrimary
+                    ? null
+                    : widget.backgroundColor ??
+                        (isDark
+                            ? Colors.white.withOpacity(0.1)
+                            : Colors.white.withOpacity(0.9)),
+                borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
+                border: Border.all(
+                  color: widget.isPrimary
+                      ? Colors.white.withOpacity(0.2)
+                      : widget.backgroundColor ??
+                          (isDark
+                              ? Colors.white.withOpacity(0.2)
+                              : Colors.grey.withOpacity(0.2)),
+                  width: 1,
                 ),
-        ),
+                boxShadow: [
+                  BoxShadow(
+                    color: widget.isPrimary
+                        ? Theme.of(context).primaryColor.withOpacity(0.3)
+                        : Colors.black.withOpacity(0.1),
+                    blurRadius: _isPressed ? 8 : 12,
+                    offset: Offset(0, _isPressed ? 2 : 4),
+                    spreadRadius: 0,
+                  ),
+                  if (!_isPressed)
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                      spreadRadius: 0,
+                    ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+                  child: Padding(
+                    padding: widget.padding ??
+                        const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    child: widget.isLoading
+                        ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                widget.foregroundColor ??
+                                    (widget.isPrimary
+                                        ? Colors.white
+                                        : Theme.of(context).primaryColor),
+                              ),
+                            ),
+                          )
+                        : DefaultTextStyle(
+                            style: TextStyle(
+                              color: widget.foregroundColor ??
+                                  (widget.isPrimary
+                                      ? Colors.white
+                                      : Theme.of(context).primaryColor),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            child: widget.child,
+                          ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

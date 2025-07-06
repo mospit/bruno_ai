@@ -17,13 +17,13 @@ class LiquidGlassTheme {
   static const Color accentOrange = Color(0xFFFF7F3C);
   static const Color accentBlue = Color(0xFF4A90E2);
   
-  // Enhanced Liquid Glass Colors - iOS 17+ Style
-  static const Color glassLight = Color(0x1AFFFFFF);
-  static const Color glassMedium = Color(0x2AFFFFFF);
-  static const Color glassDark = Color(0x1A000000);
-  static const Color glassAccent = Color(0x33FFFFFF);
-  static const Color glassBorder = Color(0x26FFFFFF);
-  static const Color glassBorderStrong = Color(0x40FFFFFF);
+  // Enhanced Liquid Glass Colors - Clean Modern Style
+  static const Color glassLight = Color(0x08FFFFFF);
+  static const Color glassMedium = Color(0x12FFFFFF);
+  static const Color glassDark = Color(0x08000000);
+  static const Color glassAccent = Color(0x15FFFFFF);
+  static const Color glassBorder = Color(0x12FFFFFF);
+  static const Color glassBorderStrong = Color(0x20FFFFFF);
   
   // Shadow Colors
   static const Color shadowLight = Color(0x0A000000);
@@ -132,12 +132,17 @@ class LiquidGlassTheme {
           elevation: 0,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
           textStyle: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.w600,
+            letterSpacing: 0.2,
+          ),
+        ).copyWith(
+          overlayColor: MaterialStateProperty.all(
+            Colors.white.withOpacity(0.1),
           ),
         ),
       ),

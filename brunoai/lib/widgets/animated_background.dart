@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'dart:ui';
 
 class AnimatedBackground extends StatefulWidget {
   final Widget child;
@@ -91,57 +90,18 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final defaultColors = widget.colors ?? (
-      isDark ? [
-        const Color(0xFF1a1a2e),
-        const Color(0xFF16213e),
-        const Color(0xFF0f3460),
-        const Color(0xFF533483),
-      ] : [
-        const Color(0xFFf8f9fa),
-        const Color(0xFFe9ecef),
-        const Color(0xFFdee2e6),
-        const Color(0xFFadb5bd),
-      ]
-    );
-
-    return Stack(
-      children: [
-        // Animated Gradient Background
-        AnimatedBuilder(
-          animation: _gradientAnimation,
-          builder: (context, child) {
-            return Container(
-              decoration: BoxDecoration(
-                gradient: _buildAnimatedGradient(defaultColors),
-              ),
-            );
-          },
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).scaffoldBackgroundColor,
+            Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+          ],
         ),
-        
-        // Floating Particles
-        if (widget.enableParticles)
-          AnimatedBuilder(
-            animation: _particleAnimation,
-            builder: (context, child) {
-              return CustomPaint(
-                painter: ParticlePainter(
-                  particles: _particles,
-                  animationValue: _particleAnimation.value,
-                  isDark: isDark,
-                ),
-                size: Size.infinite,
-              );
-            },
-          ),
-        
-        // Liquid Glass Overlay
-        _buildLiquidGlassOverlay(isDark),
-        
-        // Content
-        widget.child,
-      ],
+      ),
+      child: widget.child,
     );
   }
 

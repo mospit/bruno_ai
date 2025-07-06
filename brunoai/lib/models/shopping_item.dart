@@ -43,7 +43,7 @@ class ShoppingItem {
       notes: json['notes'] as String? ?? json['description'] as String? ?? '',
       imageUrl: json['imageUrl'] as String? ?? json['image_url'] as String?,
       brandName: json['brandName'] as String? ?? json['brand'] as String?,
-      isOnSale: json['isOnSale'] as bool? ?? json['sale_price'] != null ?? false,
+      isOnSale: json['isOnSale'] as bool? ?? (json['sale_price'] != null),
       originalPrice: (json['originalPrice'] as num?)?.toDouble() ?? (json['sale_price'] != null ? (json['price'] as num?)?.toDouble() : null),
       store: json['store'] as String? ?? json['store_name'] as String?,
       dateAdded: json['dateAdded'] != null

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -315,7 +314,7 @@ class ApiService {
         } else if (statusCode == 500) {
           return 'Server error. Please try again later.';
         } else {
-          return 'Server error (${statusCode}). Please try again.';
+          return 'Server error ($statusCode). Please try again.';
         }
       case DioExceptionType.cancel:
         return 'Request was cancelled.';

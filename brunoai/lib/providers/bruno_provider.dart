@@ -4,7 +4,7 @@ import '../models/shopping_item.dart';
 
 class BrunoProvider extends ChangeNotifier {
   // Chat state
-  List<ChatMessage> _messages = [];
+  final List<ChatMessage> _messages = [];
   bool _isTyping = false;
   String _currentBudget = '';
   int _familySize = 1;
@@ -45,7 +45,7 @@ class BrunoProvider extends ChangeNotifier {
   String _preferredDeliveryTime = '';
   
   // Favorites and Order History
-  List<FavoriteMeal> _favoriteMeals = [
+  final List<FavoriteMeal> _favoriteMeals = [
     FavoriteMeal(
       id: '1',
       name: 'Grilled Chicken & Vegetables',
@@ -70,7 +70,7 @@ class BrunoProvider extends ChangeNotifier {
     ),
   ];
   
-  List<PastOrder> _pastOrders = [
+  final List<PastOrder> _pastOrders = [
     PastOrder(
       id: 'order_001',
       date: DateTime.now().subtract(const Duration(days: 3)),
@@ -215,8 +215,8 @@ class BrunoProvider extends ChangeNotifier {
   }
   
   void reorderFavoriteMeal(String mealId) {
-    FavoriteMeal? meal = _favoriteMeals.firstWhere((m) => m.id == mealId);
-    if (meal != null) {
+    try {
+      FavoriteMeal meal = _favoriteMeals.firstWhere((m) => m.id == mealId);
       // Convert favorite meal to shopping list
       List<ShoppingItem> mealItems = meal.ingredients.map((ingredient) {
         return ShoppingItem(
@@ -230,6 +230,8 @@ class BrunoProvider extends ChangeNotifier {
       }).toList();
       
       updateShoppingList([..._shoppingList, ...mealItems]);
+    } catch (e) {
+      // Meal not found, handle gracefully
     }
   }
   
@@ -240,10 +242,12 @@ class BrunoProvider extends ChangeNotifier {
   }
   
   void reorderPastOrder(String orderId) {
-    PastOrder? order = _pastOrders.firstWhere((o) => o.id == orderId);
-    if (order != null) {
+    try {
+      PastOrder order = _pastOrders.firstWhere((o) => o.id == orderId);
       updateShoppingList([..._shoppingList, ...order.items]);
       updateSelectedStore(order.store);
+    } catch (e) {
+      // Order not found, handle gracefully
     }
   }
   

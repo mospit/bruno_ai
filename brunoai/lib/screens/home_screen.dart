@@ -1,11 +1,11 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/bruno_provider.dart';
+import '../widgets/animated_background.dart';
 import '../widgets/chat_interface.dart';
 import '../widgets/shopping_cart.dart';
-import '../widgets/animated_background.dart';
-import '../widgets/liquid_glass_container.dart';
 import 'settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -18,58 +18,76 @@ class HomeScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: Colors.transparent,
           appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight + 40), // Much taller for extended gradient
-            child: ClipRect(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: ClipRRect(
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.98),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.96),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.93),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.89),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.84),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.78),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.71),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.63),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.54),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.44),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.34),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.25),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.17),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.11),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.06),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.03),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.01),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.005),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.8, 0.9, 0.95, 0.98, 1.0],
+                    color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.85),
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Theme.of(context).dividerColor.withOpacity(0.2),
+                        width: 0.5,
+                      ),
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20.0), // More padding for taller AppBar
-                    child: AppBar(
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      title: Text(
-                        'Bruno AI',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
+                  child: AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    titleSpacing: 20,
+                    title: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.shopping_basket_rounded,
+                            color: Theme.of(context).primaryColor,
+                            size: 20,
+                          ),
                         ),
-                      ),
-                      actions: [
-                        IconButton(
+                        const SizedBox(width: 12),
+                        Text(
+                          'Bruno AI',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                    actions: [
+                      // Settings Button
+                      Semantics(
+                        button: true,
+                        label: 'Settings',
+                        child: IconButton(
                           onPressed: () {
+                            HapticFeedback.lightImpact();
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => const SettingsScreen(),
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => 
+                                    const SettingsScreen(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOutCubic;
+                                  
+                                  var tween = Tween(begin: begin, end: end).chain(
+                                    CurveTween(curve: curve),
+                                  );
+                                  
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: child,
+                                  );
+                                },
+                                transitionDuration: const Duration(milliseconds: 300),
                               ),
                             );
                           },
@@ -77,9 +95,12 @@ class HomeScreen extends StatelessWidget {
                             Icons.settings_rounded,
                             color: Theme.of(context).primaryColor,
                           ),
+                          tooltip: 'Settings',
+                          splashRadius: 24,
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
                   ),
                 ),
               ),
@@ -87,32 +108,9 @@ class HomeScreen extends StatelessWidget {
           ),
           extendBodyBehindAppBar: true,
           body: AnimatedBackground(
-            child: Column(
-              children: [
-                // Extended fade area to blend with AppBar
-                Container(
-                  height: 40, // Match AppBar extension
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.005),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.002),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.001),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.0, 0.3, 0.7, 1.0],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: SafeArea(
-                    top: false, // Don't add top safe area since we handle it manually
-                    child: const ChatInterface(),
-                  ),
-                ),
-              ],
+            child: SafeArea(
+              top: false,
+              child: const ChatInterface(),
             ),
           ),
 
@@ -120,8 +118,5 @@ class HomeScreen extends StatelessWidget {
       },
     );
   }
-  
-
-  
 
 }

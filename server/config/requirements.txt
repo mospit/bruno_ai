@@ -46,6 +46,11 @@ PyJWT>=2.8.0
 scikit-learn>=1.3.0
 joblib>=1.3.0
 
+# Authentication and Security
+PyJWT>=2.8.0
+passlib>=1.7.4
+bcrypt>=4.0.0
+email-validator>=2.0.0
+
 # API integrations
-instacart-python>=1.0.0  # Custom Instacart integration
 requests>=2.31.0

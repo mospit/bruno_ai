@@ -15,6 +15,12 @@ from loguru import logger
 from pydantic import BaseModel
 import google.generativeai as genai
 
+from ...database.repositories import (
+    user_repository, preference_repository, interaction_repository
+)
+from ...learning.preference_engine import preference_engine
+from ...auth.auth_manager import auth_manager
+
 class AgentCard(BaseModel):
     """Agent capability definition"""
     name: str
@@ -73,9 +79,10 @@ class BaseAgent(ABC):
             return None
     
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Main task processing entry point"""
+        """Main task processing entry point with memory integration"""
         task_id = task.get('id', f"task_{datetime.now().timestamp()}")
         start_time = datetime.now()
+        user_id = task.get('user_id')
         
         try:
             logger.info(f"Processing task {task_id} for {self.agent_card.name}")
@@ -85,8 +92,21 @@ class BaseAgent(ABC):
             if not validation_result['valid']:
                 raise ValueError(validation_result['error'])
             
+            # Load user context if available
+            user_context = await self._load_user_context(user_id) if user_id else {}
+            task['user_context'] = user_context
+            
             # Execute specialized task logic
             result = await self.execute_task(task)
+            
+            # Log interaction for learning
+            if user_id:
+                await self._log_interaction(
+                    user_id=user_id,
+                    task=task,
+                    result=result,
+                    response_time=(datetime.now() - start_time).total_seconds()
+                )
             
             # Update metrics
             end_time = datetime.now()
@@ -105,6 +125,15 @@ class BaseAgent(ABC):
         except Exception as e:
             logger.error(f"Task {task_id} failed: {str(e)}")
             self._update_metrics('failure', 0)
+            
+            # Still log failed interactions for learning
+            if user_id:
+                await self._log_interaction(
+                    user_id=user_id,
+                    task=task,
+                    result={'error': str(e)},
+                    response_time=(datetime.now() - start_time).total_seconds()
+                )
             
             return {
                 "success": False,
@@ -287,6 +316,74 @@ class BaseAgent(ABC):
         except Exception as e:
             logger.error(f"Failed to send message to {target_agent}: {e}")
             raise
+    
+    async def _load_user_context(self, user_id: int) -> Dict[str, Any]:
+        """Load user context including profile and preferences"""
+        try:
+            # Get user profile
+            user_profile = await auth_manager.get_user_profile(user_id)
+            
+            # Get user preferences
+            strong_preferences = await preference_repository.get_strong_preferences(user_id)
+            
+            # Get recent interaction patterns
+            interaction_patterns = await interaction_repository.get_interaction_patterns(user_id)
+            
+            return {
+                'profile': user_profile,
+                'preferences': strong_preferences,
+                'interaction_patterns': interaction_patterns,
+                'loaded_at': datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+            logger.error(f"Error loading user context: {e}")
+            return {}
+    
+    async def _log_interaction(self, user_id: int, task: Dict[str, Any], 
+                             result: Dict[str, Any], response_time: float):
+        """Log interaction for learning purposes"""
+        try:
+            interaction_data = {
+                'user_message': task.get('message', ''),
+                'context_data': task.get('context', {}),
+                'interaction_type': task.get('action', 'unknown'),
+                'agent_response': json.dumps(result, default=str),
+                'response_time': response_time
+            }
+            
+            # Log the interaction
+            await interaction_repository.log_interaction(
+                user_id=user_id,
+                interaction_type=interaction_data['interaction_type'],
+                user_message=interaction_data['user_message'],
+                agent_response=interaction_data['agent_response'],
+                context_data=interaction_data['context_data'],
+                response_time=response_time
+            )
+            
+            # Learn from the interaction
+            await preference_engine.learn_from_interaction(
+                user_id=user_id,
+                interaction_data=interaction_data
+            )
+            
+        except Exception as e:
+            logger.error(f"Error logging interaction: {e}")
+    
+    async def get_personalized_recommendations(self, user_id: int, 
+                                             recommendation_type: str,
+                                             context: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Get personalized recommendations for user"""
+        try:
+            return await preference_engine.get_personalized_recommendations(
+                user_id=user_id,
+                recommendation_type=recommendation_type,
+                context=context
+            )
+        except Exception as e:
+            logger.error(f"Error getting recommendations: {e}")
+            return []
 
 class CacheManager:
     """Advanced caching strategies for agent optimization"""
