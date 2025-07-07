@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bruno AI - Professional Meal Planning & Budget Optimization</title>
+    <meta name="description" content="Meet Bruno, your professional culinary strategist who uses data-driven insights to create optimal meal plans within your exact budget. Early access launching soon.">
+    <meta name="keywords" content="meal planning, budget optimization, grocery shopping, AI chef, family meals, Instacart integration">
+    <meta name="author" content="Bruno AI">
+    <meta property="og:title" content="Bruno AI - Professional Meal Planning & Budget Optimization">
+    <meta property="og:description" content="Meet Bruno, your professional culinary strategist who uses data-driven insights to create optimal meal plans within your exact budget.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐻</text></svg>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bruno AI - Professional Meal Planning">
+    <meta name="twitter:description" content="Data-driven meal planning and budget optimization for busy families.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐻</text></svg>">
+    <link rel="canonical" href="https://brunoai.com">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="bear-icon">🐻</span>
+                <span class="logo-text">Bruno AI</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#download" class="nav-link cta-nav">Join Early Access</a>
+            </div>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="hero-badge">
+                        <span class="badge-text">🎯 Early Access • Launching Soon</span>
+                    </div>
+                    <h1 class="hero-title">
+                        Meet <span class="highlight">Bruno</span>, your professional culinary strategist
+                    </h1>
+                    <p class="hero-subtitle">
+                        I specialize in data-driven meal planning and budget optimization. Using real grocery prices and strategic analysis, I create comprehensive solutions that work in real life for busy families.
+                    </p>
+                    <div class="hero-example">
+                        <div class="chat-bubble">
+                            <span class="user-message">"Bruno, I have $75 for groceries this week for my family of 4"</span>
+                            <span class="bruno-response">"I've analyzed current market prices and created an optimal meal plan for $72.50. This approach delivers excellent nutritional value while staying within budget. Ready to proceed?"</span>
+                        </div>
+                    </div>
+                    <div class="hero-cta">
+                        <button class="btn-primary" onclick="scrollToSection('download')">
+                            Join Bruno's Early Access
+                        </button>
+                        <p class="early-access-note">
+                            🐻 Be the first to experience the future of budget-friendly meal planning
+                        </p>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="bruno-character">
+                        <div class="bruno-face">
+                            <div class="brooklyn-cap">🧢</div>
+                            <div class="bear-body">🐻</div>
+                            <div class="chef-apron">👨‍🍳</div>
+                            <div class="grocery-bag">🛍️</div>
+                        </div>
+                        <div class="speech-bubble">
+                            <p>"I'm here to help you create an effective meal planning strategy."</p>
+                        </div>
+                        <div class="floating-icons">
+                            <span class="icon">🥗</span>
+                            <span class="icon">💰</span>
+                            <span class="icon">🛒</span>
+                            <span class="icon">❤️</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem/Solution Section -->
+    <section class="problem-solution">
+        <div class="container">
+            <div class="section-header">
+                <h2>Most meal planning apps ignore your budget constraints</h2>
+                <p>Traditional apps suggest ingredients without considering cost optimization. I take a strategic approach - analyzing market data to ensure every recommendation fits your financial parameters.</p>
+            </div>
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">😤</div>
+                    <h3>Meal plans that cost 2x your budget</h3>
+                    <p>Apps suggest salmon and quinoa when you need chicken and rice</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">⏰</div>
+                    <h3>Hours spent comparing grocery prices</h3>
+                    <p>Driving to multiple stores hunting for deals wastes your precious time</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">📱</div>
+                    <h3>Shopping lists that lead nowhere</h3>
+                    <p>Great meal plan, but how do you actually buy the ingredients?</p>
+                </div>
+            </div>
+            <div class="solution">
+                <div class="solution-content">
+                    <h3>My strategic approach delivers measurable results</h3>
+                    <div class="solution-features">
+                        <div class="feature">
+                            <span class="checkmark">✅</span>
+                            <span>Data-driven budget optimization - never exceeding your financial parameters</span>
+                        </div>
+                        <div class="feature">
+                            <span class="checkmark">✅</span>
+                            <span>Real-time market analysis from your local stores</span>
+                        </div>
+                        <div class="feature">
+                            <span class="checkmark">✅</span>
+                            <span>Seamless Instacart integration for efficient shopping</span>
+                        </div>
+                        <div class="feature">
+                            <span class="checkmark">✅</span>
+                            <span>Machine learning algorithms that adapt to your preferences</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bruno's Character Section -->
+    <section class="bruno-character-showcase">
+        <div class="container">
+            <div class="character-content">
+                <div class="character-text">
+                    <h2>Meet Bruno - Your Professional Culinary Strategist</h2>
+                    <p class="character-intro">I've spent years working with families to optimize their meal planning and budgets. My approach combines culinary expertise with strategic thinking to create practical solutions that work in real life.</p>
+                    
+                    <div class="character-traits">
+                        <div class="trait-item">
+                            <span class="trait-icon">📊</span>
+                            <div class="trait-text">
+                                <h4>Analytical & Strategic</h4>
+                                <p>Uses data and evidence to make optimal recommendations for your family</p>
+                            </div>
+                        </div>
+                        <div class="trait-item">
+                            <span class="trait-icon">🎯</span>
+                            <div class="trait-text">
+                                <h4>Results-Oriented</h4>
+                                <p>Focuses on measurable improvements and long-term efficiency</p>
+                            </div>
+                        </div>
+                        <div class="trait-item">
+                            <span class="trait-icon">👨‍🍳</span>
+                            <div class="trait-text">
+                                <h4>Culinary Expertise</h4>
+                                <p>Combines nutritional strategy with market analysis for optimal outcomes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="character-visual">
+                    <div class="bruno-showcase">
+                        <div class="bruno-main">
+                            <div class="bruno-hat">🧢</div>
+                            <div class="bruno-face">🐻</div>
+                            <div class="bruno-apron">👨‍🍳</div>
+                            <div class="bruno-tools">
+                                <span class="tool">🔍</span>
+                                <span class="tool">💱</span>
+                                <span class="tool">🛒</span>
+                            </div>
+                        </div>
+                        <div class="personality-badges">
+                            <div class="badge">Professional</div>
+                            <div class="badge">Strategic</div>
+                            <div class="badge">Reliable</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How Bruno delivers strategic results</h2>
+                <p>Three analytical steps to optimized meal planning</p>
+            </div>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Define your parameters</h3>
+                        <p>Provide your budget, family size, and dietary preferences for analysis</p>
+                        <div class="step-visual">📊</div>
+                    </div>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Data-driven optimization</h3>
+                        <p>I analyze market prices and create strategic meal plans within budget</p>
+                        <div class="step-visual">🎯</div>
+                    </div>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Seamless execution</h3>
+                        <p>Integrated shopping solution with direct Instacart delivery</p>
+                        <div class="step-visual">✅</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Strategic advantages of Bruno AI</h2>
+                <p>Comprehensive meal planning solutions designed for modern families</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Budget Optimization</h3>
+                    <p>Advanced algorithms ensure meal plans never exceed your financial parameters using real-time pricing data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛒</div>
+                    <h3>Integrated Shopping</h3>
+                    <p>Streamlined Instacart integration enables efficient procurement and delivery.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Adaptive Intelligence</h3>
+                    <p>Machine learning algorithms continuously optimize recommendations based on your preferences.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Market Analysis</h3>
+                    <p>Comprehensive price monitoring identifies optimal purchasing opportunities and cost savings.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🥗</div>
+                    <h3>Nutritional Strategy</h3>
+                    <p>Evidence-based meal planning maintains nutritional quality within budget constraints.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Rapid Processing</h3>
+                    <p>High-performance algorithms generate comprehensive meal plans in seconds, not hours.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Early Access Benefits Section -->
+    <section class="early-access-benefits">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why join Bruno's early access?</h2>
+                <p>Be part of the future of meal planning and help shape the product</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🚀</div>
+                    <h3>First Access</h3>
+                    <p>Be among the first to experience Bruno's strategic meal planning approach</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">💡</div>
+                    <h3>Shape the Product</h3>
+                    <p>Your feedback directly influences features and improvements</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">💎</div>
+                    <h3>Exclusive Pricing</h3>
+                    <p>Lock in special early access rates before public launch</p>
+                </div>
+            </div>
+            <div class="development-status">
+                <h3>Current Development Status</h3>
+                <div class="status-items">
+                    <div class="status-item completed">
+                        <span class="status-icon">✅</span>
+                        <span>Core AI engine</span>
+                    </div>
+                    <div class="status-item completed">
+                        <span class="status-icon">✅</span>
+                        <span>Budget optimization algorithms</span>
+                    </div>
+                    <div class="status-item in-progress">
+                        <span class="status-icon">🔄</span>
+                        <span>Instacart integration</span>
+                    </div>
+                    <div class="status-item planned">
+                        <span class="status-icon">⏳</span>
+                        <span>Mobile app release</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Early Access Section -->
+    <section id="download" class="download">
+        <div class="container">
+            <div class="download-content">
+                <div class="download-text">
+                    <h2>Ready to join the Bruno AI early access?</h2>
+                    <p>Be among the first to experience the future of meal planning and grocery savings.</p>
+                    <div class="download-benefits">
+                        <div class="benefit">🚀 First access to new features</div>
+                        <div class="benefit">🐻 Direct feedback to our team</div>
+                        <div class="benefit">💝 Special early access pricing</div>
+                    </div>
+                </div>
+                <div class="download-form">
+                    <div class="form-container">
+                        <h3>Get Early Access</h3>
+                        <p>Be the first to experience Bruno AI and start saving on groceries today!</p>
+                        <form class="early-access-form" onsubmit="handleSignup(event)">
+                            <input type="email" placeholder="Your email address" required>
+                            <select required>
+                                <option value="">How many people in your household?</option>
+                                <option value="1">Just me</option>
+                                <option value="2">Me and my partner</option>
+                                <option value="3-4">Small family (3-4 people)</option>
+                                <option value="5+">Large family (5+ people)</option>
+                            </select>
+                            <button type="submit" class="btn-primary">Get Started</button>
+                        </form>
+                        <p class="form-note">🐻 Professional meal planning solutions await - I'm here to optimize your strategy.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="bear-icon">🐻</span>
+                        <span class="logo-text">Bruno AI</span>
+                    </div>
+                    <p>Your professional culinary strategist - optimizing meal planning and budgets for families since day one.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Product</h4>
+                        <a href="#features">Features</a>
+                        <a href="#how-it-works">How it works</a>
+                        <a href="#download">Early Access</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>Company</h4>
+                        <a href="#">About Bruno</a>
+                        <a href="#">Blog</a>
+                        <a href="#">Careers</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>Support</h4>
+                        <a href="#">Help Center</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy</a>
+                    </div>
+                </div>
+                <div class="footer-social">
+                    <h4>Follow Bruno</h4>
+                    <div class="social-links">
+                        <a href="#">📘 Facebook</a>
+                        <a href="#">🐦 Twitter</a>
+                        <a href="#">📸 Instagram</a>
+                        <a href="#">🎬 TikTok</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Bruno AI. Professional meal planning solutions for modern families. 🐻</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Bruno AI",
+        "description": "Professional culinary strategist that uses data-driven insights to create optimal meal plans within your exact budget",
+        "url": "https://brunoai.com",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Web",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/ComingSoon"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "Bruno AI"
+        }
+    }
+    </script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
