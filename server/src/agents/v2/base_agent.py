@@ -20,6 +20,7 @@ from ...database.repositories import (
 )
 from ...learning.preference_engine import preference_engine
 from ...auth.auth_manager import auth_manager
+from .model_router import model_router
 
 class AgentCard(BaseModel):
     """Agent capability definition"""
@@ -50,12 +51,17 @@ class BaseAgent(ABC):
         self.agent_card = agent_card
         self.agent_id = f"{agent_card.name}_{datetime.now().timestamp()}"
         
-        # Initialize Gemini AI
+        # Initialize Gemini AI with smart model routing
         genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
-        self.model = genai.GenerativeModel('gemini-2.5-flash')
+        self.model = genai.GenerativeModel('gemini-2.5-flash')  # Default model
+        self.model_router = model_router
         
         # Initialize Redis for caching
         self.redis_client = self._initialize_redis()
+        
+        # Cache configuration for context reuse
+        self.context_cache_ttl = 600  # 10 minutes
+        self.context_cache_enabled = True
         
         # Initialize metrics
         self.metrics = {
@@ -95,8 +101,22 @@ class BaseAgent(ABC):
             if not validation_result['valid']:
                 raise ValueError(validation_result['error'])
             
-            # Load user context if available
-            user_context = await self._load_user_context(user_id) if user_id else {}
+            # Load user context with caching
+            if user_id:
+                cached_context_key = f"context:{user_id}"
+                cached_context = await self.get_cached_result(cached_context_key)
+                
+                if cached_context:
+                    logger.info("Using cached user context")
+                    user_context = cached_context
+                else:
+                    user_context = await self._load_user_context(user_id)
+                    # Cache the context
+                    if self.context_cache_enabled:
+                        await self.cache_result(cached_context_key, user_context, self.context_cache_ttl)
+            else:
+                user_context = {}
+            
             task['user_context'] = user_context
             
             # Execute specialized task logic
@@ -199,7 +219,21 @@ class BaseAgent(ABC):
                 json.dumps(data, default=str)
             )
         except Exception as e:
-            logger.warning(f"Cache storage failed: {e}")
+            logger.warning(f"Cache result failed: {e}")
+    
+    async def call_smart_model(self, prompt: str, task_type: str, context: Optional[Dict[str, Any]] = None) -> str:
+        """Call the appropriate model based on task complexity"""
+        # Get the right model for this task
+        model = self.model_router.get_model_for_task(task_type, context)
+        
+        try:
+            response = await model.generate_content_async(prompt)
+            return response.text
+        except Exception as e:
+            logger.error(f"Smart model call failed: {e}")
+            # Fallback to default model
+            response = await self.model.generate_content_async(prompt)
+            return response.text
     
     async def call_gemini(self, prompt: str, context: Dict[str, Any] = None) -> str:
         """Call Gemini AI with prompt and context"""
