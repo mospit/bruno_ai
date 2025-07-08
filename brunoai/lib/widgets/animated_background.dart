@@ -90,19 +90,59 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).scaffoldBackgroundColor,
-            Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
-          ],
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Stack(
+      children: [
+        // Base gradient background
+        Container(
+          decoration: BoxDecoration(
+            gradient: _buildAnimatedGradient(_getThemeColors(isDark)),
+          ),
         ),
-      ),
-      child: widget.child,
+        
+        // Liquid glass overlay
+        if (widget.enableParticles && _gradientAnimation.value > 0.1)
+          _buildLiquidGlassOverlay(isDark),
+        
+        // Particle system
+        if (widget.enableParticles && _particles.isNotEmpty)
+          Positioned.fill(
+            child: CustomPaint(
+              painter: ParticlePainter(
+                particles: _particles,
+                animationValue: _particleAnimation.value,
+                isDark: isDark,
+              ),
+            ),
+          ),
+        
+        // Content
+        widget.child,
+      ],
     );
+  }
+  
+  List<Color> _getThemeColors(bool isDark) {
+    if (widget.colors != null) return widget.colors!;
+    
+    if (isDark) {
+      // Warm dark theme colors matching your brown/orange palette
+      return [
+        const Color(0xFF2C1810), // Deep warm brown
+        const Color(0xFF3D2419), // Medium brown
+        const Color(0xFF4A2C1A), // Lighter brown
+        const Color(0xFF2C1810), // Back to deep brown
+      ];
+    } else {
+      // Warm light theme colors matching your interface
+      return [
+        const Color(0xFFFAF8F6), // Warm off-white
+        const Color(0xFFF5F1ED), // Soft cream
+        const Color(0xFFEDE7E0), // Light warm beige
+        const Color(0xFFFAF8F6), // Back to warm off-white
+      ];
+    }
   }
 
   Gradient _buildAnimatedGradient(List<Color> colors) {

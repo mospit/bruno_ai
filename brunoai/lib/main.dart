@@ -6,9 +6,14 @@ import 'providers/bruno_provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/pantry_screen.dart';
 import 'theme/modern_theme.dart';
+import 'utils/animation_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize animation manager for performance and accessibility
+  // Temporarily disabled to fix dependency issues
+  // AnimationManager.instance.initialize();
   
   // TODO: Initialize services when Firebase is configured
   // await ApiService().initialize();

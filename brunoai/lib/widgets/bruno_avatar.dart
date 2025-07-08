@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import '../theme/app_colors.dart';
+import '../utils/animation_manager.dart';
 
 enum BrunoMood {
   friendly,    // Default smile
@@ -65,42 +66,48 @@ class _BrunoAvatarState extends State<BrunoAvatar>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _blinkAnimation = Tween<double>(begin: 1.0, end: 0.1).animate(
-      CurvedAnimation(parent: _blinkController, curve: Curves.easeInOut),
-    );
-
+    
     // Bounce animation
     _bounceController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-    _bounceAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _bounceController, curve: Curves.elasticOut),
-    );
-
+    
     // Rotate animation for thinking
     _rotateController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-    _rotateAnimation = Tween<double>(begin: 0.0, end: 2 * math.pi).animate(
-      CurvedAnimation(parent: _rotateController, curve: Curves.linear),
-    );
-
+    
     // Breathing animation
     _breatheController = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
     );
-    _breatheAnimation = Tween<double>(begin: 1.0, end: 1.08).animate(
-      CurvedAnimation(parent: _breatheController, curve: Curves.easeInOut),
-    );
-
+    
     // Gesture animation
     _gestureController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
+    
+    // Create animations
+    _blinkAnimation = Tween<double>(begin: 1.0, end: 0.1).animate(
+      CurvedAnimation(parent: _blinkController, curve: Curves.easeInOut),
+    );
+    
+    _bounceAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _bounceController, curve: Curves.elasticOut),
+    );
+    
+    _rotateAnimation = Tween<double>(begin: 0.0, end: 2 * math.pi).animate(
+      CurvedAnimation(parent: _rotateController, curve: Curves.linear),
+    );
+    
+    _breatheAnimation = Tween<double>(begin: 1.0, end: 1.08).animate(
+      CurvedAnimation(parent: _breatheController, curve: Curves.easeInOut),
+    );
+    
     _gestureAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _gestureController, curve: Curves.elasticOut),
     );

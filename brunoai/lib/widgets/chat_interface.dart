@@ -895,10 +895,16 @@ class _ChatInterfaceState extends State<ChatInterface>
         return Container(
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
           decoration: BoxDecoration(
-            color: Colors.grey[50],
+            color: AppColors.surfaceSecondary(context), // Use secondary surface color from theme
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.03),
+                color: AppColors.shadowMedium,
+                blurRadius: 16,
+                offset: const Offset(0, -4),
+                spreadRadius: 0,
+              ),
+              BoxShadow(
+                color: AppColors.shadowLight,
                 blurRadius: 8,
                 offset: const Offset(0, -2),
                 spreadRadius: 0,
@@ -920,53 +926,48 @@ class _ChatInterfaceState extends State<ChatInterface>
                     minHeight: 56,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(28),
+                    color: Theme.of(context).cardColor, // Solid background from theme
+                    borderRadius: BorderRadius.circular(32),
                     border: Border.all(
-                      color: Colors.grey[300]!,
-                      width: 1.5,
+                      color: AppColors.border(context),
+                      width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 20,
-                        offset: const Offset(0, 4),
-                        spreadRadius: 0,
-                      ),
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 40,
-                        offset: const Offset(0, 8),
+                        color: AppColors.shadowLight,
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                         spreadRadius: 0,
                       ),
                     ],
                   ),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Text input field
                       Expanded(
-                        child: TextField(
-                          controller: _messageController,
-                          decoration: InputDecoration(
-                            hintText: _getSmartPlaceholder(),
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 16,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: TextField(
+                            controller: _messageController,
+                            decoration: InputDecoration(
+                              hintText: _getSmartPlaceholder(),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              fillColor: Colors.transparent, // Make TextField transparent
+                              filled: false, // Don't fill the TextField
+                              contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                              hintStyle: TextStyle(
+                                color: AppColors.textSecondary(context).withOpacity(0.6),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
-                            hintStyle: TextStyle(
-                              color: Colors.grey[400],
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
-                            color: Colors.black87,
+                            color: AppColors.textPrimary(context), // Use theme text color
                           ),
                           maxLines: 5,
                           minLines: 1,
@@ -974,31 +975,31 @@ class _ChatInterfaceState extends State<ChatInterface>
                           textInputAction: TextInputAction.send,
                           onSubmitted: (_) => _sendMessage(),
                           onChanged: (_) => setState(() {}),
+                          ),
                         ),
                       ),
                       
-                      // Send button (ChatGPT style)
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: _messageController.text.trim().isEmpty ? null : () {
-                            HapticFeedback.lightImpact();
-                            _sendMessage();
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            width: 32,
-                            height: 32,
-                            decoration: BoxDecoration(
-                              color: _messageController.text.trim().isEmpty
-                                  ? Colors.white
-                                  : Colors.black,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                      // Send button positioned on the right edge
+                      Container(
+                        width: 48,
+                        height: 48,
+                        margin: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(24),
+                            onTap: _messageController.text.trim().isEmpty ? null : () {
+                              HapticFeedback.lightImpact();
+                              _sendMessage();
+                            },
                             child: Icon(
                               Icons.arrow_upward_rounded,
                               color: _messageController.text.trim().isEmpty
-                                  ? Colors.grey[400]
+                                  ? Colors.white.withOpacity(0.6)
                                   : Colors.white,
                               size: 20,
                             ),
