@@ -109,19 +109,34 @@ class _ChatInterfaceState extends State<ChatInterface>
   
   Widget _buildWelcomeScreen(BrunoProvider provider) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
-          const SizedBox(height: 40),
+          const SizedBox(height: 60),
           
           // Bruno's welcome message
           LiquidGlassContainer(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(32),
+            borderRadius: BorderRadius.circular(32),
+            shadows: [
+              BoxShadow(
+                color: AppColors.shadowMedium,
+                blurRadius: 24,
+                offset: const Offset(0, 12),
+                spreadRadius: 0,
+              ),
+              BoxShadow(
+                color: AppColors.shadowLight,
+                blurRadius: 48,
+                offset: const Offset(0, 24),
+                spreadRadius: 0,
+              ),
+            ],
             child: Column(
               children: [
                 BrunoAvatar(
                   mood: BrunoMood.friendly,
-                  size: 100,
+                  size: 120,
                   animate: true,
                 ),
                 const SizedBox(height: 20),
@@ -145,16 +160,17 @@ class _ChatInterfaceState extends State<ChatInterface>
             ),
           ),
           
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           
           // Quick start options
           Text(
             'Quick Start',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
+              color: AppColors.gray900,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           
           // Quick action cards
           Row(
@@ -266,19 +282,19 @@ class _ChatInterfaceState extends State<ChatInterface>
     required VoidCallback onTap,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.white.withOpacity(0.4),
-          width: 1,
+          color: AppColors.gray200,
+          width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 2),
+            color: AppColors.shadowLight,
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+            spreadRadius: 0,
           ),
         ],
       ),
@@ -286,25 +302,25 @@ class _ChatInterfaceState extends State<ChatInterface>
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.all(20),
             child: Column(
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: 56,
+                  height: 56,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
                     icon,
-                    color: Theme.of(context).primaryColor,
-                    size: 24,
+                    color: AppColors.primary,
+                    size: 28,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -876,15 +892,15 @@ class _ChatInterfaceState extends State<ChatInterface>
     return Consumer<BrunoProvider>(
       builder: (context, provider, child) {
         return Container(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.95),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            color: AppColors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 24,
-                offset: const Offset(0, -6),
+                color: AppColors.shadowMedium,
+                blurRadius: 32,
+                offset: const Offset(0, -8),
                 spreadRadius: 0,
               ),
             ],
@@ -901,17 +917,17 @@ class _ChatInterfaceState extends State<ChatInterface>
                 // Main input area
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
+                    color: AppColors.gray50,
                     borderRadius: BorderRadius.circular(28),
                     border: Border.all(
-                      color: Colors.grey[200]!,
-                      width: 1.5,
+                      color: AppColors.gray200,
+                      width: 2,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
+                        color: AppColors.shadowLight,
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
@@ -924,10 +940,10 @@ class _ChatInterfaceState extends State<ChatInterface>
                           decoration: InputDecoration(
                             hintText: _getSmartPlaceholder(),
                             border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 16,
-                            ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 18,
+                              ),
                             hintStyle: TextStyle(
                               color: Colors.grey[500],
                               fontSize: 16,
@@ -970,8 +986,8 @@ class _ChatInterfaceState extends State<ChatInterface>
                               _sendMessage();
                             },
                             child: Container(
-                              margin: const EdgeInsets.only(right: 8),
-                              padding: const EdgeInsets.all(10),
+                              margin: const EdgeInsets.only(right: 12),
+                              padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
                                 color: _messageController.text.trim().isEmpty
                                     ? Colors.grey[300]

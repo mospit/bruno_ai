@@ -163,9 +163,24 @@ class _SmartDashboardState extends State<SmartDashboard>
           builder: (context, child) {
             return Transform.scale(
               scale: budgetProgress > 0.9 ? _pulseAnimation.value : 1.0,
-              child: LiquidGlassContainer(
-                margin: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                padding: const EdgeInsets.all(20),
+                child: LiquidGlassContainer(
+                margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                padding: const EdgeInsets.all(24),
+                borderRadius: BorderRadius.circular(28),
+                shadows: [
+                  BoxShadow(
+                    color: AppColors.shadowMedium,
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                    spreadRadius: 0,
+                  ),
+                  BoxShadow(
+                    color: AppColors.shadowLight,
+                    blurRadius: 40,
+                    offset: const Offset(0, 16),
+                    spreadRadius: 0,
+                  ),
+                ],
                 child: Column(
                   children: [
                     // Enhanced Header with interactive Bruno avatar

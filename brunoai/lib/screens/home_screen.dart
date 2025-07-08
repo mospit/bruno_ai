@@ -66,27 +66,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: AppBar(
                     backgroundColor: Colors.transparent,
                     elevation: 0,
-                    titleSpacing: 20,
+                    titleSpacing: 16,
                     title: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
+                            color: AppColors.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(14),
                           ),
                           child: Icon(
                             Icons.shopping_basket_rounded,
-                            color: Theme.of(context).primaryColor,
-                            size: 20,
+                            color: AppColors.primary,
+                            size: 24,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 14),
                         Text(
                           'Bruno AI',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w600,
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
                             letterSpacing: -0.5,
+                            color: AppColors.gray900,
                           ),
                         ),
                       ],
@@ -94,28 +95,28 @@ class _HomeScreenState extends State<HomeScreen> {
                     actions: [
                       // Enhanced Shopping Cart Button
                       Container(
-                        margin: const EdgeInsets.only(right: 4),
+                        margin: const EdgeInsets.only(right: 8),
                         child: Stack(
                           clipBehavior: Clip.none,
                           children: [
                             Container(
                               decoration: BoxDecoration(
                                 color: provider.shoppingList.isNotEmpty
-                                    ? Theme.of(context).primaryColor.withOpacity(0.1)
-                                    : AppColors.gray200.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(12),
+                                    ? AppColors.primary.withOpacity(0.1)
+                                    : AppColors.gray100,
+                                borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
                                   color: provider.shoppingList.isNotEmpty
-                                      ? Theme.of(context).primaryColor.withOpacity(0.3)
-                                      : AppColors.gray300.withOpacity(0.8),
-                                  width: 1.5,
+                                      ? AppColors.primary.withOpacity(0.3)
+                                      : AppColors.gray200,
+                                  width: 2,
                                 ),
                                 boxShadow: [
                                   if (provider.shoppingList.isNotEmpty)
                                     BoxShadow(
-                                      color: Theme.of(context).primaryColor.withOpacity(0.2),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
+                                      color: AppColors.primary.withOpacity(0.2),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
                                     ),
                                 ],
                               ),
