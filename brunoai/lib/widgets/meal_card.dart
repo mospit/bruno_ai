@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../theme/app_colors.dart';
 import '../widgets/liquid_glass_container.dart';
-import '../widgets/bruno_avatar.dart';
 import '../models/shopping_item.dart';
 
 class Meal {

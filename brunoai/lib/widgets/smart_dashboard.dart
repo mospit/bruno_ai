@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/bruno_provider.dart';
-import '../theme/app_colors.dart';
 import '../widgets/bruno_avatar.dart';
 import '../widgets/liquid_glass_container.dart';
 
