@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/bruno_provider.dart';
 import '../models/chat_message.dart';
+import '../theme/app_colors.dart';
 import 'liquid_glass_container.dart';
 import 'bruno_avatar.dart';
 import 'meal_card.dart';
