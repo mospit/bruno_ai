@@ -17,6 +17,17 @@ The Bruno AI ecosystem consists of four specialized agents:
 3. **Recipe Chef Agent** - Meal planning and recipe optimization
 4. **Instacart API Agent** - Product search and order management
 
+### Cost Optimization System
+
+Bruno AI includes an advanced cost optimization system that reduces API costs by up to 25% through:
+
+- **Smart Model Routing** - Automatically selects the most cost-effective model for each task
+- **Batch Processing** - Groups non-urgent tasks to reduce API overhead
+- **Context Caching** - Reuses user context to minimize redundant API calls
+- **Real-time Analytics** - Monitors usage patterns and provides optimization recommendations
+
+📖 **See [COST_OPTIMIZATION.md](COST_OPTIMIZATION.md) for detailed documentation**
+
 ### Technology Stack
 
 - **Framework**: Google Agent Development Kit (ADK) with A2A Protocol
@@ -137,6 +148,19 @@ Content-Type: application/json
   "items": ["milk", "bread", "eggs"],
   "zip_code": "90210"
 }
+```
+
+#### Cost Optimization Monitoring
+```http
+GET /api/v1/cost/metrics
+```
+
+```http
+GET /api/v1/cost/analytics
+```
+
+```http
+GET /api/v1/cost/recommendations
 ```
 
 ### Response Format
