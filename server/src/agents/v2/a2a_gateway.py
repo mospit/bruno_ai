@@ -83,7 +83,7 @@ class BrunoA2AGatewayV2:
     def setup_routes(self):
         """Setup FastAPI routes"""
         
-@self.app.get("/.well-known/agent.json")
+        @self.app.get("/.well-known/agent.json")
         async def get_agent_card():
             """Provide the Agent Card for discovery"""
             return {

@@ -1,0 +1,39 @@
+{
+  "cost_analysis": {
+    "total_cost": "$0.0502",
+    "baseline_cost": "$0.0692",
+    "total_savings": "$0.0190",
+    "savings_percentage": "27.5%"
+  },
+  "token_usage": {
+    "total_input_tokens": "16,538",
+    "total_output_tokens": "25,685",
+    "total_tokens": "42,223"
+  },
+  "model_distribution": {
+    "gemini-2.5-flash-lite-preview-06-17": {
+      "tasks": 19,
+      "percentage": "39.6%",
+      "cost": "$0.0019"
+    },
+    "gemini-2.5-flash": {
+      "tasks": 29,
+      "percentage": "60.4%",
+      "cost": "$0.0483"
+    }
+  },
+  "optimization_impact": {
+    "flash_lite_usage": "19 tasks (39.6%)",
+    "flash_lite_savings": "$0.0091",
+    "cached_requests": "8 tasks (16.7%)",
+    "batched_requests": "5 tasks (10.4%)",
+    "batch_savings": "$0.0100"
+  },
+  "cost_per_user_per_month": {
+    "optimized": "$1.50",
+    "baseline": "$2.08",
+    "monthly_savings": "$0.57"
+  },
+  "test_duration": 1.6846075057983398,
+  "tasks_processed": 48
+}
