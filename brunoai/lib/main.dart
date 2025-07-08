@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'providers/bruno_provider.dart';
 import 'screens/home_screen.dart';
-import 'theme/liquid_glass_theme.dart';
+import 'theme/modern_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +29,8 @@ class BrunoAIApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Bruno AI',
         debugShowCheckedModeBanner: false,
-        theme: LiquidGlassTheme.lightTheme,
-        darkTheme: LiquidGlassTheme.darkTheme,
+        theme: ModernTheme.lightTheme,
+        darkTheme: ModernTheme.darkTheme,
         themeMode: ThemeMode.system,
         home: const HomeScreen(),
         builder: (context, child) {

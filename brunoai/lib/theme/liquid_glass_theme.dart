@@ -1,43 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'app_colors.dart';
 
+/// Modern Liquid Glass Theme using Unified Color System
+/// Matches the website's beautiful indigo/purple design
 class LiquidGlassTheme {
-  // Enhanced Bruno AI Brand Colors
-  static const Color brunoBrown = Color(0xFF8B4513);
-  static const Color brunoBrownDark = Color(0xFF6B3410);
-  static const Color brunoBrownLight = Color(0xFFB8885A);
-  static const Color instacartGreen = Color(0xFF43B02A);
-  static const Color instacartGreenDark = Color(0xFF2E7D1A);
-  static const Color warmCream = Color(0xFFFAF7F2);
-  static const Color coolCream = Color(0xFFF8F9FA);
-  static const Color softGray = Color(0xFFF2F2F7);
-  static const Color lightGray = Color(0xFFF5F5F7);
-  static const Color darkBrown = Color(0xFF5D2E0A);
-  static const Color accentOrange = Color(0xFFFF7F3C);
-  static const Color accentBlue = Color(0xFF4A90E2);
-  
-  // Enhanced Liquid Glass Colors - Clean Modern Style
-  static const Color glassLight = Color(0x08FFFFFF);
-  static const Color glassMedium = Color(0x12FFFFFF);
-  static const Color glassDark = Color(0x08000000);
-  static const Color glassAccent = Color(0x15FFFFFF);
-  static const Color glassBorder = Color(0x12FFFFFF);
-  static const Color glassBorderStrong = Color(0x20FFFFFF);
-  
-  // Shadow Colors
-  static const Color shadowLight = Color(0x0A000000);
-  static const Color shadowMedium = Color(0x15000000);
-  static const Color shadowDark = Color(0x25000000);
+  // Private constructor
+  LiquidGlassTheme._();
   
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      primaryColor: brunoBrown,
-      scaffoldBackgroundColor: warmCream,
+      primaryColor: AppColors.primary,
+      scaffoldBackgroundColor: AppColors.background,
+      colorScheme: AppColors.lightColorScheme,
       
-      // Typography - SF Pro Display
+      // Modern Typography - Inter Font
       textTheme: GoogleFonts.interTextTheme().copyWith(
         displayLarge: GoogleFonts.inter(
           fontSize: 32,
