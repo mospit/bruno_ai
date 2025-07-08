@@ -893,15 +893,14 @@ class _ChatInterfaceState extends State<ChatInterface>
     return Consumer<BrunoProvider>(
       builder: (context, provider, child) {
         return Container(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
           decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+            color: Colors.grey[50],
             boxShadow: [
               BoxShadow(
-                color: AppColors.shadowMedium,
-                blurRadius: 32,
-                offset: const Offset(0, -8),
+                color: Colors.black.withOpacity(0.03),
+                blurRadius: 8,
+                offset: const Offset(0, -2),
                 spreadRadius: 0,
               ),
             ],
@@ -917,22 +916,33 @@ class _ChatInterfaceState extends State<ChatInterface>
                 
                 // Main input area
                 Container(
+                  constraints: const BoxConstraints(
+                    minHeight: 56,
+                  ),
                   decoration: BoxDecoration(
-                    color: AppColors.gray50,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(28),
                     border: Border.all(
-                      color: AppColors.gray200,
-                      width: 2,
+                      color: Colors.grey[300]!,
+                      width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.shadowLight,
-                        blurRadius: 12,
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 20,
                         offset: const Offset(0, 4),
+                        spreadRadius: 0,
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 40,
+                        offset: const Offset(0, 8),
+                        spreadRadius: 0,
                       ),
                     ],
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       // Text input field
                       Expanded(
@@ -941,22 +951,24 @@ class _ChatInterfaceState extends State<ChatInterface>
                           decoration: InputDecoration(
                             hintText: _getSmartPlaceholder(),
                             border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 18,
-                              ),
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 16,
+                            ),
                             hintStyle: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 16,
+                              color: Colors.grey[400],
+                              fontSize: 15,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 15,
                             fontWeight: FontWeight.w400,
                             color: Colors.black87,
                           ),
-                          maxLines: 3,
+                          maxLines: 5,
                           minLines: 1,
                           textCapitalization: TextCapitalization.sentences,
                           textInputAction: TextInputAction.send,
@@ -965,55 +977,33 @@ class _ChatInterfaceState extends State<ChatInterface>
                         ),
                       ),
                       
-                      // Input action buttons
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Voice input button
-                          IconButton(
-                            onPressed: _startVoiceInput,
-                            icon: Icon(
-                              Icons.mic_rounded,
-                              color: Theme.of(context).primaryColor.withOpacity(0.7),
-                              size: 24,
+                      // Send button (ChatGPT style)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: _messageController.text.trim().isEmpty ? null : () {
+                            HapticFeedback.lightImpact();
+                            _sendMessage();
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: _messageController.text.trim().isEmpty
+                                  ? Colors.white
+                                  : Colors.black,
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            tooltip: 'Voice input',
-                          ),
-                          
-                          // Send button
-                          GestureDetector(
-                            onTap: _messageController.text.trim().isEmpty ? null : () {
-                              HapticFeedback.lightImpact();
-                              _sendMessage();
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 12),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: _messageController.text.trim().isEmpty
-                                    ? Colors.grey[300]
-                                    : Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  if (_messageController.text.trim().isNotEmpty)
-                                    BoxShadow(
-                                      color: Theme.of(context).primaryColor.withOpacity(0.3),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                ],
-                              ),
-                              child: BrunoAvatar(
-                                mood: _messageController.text.trim().isEmpty
-                                    ? BrunoMood.sleepy
-                                    : BrunoMood.excited,
-                                size: 24,
-                                animate: _messageController.text.trim().isNotEmpty,
-                                enableHaptics: true,
-                              ),
+                            child: Icon(
+                              Icons.arrow_upward_rounded,
+                              color: _messageController.text.trim().isEmpty
+                                  ? Colors.grey[400]
+                                  : Colors.white,
+                              size: 20,
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),

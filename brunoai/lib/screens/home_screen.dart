@@ -233,9 +233,12 @@ class _HomeScreenState extends State<HomeScreen> {
           extendBodyBehindAppBar: true,
           body: AnimatedBackground(
             child: SafeArea(
-              top: false,
+              top: true,
               child: Column(
                 children: [
+                  // Add spacing to account for transparent app bar
+                  const SizedBox(height: 8),
+                  
                   // Smart Dashboard
                   SmartDashboard(
                     isCollapsed: _isDashboardCollapsed,
