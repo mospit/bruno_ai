@@ -313,7 +313,7 @@ class ModernTheme {
       ),
       
       // Dialog Theme
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.white,
         elevation: 24,
         shape: RoundedRectangleBorder(
