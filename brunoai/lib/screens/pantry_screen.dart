@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/pantry_item.dart';
 import '../providers/bruno_provider.dart';
+import '../theme/app_colors.dart';
 
 class PantryScreen extends StatelessWidget {
   @override

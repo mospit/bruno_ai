@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
+import '../theme/app_colors.dart';
 
 enum BrunoMood {
   friendly,    // Default smile
@@ -185,19 +186,19 @@ class _BrunoAvatarState extends State<BrunoAvatar>
   Color _getBrunoColor() {
     switch (widget.mood) {
       case BrunoMood.excited:
-        return const Color(0xFF8B4513).withOpacity(0.9);
+        return AppColors.primary.withOpacity(0.9);
       case BrunoMood.celebrating:
-        return const Color(0xFF43B02A);
+        return AppColors.instacartGreen;
       case BrunoMood.concerned:
-        return const Color(0xFFFF7F3C);
+        return AppColors.foodAccent;
       case BrunoMood.thinking:
-        return const Color(0xFF4A90E2);
+        return AppColors.interactiveBlue;
       case BrunoMood.helpful:
-        return const Color(0xFF8B4513);
+        return AppColors.primary;
       case BrunoMood.sleepy:
-        return const Color(0xFF8B4513).withOpacity(0.6);
+        return AppColors.primary.withOpacity(0.6);
       default:
-        return const Color(0xFF8B4513);
+        return AppColors.primary;
     }
   }
 

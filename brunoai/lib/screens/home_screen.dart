@@ -7,6 +7,7 @@ import '../widgets/animated_background.dart';
 import '../widgets/chat_interface.dart';
 import '../widgets/shopping_cart.dart';
 import '../widgets/smart_dashboard.dart';
+import '../theme/app_colors.dart';
 import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -101,12 +102,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               decoration: BoxDecoration(
                                 color: provider.shoppingList.isNotEmpty
                                     ? Theme.of(context).primaryColor.withOpacity(0.1)
-                                    : Colors.grey.withOpacity(0.1),
+                                    : AppColors.gray200.withOpacity(0.5),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color: provider.shoppingList.isNotEmpty
                                       ? Theme.of(context).primaryColor.withOpacity(0.3)
-                                      : Colors.grey.withOpacity(0.3),
+                                      : AppColors.gray300.withOpacity(0.8),
                                   width: 1.5,
                                 ),
                                 boxShadow: [
@@ -130,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Icons.shopping_cart_rounded,
                                     color: provider.shoppingList.isNotEmpty 
                                         ? Theme.of(context).primaryColor
-                                        : Colors.grey[600],
+                                        : AppColors.gray600,
                                     size: 24,
                                   ),
                                   tooltip: 'Shopping Cart',
@@ -147,18 +148,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                   padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
-                                      colors: [Colors.red[500]!, Colors.red[700]!],
+                                      colors: [AppColors.error, AppColors.errorDark],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     ),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: Colors.white,
+                                      color: AppColors.white,
                                       width: 2,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.red.withOpacity(0.4),
+                                        color: AppColors.error.withOpacity(0.4),
                                         blurRadius: 8,
                                         offset: const Offset(0, 2),
                                       ),
@@ -171,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Text(
                                     '${provider.shoppingList.length}',
                                     style: const TextStyle(
-                                      color: Colors.white,
+                                      color: AppColors.white,
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
                                     ),

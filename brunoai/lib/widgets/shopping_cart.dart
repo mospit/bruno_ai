@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/bruno_provider.dart';
 import '../models/shopping_item.dart';
+import '../theme/app_colors.dart';
 import 'liquid_glass_container.dart';
 import 'bruno_avatar.dart';
 import 'dart:convert';
@@ -115,19 +116,19 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
             children: [
               Icon(
                 Icons.error_outline,
-                color: Colors.white,
+                color: AppColors.white,
                 size: 20,
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   message,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: AppColors.white),
                 ),
               ),
             ],
           ),
-          backgroundColor: Colors.red.shade600,
+          backgroundColor: AppColors.error,
           duration: const Duration(seconds: 4),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -135,7 +136,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
           ),
           action: SnackBarAction(
             label: 'Retry',
-            textColor: Colors.white,
+            textColor: AppColors.white,
             onPressed: () {
               if (_searchQuery.isNotEmpty) {
                 _fetchProductsFromInstacart(_searchQuery);

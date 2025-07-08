@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import '../theme/app_colors.dart';
 
 class LiquidGlassContainer extends StatelessWidget {
   final Widget child;
@@ -38,27 +39,27 @@ class LiquidGlassContainer extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final defaultBackgroundColor = backgroundColor ?? 
         (isDark 
-            ? Colors.white.withOpacity(0.05)
-            : Colors.white.withOpacity(0.85));
+            ? AppColors.white.withOpacity(0.05)
+            : AppColors.white.withOpacity(0.85));
     
     final defaultBorderColor = borderColor ?? 
         (isDark 
-            ? Colors.white.withOpacity(0.08)
-            : Colors.white.withOpacity(0.4));
+            ? AppColors.white.withOpacity(0.08)
+            : AppColors.white.withOpacity(0.4));
     
     final defaultShadows = shadows ?? [
       BoxShadow(
         color: isDark 
-            ? Colors.black.withOpacity(0.4)
-            : Colors.black.withOpacity(0.06),
+            ? AppColors.shadowDark
+            : AppColors.shadowLight,
         blurRadius: 20,
         offset: const Offset(0, 4),
         spreadRadius: 0,
       ),
       BoxShadow(
         color: isDark 
-            ? Colors.black.withOpacity(0.2)
-            : Colors.black.withOpacity(0.02),
+            ? AppColors.shadowMedium
+            : AppColors.shadowLight.withOpacity(0.5),
         blurRadius: 40,
         offset: const Offset(0, 8),
         spreadRadius: 0,
@@ -247,30 +248,30 @@ class _LiquidGlassButtonState extends State<LiquidGlassButton>
                     ? null
                     : widget.backgroundColor ??
                         (isDark
-                            ? Colors.white.withOpacity(0.1)
-                            : Colors.white.withOpacity(0.9)),
+                            ? AppColors.white.withOpacity(0.1)
+                            : AppColors.white.withOpacity(0.9)),
                 borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
                 border: Border.all(
                   color: widget.isPrimary
-                      ? Colors.white.withOpacity(0.2)
+                      ? AppColors.white.withOpacity(0.2)
                       : widget.backgroundColor ??
                           (isDark
-                              ? Colors.white.withOpacity(0.2)
-                              : Colors.grey.withOpacity(0.2)),
+                              ? AppColors.white.withOpacity(0.2)
+                              : AppColors.gray300.withOpacity(0.5)),
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: widget.isPrimary
                         ? Theme.of(context).primaryColor.withOpacity(0.3)
-                        : Colors.black.withOpacity(0.1),
+                        : AppColors.shadowLight,
                     blurRadius: _isPressed ? 8 : 12,
                     offset: Offset(0, _isPressed ? 2 : 4),
                     spreadRadius: 0,
                   ),
                   if (!_isPressed)
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: AppColors.shadowLight.withOpacity(0.5),
                       blurRadius: 24,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
@@ -293,7 +294,7 @@ class _LiquidGlassButtonState extends State<LiquidGlassButton>
                               valueColor: AlwaysStoppedAnimation<Color>(
                                 widget.foregroundColor ??
                                     (widget.isPrimary
-                                        ? Colors.white
+                                        ? AppColors.white
                                         : Theme.of(context).primaryColor),
                               ),
                             ),
@@ -302,7 +303,7 @@ class _LiquidGlassButtonState extends State<LiquidGlassButton>
                             style: TextStyle(
                               color: widget.foregroundColor ??
                                   (widget.isPrimary
-                                      ? Colors.white
+                                      ? AppColors.white
                                       : Theme.of(context).primaryColor),
                               fontWeight: FontWeight.w600,
                             ),

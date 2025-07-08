@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/bruno_provider.dart';
 import '../widgets/liquid_glass_container.dart';
 import '../widgets/animated_background.dart';
+import '../theme/app_colors.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
