@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'providers/bruno_provider.dart';
 import 'screens/home_screen.dart';
+import 'screens/pantry_screen.dart';
 import 'theme/modern_theme.dart';
 
 void main() async {
@@ -32,7 +33,11 @@ class BrunoAIApp extends StatelessWidget {
         theme: ModernTheme.lightTheme,
         darkTheme: ModernTheme.darkTheme,
         themeMode: ThemeMode.system,
+// Add route for pantry screen
         home: const HomeScreen(),
+        routes: {
+          '/pantry': (context) => PantryScreen(),
+        },
         builder: (context, child) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle(

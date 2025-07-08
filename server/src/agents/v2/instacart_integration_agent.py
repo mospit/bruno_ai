@@ -11,6 +11,7 @@ import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
 import httpx
+import google.generativeai as genai
 from loguru import logger
 from .base_agent import BaseAgent, AgentCard, CacheManager
 
@@ -93,6 +94,9 @@ class InstacartIntegrationAgentV2(BaseAgent):
         )
         
         super().__init__(agent_card)
+        
+        # Override model for faster, cost-efficient operations
+        self.model = genai.GenerativeModel('gemini-2.5-flash-lite-preview-06-17')
         
         # Initialize Instacart API client
         self.api_base_url = "https://connect.instacart.com/v1"

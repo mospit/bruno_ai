@@ -27,6 +27,9 @@ class AgentCard(BaseModel):
     version: str
     description: str
     capabilities: Dict[str, Any]
+    service_endpoint: str  # Add service endpoint to Agent Card
+    supported_protocols: List[str] = ["JSON-RPC 2.0"]  # Adhere to JSON-RPC
+    authentication_required: bool = False
     performance_targets: Optional[Dict[str, str]] = None
     api_integrations: Optional[Dict[str, Any]] = None
 
@@ -49,7 +52,7 @@ class BaseAgent(ABC):
         
         # Initialize Gemini AI
         genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
-        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
         
         # Initialize Redis for caching
         self.redis_client = self._initialize_redis()

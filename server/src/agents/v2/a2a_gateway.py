@@ -83,6 +83,22 @@ class BrunoA2AGatewayV2:
     def setup_routes(self):
         """Setup FastAPI routes"""
         
+@self.app.get("/.well-known/agent.json")
+        async def get_agent_card():
+            """Provide the Agent Card for discovery"""
+            return {
+                "name": "Bruno A2A Gateway",
+                "version": "2.0.0",
+                "service_endpoint": os.getenv('A2A_GATEWAY_URL', 'http://localhost:3000'),
+                "capabilities": {
+                    "streaming": True,
+                    "pushNotifications": True
+                },
+                "supported_protocols": ["JSON-RPC 2.0"],
+                "authentication_required": False,
+                "description": "Enhanced gateway for Bruno AI agent coordination"
+            }
+
         @self.app.post("/register_agent")
         async def register_agent(agent_info: AgentRegistration):
             """Register a new agent with the gateway"""

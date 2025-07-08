@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/chat_message.dart';
 import '../models/shopping_item.dart';
+import '../models/pantry_item.dart';
 
 class BrunoProvider extends ChangeNotifier {
   // Chat state
@@ -9,7 +10,7 @@ class BrunoProvider extends ChangeNotifier {
   String _currentBudget = '';
   int _familySize = 1;
   
-  // Shopping state
+// Shopping state
   List<ShoppingItem> _shoppingList = [
     ShoppingItem(
       name: 'Organic Chicken Breast', 
@@ -20,7 +21,7 @@ class BrunoProvider extends ChangeNotifier {
       notes: 'Boneless, skinless'
     ),
     ShoppingItem(
-      name: 'Fresh Broccoli', 
+      name: 'Fresh Broccoli',
       price: 3.49, 
       quantity: 1,
       category: 'Vegetables',
@@ -130,6 +131,107 @@ class BrunoProvider extends ChangeNotifier {
     notifyListeners();
   }
   
+// Pantry state
+  List<PantryItem> _pantryList = [
+    PantryItem(
+      name: 'Whole Milk',
+      quantity: 1.0,
+      unit: 'gallon',
+      expirationDate: DateTime.now().add(const Duration(days: 5)),
+      location: 'Refrigerator',
+      category: 'Dairy',
+      brand: 'Organic Valley',
+      originalQuantity: 1.0,
+    ),
+    PantryItem(
+      name: 'Greek Yogurt',
+      quantity: 2.0,
+      unit: 'containers',
+      expirationDate: DateTime.now().add(const Duration(days: 2)),
+      location: 'Refrigerator',
+      category: 'Dairy',
+      brand: 'Chobani',
+      originalQuantity: 4.0,
+    ),
+    PantryItem(
+      name: 'Bananas',
+      quantity: 6.0,
+      unit: 'pieces',
+      expirationDate: DateTime.now().add(const Duration(days: 3)),
+      location: 'Counter',
+      category: 'Fruits',
+      originalQuantity: 8.0,
+    ),
+    PantryItem(
+      name: 'Chicken Breast',
+      quantity: 2.0,
+      unit: 'lbs',
+      expirationDate: DateTime.now().add(const Duration(days: 1)),
+      location: 'Freezer',
+      category: 'Meat',
+      brand: 'Perdue',
+      originalQuantity: 3.0,
+    ),
+    PantryItem(
+      name: 'Brown Rice',
+      quantity: 1.5,
+      unit: 'lbs',
+      expirationDate: DateTime.now().add(const Duration(days: 365)),
+      location: 'Pantry',
+      category: 'Grains',
+      originalQuantity: 2.0,
+    ),
+  ];
+
+  List<PantryItem> get pantryList => _pantryList;
+  
+  List<PantryItem> get expiringItems => _pantryList.where((item) => item.isExpiringSoon || item.isExpired).toList();
+  
+  List<PantryItem> get lowStockItems => _pantryList.where((item) => item.isLowStock).toList();
+  
+  int get itemsNeedingAttention => _pantryList.where((item) => item.needsAttention).length;
+
+  void updatePantryList(List<PantryItem> items) {
+    _pantryList = items;
+    notifyListeners();
+  }
+
+  void addToPantry(PantryItem item) {
+    _pantryList.add(item);
+    notifyListeners();
+  }
+
+  void removePantryItem(String id) {
+    _pantryList.removeWhere((item) => item.id == id);
+    notifyListeners();
+  }
+  
+  void updatePantryItem(String id, PantryItem updatedItem) {
+    final index = _pantryList.indexWhere((item) => item.id == id);
+    if (index != -1) {
+      _pantryList[index] = updatedItem;
+      notifyListeners();
+    }
+  }
+  
+  void updatePantryQuantity(String id, double newQuantity) {
+    final index = _pantryList.indexWhere((item) => item.id == id);
+    if (index != -1) {
+      _pantryList[index] = _pantryList[index].copyWith(quantity: newQuantity);
+      notifyListeners();
+    }
+  }
+  
+  void markItemAsUsed(String id, double usedQuantity) {
+    final index = _pantryList.indexWhere((item) => item.id == id);
+    if (index != -1) {
+      final item = _pantryList[index];
+      final newQuantity = (item.quantity - usedQuantity).clamp(0.0, double.infinity);
+      _pantryList[index] = item.copyWith(quantity: newQuantity);
+      notifyListeners();
+    }
+  }
+
   // Shopping methods
   void updateShoppingList(List<ShoppingItem> items) {
     _shoppingList = items;

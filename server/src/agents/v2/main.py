@@ -21,6 +21,9 @@ from agents.v2.a2a_gateway import create_gateway_app
 from agents.v2.bruno_master_agent import BrunoMasterAgentV2
 from agents.v2.instacart_integration_agent import InstacartIntegrationAgentV2
 from agents.v2.budget_analyst_agent import BudgetAnalystAgentV2
+from agents.v2.recipe_chef_agent import RecipeChefAgentV2
+from agents.v2.nutrition_guide_agent import NutritionGuideAgentV2
+from agents.v2.pantry_manager_agent import PantryManagerAgentV2
 
 class BrunoAISystemV2:
     """Main system orchestrator for Bruno AI V2.0"""
@@ -43,10 +46,9 @@ class BrunoAISystemV2:
                 "bruno_master_agent": BrunoMasterAgentV2(),
                 "instacart_integration_agent": InstacartIntegrationAgentV2(),
                 "budget_analyst_agent": BudgetAnalystAgentV2(),
-                # Additional agents would be added here
-                # "recipe_chef_agent": RecipeChefAgentV2(),
-                # "nutrition_guide_agent": NutritionGuideAgentV2(),
-                # "pantry_manager_agent": PantryManagerAgentV2(),
+                "recipe_chef_agent": RecipeChefAgentV2(),
+                "nutrition_guide_agent": NutritionGuideAgentV2(),
+                "pantry_manager_agent": PantryManagerAgentV2(),
             }
             
             logger.info(f"Successfully initialized {len(self.agents)} agents")
