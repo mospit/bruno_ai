@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:brunoai/providers/bruno_provider.dart';
-import 'package:brunoai/theme/liquid_glass_theme.dart';
+import 'package:brunoai/theme/modern_theme.dart';
 
 void main() {
   testWidgets('App structure is correct', (WidgetTester tester) async {
@@ -17,7 +17,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         title: 'Bruno AI Test',
-        theme: LiquidGlassTheme.lightTheme,
+        theme: ModernTheme.lightTheme,
         home: ChangeNotifierProvider(
           create: (_) => BrunoProvider(),
           child: const Scaffold(
