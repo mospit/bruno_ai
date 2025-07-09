@@ -220,7 +220,7 @@ class SettingsScreen extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             ),
             child: Icon(
               icon,
@@ -237,12 +237,12 @@ class SettingsScreen extends StatelessWidget {
           subtitle: Text(
             subtitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+              color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
             ),
           ),
           trailing: Icon(
             Icons.chevron_right_rounded,
-            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
           ),
           onTap: onTap,
         ),
@@ -284,7 +284,7 @@ class SettingsScreen extends StatelessWidget {
                         shape: BoxShape.circle,
                         color: isSelected 
                             ? Theme.of(context).primaryColor
-                            : Theme.of(context).primaryColor.withOpacity(0.1),
+                            : Theme.of(context).primaryColor.withValues(alpha: 0.1),
                         border: Border.all(
                           color: Theme.of(context).primaryColor,
                           width: isSelected ? 2 : 1,
@@ -621,7 +621,7 @@ class SettingsScreen extends StatelessWidget {
                   gradient: LinearGradient(
                     colors: [
                       Theme.of(context).primaryColor,
-                      Theme.of(context).primaryColor.withOpacity(0.7),
+                      Theme.of(context).primaryColor.withValues(alpha: 0.7),
                     ],
                   ),
                 ),
@@ -642,7 +642,7 @@ class SettingsScreen extends StatelessWidget {
               Text(
                 'Version 1.0.0',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                 ),
               ),
               const SizedBox(height: 16),
@@ -705,13 +705,13 @@ class SettingsScreen extends StatelessWidget {
                             Icon(
                               Icons.restaurant_rounded,
                               size: 64,
-                              color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.3),
+                              color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.3),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               'No favorite meals yet',
                               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                                color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -719,7 +719,7 @@ class SettingsScreen extends StatelessWidget {
                               'Ask Bruno to suggest meals and save your favorites!',
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                                color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                               ),
                             ),
                           ],
@@ -752,7 +752,7 @@ class SettingsScreen extends StatelessWidget {
                                             Text(
                                               meal.description,
                                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                                                color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                                               ),
                                             ),
                                           ],
@@ -805,7 +805,7 @@ class SettingsScreen extends StatelessWidget {
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                         decoration: BoxDecoration(
-                                          color: Theme.of(context).primaryColor.withOpacity(0.1),
+                          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: Text(
@@ -820,26 +820,26 @@ class SettingsScreen extends StatelessWidget {
                                       Icon(
                                         Icons.people_rounded,
                                         size: 16,
-                                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
                                         '${meal.servings} servings',
                                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                          color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                                         ),
                                       ),
                                       const SizedBox(width: 12),
                                       Icon(
                                         Icons.timer_rounded,
                                         size: 16,
-                                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
                                         '${meal.cookingTime} min',
                                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                          color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                                         ),
                                       ),
                                       const Spacer(),
@@ -909,13 +909,13 @@ class SettingsScreen extends StatelessWidget {
                             Icon(
                               Icons.shopping_bag_rounded,
                               size: 64,
-                              color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.3),
+                              color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.3),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               'No past orders yet',
                               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                                color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -923,7 +923,7 @@ class SettingsScreen extends StatelessWidget {
                               'Your order history will appear here after your first purchase.',
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                                color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                               ),
                             ),
                           ],
@@ -956,7 +956,7 @@ class SettingsScreen extends StatelessWidget {
                                             Text(
                                               '${order.date.day}/${order.date.month}/${order.date.year}',
                                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                                                color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                                               ),
                                             ),
                                           ],
@@ -966,8 +966,8 @@ class SettingsScreen extends StatelessWidget {
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                         decoration: BoxDecoration(
                                           color: order.status == 'Delivered' 
-                                              ? Colors.green.withOpacity(0.1)
-                                              : Theme.of(context).primaryColor.withOpacity(0.1),
+                                              ? Colors.green.withValues(alpha: 0.1)
+                                              : Theme.of(context).primaryColor.withValues(alpha: 0.1),
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: Text(
@@ -1014,7 +1014,7 @@ class SettingsScreen extends StatelessWidget {
                                   Text(
                                     '${order.items.length} items',
                                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                                      color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                                     ),
                                   ),
                                   const SizedBox(height: 8),
