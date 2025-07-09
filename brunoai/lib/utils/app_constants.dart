@@ -1,11 +1,17 @@
 class AppConstants {
-  // API Configuration
-  static const String apiBaseUrl = 'http://localhost:8000/api/v1';
-  static const String websocketUrl = 'ws://localhost:8000/ws';
+  // API Configuration - V2 Agent System
+  static const String apiBaseUrl = 'http://localhost:3000';
+  static const String websocketUrl = 'ws://localhost:3000/ws';
   
-  // Alternative configurations (uncomment and modify as needed):
-  // static const String apiBaseUrl = 'http://localhost:3000/api/v1';
-  // static const String websocketUrl = 'ws://localhost:3000/ws';
+  // V2 Agent System Endpoints
+  static const String brunoMasterAgent = 'bruno_master_agent';
+  static const String instacartAgent = 'instacart_integration_agent';
+  static const String budgetAgent = 'budget_analyst_agent';
+  static const String recipeAgent = 'recipe_chef_agent';
+  static const String nutritionAgent = 'nutrition_guide_agent';
+  static const String pantryAgent = 'pantry_manager_agent';
+  
+  // Legacy V1 Configuration (for fallback)
   
   // Environment
   static const bool isProduction = bool.fromEnvironment('dart.vm.product');

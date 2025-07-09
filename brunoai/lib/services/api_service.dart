@@ -76,7 +76,7 @@ class ApiService {
     }
   }
 
-  // Bruno AI Chat API
+  // Bruno AI Chat API - V2 Agent System
   Future<ApiResponse<ChatMessage>> sendMessageToBruno({
     required String message,
     String? userId,
@@ -92,39 +92,58 @@ class ApiService {
         return ApiResponse.error('No internet connection');
       }
 
-      final response = await _dio.post('/chat', data: {
-        'user_id': userId ?? 'anonymous_user',
+      // Send task to Bruno Master Agent through A2A Gateway
+      final taskData = {
+        'action': 'process_user_message',
+        'context': {
+          'user_id': userId ?? 'anonymous_user',
+          'message': message,
+          'user_context': context ?? {},
+          'budget_limit': budgetLimit,
+          'family_size': familySize,
+          'dietary_restrictions': dietaryRestrictions ?? [],
+          'zip_code': zipCode,
+          'preferred_stores': preferredStores ?? [],
+          'timestamp': DateTime.now().toIso8601String(),
+        },
         'message': message,
-        'context': context ?? {},
-        'budget_limit': budgetLimit,
-        'family_size': familySize,
-        'dietary_restrictions': dietaryRestrictions ?? [],
-        'zip_code': zipCode,
-        'preferred_stores': preferredStores ?? [],
-      });
+        'priority': 'normal',
+        'timeout': 30
+      };
+
+      final response = await _dio.post(
+        '/agents/${constants.AppConstants.brunoMasterAgent}/task',
+        data: taskData,
+      );
 
       if (response.statusCode == 200) {
-        // Extract the primary response from Bruno AI server
         final responseData = response.data;
+        
+        // Extract response from Bruno Master Agent
         final brunoMessage = ChatMessage(
-          text: responseData['primary_response'] ?? 'I apologize, but I had trouble processing that request.',
+          text: responseData['response'] ?? 
+                responseData['primary_response'] ?? 
+                'I apologize, but I had trouble processing that request.',
           isFromUser: false,
           timestamp: DateTime.parse(responseData['timestamp'] ?? DateTime.now().toIso8601String()),
-          hasShoppingAction: responseData['shopping_list'] != null,
+          hasShoppingAction: responseData['shopping_list'] != null || 
+                           responseData['actions']?.containsKey('shopping_list') == true,
           type: responseData['shopping_list'] != null ? MessageType.shoppingList : MessageType.text,
           metadata: {
             'request_id': responseData['request_id'],
             'agent_responses': responseData['agent_responses'],
             'budget_info': responseData['budget_info'],
             'recommendations': responseData['recommendations'],
-            'shopping_list': responseData['shopping_list'],
+            'shopping_list': responseData['shopping_list'] ?? responseData['actions']?['shopping_list'],
             'total_cost': responseData['total_cost'],
             'processing_time_ms': responseData['processing_time_ms'],
+            'actions': responseData['actions'],
+            'agent_used': responseData['agent_used'],
           },
         );
         return ApiResponse.success(brunoMessage);
       } else {
-        return ApiResponse.error('Failed to get response from Bruno');
+        return ApiResponse.error('Failed to get response from Bruno Agent');
       }
     } on DioException catch (e) {
       return ApiResponse.error(_getDioErrorMessage(e));
