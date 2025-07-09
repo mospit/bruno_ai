@@ -15,12 +15,37 @@ from loguru import logger
 from pydantic import BaseModel
 import google.generativeai as genai
 
-from ...database.repositories import (
-    user_repository, preference_repository, interaction_repository
-)
-from ...learning.preference_engine import preference_engine
-from ...auth.auth_manager import auth_manager
-from .model_router import model_router
+# Import system modules with error handling
+try:
+    from database.repositories import (
+        UserRepository, MealPlanRepository, BudgetRepository
+    )
+    user_repository = UserRepository()
+    preference_repository = MealPlanRepository()
+    interaction_repository = BudgetRepository()
+except ImportError as e:
+    logger.warning(f"Database repositories not available: {e}")
+    user_repository = None
+    preference_repository = None
+    interaction_repository = None
+
+try:
+    from learning.preference_engine import preference_engine
+except ImportError as e:
+    logger.warning(f"Preference engine not available: {e}")
+    preference_engine = None
+
+try:
+    from auth.auth_manager import auth_manager
+except ImportError as e:
+    logger.warning(f"Auth manager not available: {e}")
+    auth_manager = None
+
+try:
+    from .model_router import model_router
+except ImportError as e:
+    logger.warning(f"Model router not available: {e}")
+    model_router = None
 
 class AgentCard(BaseModel):
     """Agent capability definition"""
@@ -28,7 +53,7 @@ class AgentCard(BaseModel):
     version: str
     description: str
     capabilities: Dict[str, Any]
-    service_endpoint: str  # Add service endpoint to Agent Card
+    service_endpoint: Optional[str] = None  # Optional service endpoint
     supported_protocols: List[str] = ["JSON-RPC 2.0"]  # Adhere to JSON-RPC
     authentication_required: bool = False
     performance_targets: Optional[Dict[str, str]] = None

@@ -3,6 +3,10 @@ class AppConstants {
   static const String apiBaseUrl = 'http://localhost:8000/api/v1';
   static const String websocketUrl = 'ws://localhost:8000/ws';
   
+  // Alternative configurations (uncomment and modify as needed):
+  // static const String apiBaseUrl = 'http://localhost:3000/api/v1';
+  // static const String websocketUrl = 'ws://localhost:3000/ws';
+  
   // Environment
   static const bool isProduction = bool.fromEnvironment('dart.vm.product');
   static const String environment = isProduction ? 'production' : 'development';

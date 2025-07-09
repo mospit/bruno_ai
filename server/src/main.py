@@ -194,7 +194,7 @@ async def create_bruno_ai_server(config: ServerConfig) -> BrunoAIServer:
         setup_error_handlers(server.app)
         
         # Add Instacart API routes
-        setup_instacart_routes(server.app)
+        # setup_instacart_routes(server.app)  # TODO: Implement this function
         
         logger.info("Bruno AI server initialized successfully")
         logger.info(f"Available agents: {list(server.agents.keys())}")

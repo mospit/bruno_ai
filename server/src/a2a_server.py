@@ -23,10 +23,27 @@ from google.adk.runners import Runner
 from google.adk.events import Event
 
 # Import our custom agents
-from bruno_master_agent import BrunoMasterAgent, BudgetTracker
-from grocery_browser_agent import GroceryBrowserAgent
-from recipe_chef_agent import RecipeChefAgent
-from instacart_api_agent import InstacartAPIAgent, InstacartConfig
+from agents.v2.bruno_master_agent import BrunoMasterAgentV2 as BrunoMasterAgent
+from agents.v2.recipe_chef_agent import RecipeChefAgentV2 as RecipeChefAgent
+from agents.v2.instacart_integration_agent import InstacartIntegrationAgentV2 as InstacartAPIAgent
+from agents.v2.budget_analyst_agent import BudgetAnalystAgentV2 as BudgetAnalystAgent
+
+# Create a simple BudgetTracker class for compatibility
+class BudgetTracker:
+    def __init__(self, weekly_budget):
+        self.weekly_budget = weekly_budget
+        self.spent = 0
+        self.remaining = weekly_budget
+    
+    def track_spending(self, amount):
+        self.spent += amount
+        self.remaining = self.weekly_budget - self.spent
+        return self.remaining
+
+# Create a simple InstacartConfig class for compatibility
+class InstacartConfig:
+    def __init__(self, api_key):
+        self.api_key = api_key
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -101,26 +118,23 @@ class BrunoAIServer:
         )
         
         # Initialize agents
-        self.bruno_master = BrunoMasterAgent(
-            model="gemini-1.5-flash"
-        )
+        self.bruno_master = BrunoMasterAgent()
         
         # Note: Budget tracker configuration moved to initialize method
         # to avoid immediate field access validation issues
-        self.grocery_browser = GroceryBrowserAgent(model="gemini-2.0-flash-exp")
         self.recipe_chef = RecipeChefAgent()
-        # Create Instacart config
-        instacart_config = InstacartConfig(
-            api_key=self.config.instacart_api_key or "demo_key"
-        )
-        self.instacart_api = InstacartAPIAgent(config=instacart_config)
+        # Create Instacart integration agent
+        self.instacart_api = InstacartAPIAgent()
+        
+        # Create budget analyst agent
+        self.budget_analyst = BudgetAnalystAgent()
         
         # Store agents for coordination
         self.agents = {
             "bruno_master": self.bruno_master,
-            "grocery_browser": self.grocery_browser,
             "recipe_chef": self.recipe_chef,
-            "instacart_api": self.instacart_api
+            "instacart_api": self.instacart_api,
+            "budget_analyst": self.budget_analyst
         }
         
         # Initialize request tracking
