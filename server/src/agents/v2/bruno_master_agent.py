@@ -10,6 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any
 from loguru import logger
 from .base_agent import BaseAgent, AgentCard, AgentMessage
+from .bruno_comprehensive_personality import bruno_comprehensive, create_comprehensive_response
 
 class BrunoMasterAgentV2(BaseAgent):
     """Enhanced Bruno Master Agent with advanced coordination capabilities"""
@@ -69,6 +70,9 @@ class BrunoMasterAgentV2(BaseAgent):
         # User preference learning system
         self.user_preferences = {}
         self.optimization_history = []
+        
+        # Comprehensive personality system
+        self.comprehensive_personality = bruno_comprehensive
         
         # Available specialized agents
         self.specialized_agents = {
@@ -394,23 +398,15 @@ class BrunoMasterAgentV2(BaseAgent):
         """Handle general Bruno conversation"""
         user_message = request_analysis.get('original_message', '')
         
-        # Generate Bruno's response using Gemini with personality
-        bruno_response = await self.call_gemini(
-            f"""Hey there! The user said: "{user_message}"
-            
-            As Bruno from Brooklyn, respond with your characteristic warmth and street smarts. 
-            Help them understand what I can do for their family's meal planning and budget needs.
-            Show enthusiasm for helping them save money while eating great!
-            
-            Remember to:
-            - Use Brooklyn charm and phrases
-            - Highlight my capabilities in a conversational way
-            - Ask follow-up questions to understand their needs better
-            - Make them feel like family""",
-            {
-                "user_context": request_analysis,
-                "available_capabilities": self.agent_card.capabilities
-            }
+        # Create comprehensive response
+        bruno_response = create_comprehensive_response(
+            content_type="greeting",
+            data={
+                "user_message": user_message,
+                "user_name": request_analysis.get('user_name'),
+                "capabilities": self.agent_card.capabilities
+            },
+            message=user_message
         )
         
         return {
@@ -482,29 +478,25 @@ class BrunoMasterAgentV2(BaseAgent):
                                      shopping_result: Dict, instacart_result: Dict) -> str:
         """Generate Bruno's personalized response"""
         
-        response_context = {
+        # Prepare response data
+        response_data = {
             "user_request": request_analysis.get('original_message'),
             "budget_target": request_analysis.get('budget'),
             "family_size": request_analysis.get('family_size'),
-            "budget_analysis": budget_analysis,
-            "nutrition_analysis": nutrition_analysis,
+            "total_cost": shopping_result.get('total_cost', 0),
+            "savings": shopping_result.get('estimated_savings', 0),
             "recipes_created": len(recipe_result.get('recipes', [])),
-            "total_cost": shopping_result.get('total_cost'),
-            "savings_found": shopping_result.get('estimated_savings'),
             "deals_available": len(instacart_result.get('current_deals', []))
         }
         
-        bruno_prompt = f"""
-        As Bruno, a warm and friendly bear who helps families eat well on any budget, 
-        create a personalized response to the user based on the meal planning results.
+        # Create comprehensive response
+        comprehensive_response = create_comprehensive_response(
+            content_type="budget_analysis",
+            data=response_data,
+            message=request_analysis.get('original_message')
+        )
         
-        Be encouraging, highlight the savings and value, and explain what you've created for them.
-        Include practical tips and show enthusiasm about helping them save money.
-        
-        Context: {json.dumps(response_context, indent=2)}
-        """
-        
-        return await self.call_gemini(bruno_prompt, response_context)
+        return comprehensive_response
     
     async def _learn_from_interaction(self, request_analysis: Dict, results: Dict):
         """Learn from user interaction for future optimization"""
