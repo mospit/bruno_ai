@@ -1,7 +1,7 @@
 class AppConstants {
   // API Configuration - V2 Agent System
-  static const String apiBaseUrl = 'http://localhost:3000';
-  static const String websocketUrl = 'ws://localhost:3000/ws';
+  static const String apiBaseUrl = 'http://localhost:3001';
+  static const String websocketUrl = 'ws://localhost:3001/ws';
   
   // V2 Agent System Endpoints
   static const String brunoMasterAgent = 'bruno_master_agent';

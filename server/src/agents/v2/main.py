@@ -128,7 +128,7 @@ class BrunoAISystemV2:
         """Register agent with the A2A gateway"""
         import httpx
         
-        gateway_url = os.getenv('A2A_GATEWAY_URL', 'http://localhost:3000')
+        gateway_url = os.getenv('A2A_GATEWAY_URL', 'http://localhost:3001')
         agent_url = f"http://localhost:{port}"
         
         registration_data = {
@@ -194,9 +194,16 @@ class BrunoAISystemV2:
             # Give agents time to start
             await asyncio.sleep(2)
             
+            # Register all agents with the gateway
+            logger.info("Registering agents with gateway...")
+            for agent_name, server_info in self.agent_servers.items():
+                port = server_info["port"]
+                agent_instance = server_info["agent"]
+                await self._register_agent_with_gateway(agent_name, port, agent_instance)
+            
             self.is_running = True
             logger.info("Bruno AI System V2.0 started successfully!")
-            logger.info(f"Gateway running on http://localhost:3000")
+            logger.info(f"Gateway running on http://localhost:3001")
             logger.info(f"Agents running on ports 8080-{8080 + len(self.agents) - 1}")
             
             # Keep the system running
@@ -268,7 +275,7 @@ async def main():
     optional_env_vars = {
         "INSTACART_API_KEY": "demo_key",
         "REDIS_URL": "redis://localhost:6379",
-        "A2A_GATEWAY_URL": "http://localhost:3000"
+        "A2A_GATEWAY_URL": "http://localhost:3001"
     }
     
     for var in required_env_vars:
