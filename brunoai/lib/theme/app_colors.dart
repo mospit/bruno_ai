@@ -93,22 +93,22 @@ class AppColors {
 
   // === OPACITY HELPERS ===
   static Color withOpacity(Color color, double opacity) {
-    return color.withOpacity(opacity);
+    return color.withValues(alpha: opacity);
   }
 
   // === COLOR SCHEME GENERATORS ===
   static ColorScheme get lightColorScheme => ColorScheme.light(
     primary: primary, // Bruno brown
-    primaryContainer: primaryLight.withOpacity(0.1),
+    primaryContainer: primaryLight.withValues(alpha: 0.1),
     secondary: interactiveBlue, // Indigo for buttons
-    secondaryContainer: interactiveBlue.withOpacity(0.1),
+    secondaryContainer: interactiveBlue.withValues(alpha: 0.1),
     tertiary: foodAccent,
-    tertiaryContainer: foodAccent.withOpacity(0.1),
+    tertiaryContainer: foodAccent.withValues(alpha: 0.1),
     surface: surface,
-    surfaceVariant: gray100,
-    background: background,
+    surfaceContainerHighest: gray100,
+    surface: background,
     error: error,
-    errorContainer: error.withOpacity(0.1),
+    errorContainer: error.withValues(alpha: 0.1),
     onPrimary: white,
     onPrimaryContainer: primaryDark,
     onSecondary: white,
@@ -117,7 +117,7 @@ class AppColors {
     onTertiaryContainer: Color(0xFFB8460C),
     onSurface: gray900,
     onSurfaceVariant: gray600,
-    onBackground: gray900,
+    onSurface: gray900,
     onError: white,
     onErrorContainer: errorDark,
     outline: gray300,
@@ -138,8 +138,8 @@ class AppColors {
     tertiary: foodAccent,
     tertiaryContainer: Color(0xFF9F3A00),
     surface: surfaceDark,
-    surfaceVariant: gray800,
-    background: backgroundDark,
+    surfaceContainerHighest: gray800,
+    surface: backgroundDark,
     error: error,
     errorContainer: errorDark,
     onPrimary: gray900,
@@ -150,7 +150,7 @@ class AppColors {
     onTertiaryContainer: foodAccent,
     onSurface: gray100,
     onSurfaceVariant: gray400,
-    onBackground: gray100,
+    onSurface: gray100,
     onError: gray900,
     onErrorContainer: error,
     outline: gray600,

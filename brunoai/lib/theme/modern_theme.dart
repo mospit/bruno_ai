@@ -104,7 +104,7 @@ class ModernTheme {
       
       // Card Theme - Modern Glass Effect
       cardTheme: CardThemeData(
-        color: AppColors.white.withOpacity(0.8),
+        color: AppColors.white.withValues(alpha: 0.8),
         shadowColor: AppColors.shadowLight,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -148,7 +148,7 @@ class ModernTheme {
             return AppColors.primary;
           }),
           overlayColor: MaterialStateProperty.all(
-            AppColors.white.withOpacity(0.1),
+            AppColors.white.withValues(alpha: 0.1),
           ),
         ),
       ),
@@ -168,7 +168,7 @@ class ModernTheme {
           ),
         ).copyWith(
           overlayColor: MaterialStateProperty.all(
-            AppColors.primary.withOpacity(0.1),
+            AppColors.primary.withValues(alpha: 0.1),
           ),
         ),
       ),
@@ -186,7 +186,7 @@ class ModernTheme {
           ),
         ).copyWith(
           overlayColor: MaterialStateProperty.all(
-            AppColors.primary.withOpacity(0.08),
+            AppColors.primary.withValues(alpha: 0.08),
           ),
         ),
       ),
@@ -260,8 +260,8 @@ class ModernTheme {
         backgroundColor: AppColors.gray100,
         deleteIconColor: AppColors.gray600,
         disabledColor: AppColors.gray200,
-        selectedColor: AppColors.primary.withOpacity(0.1),
-        secondarySelectedColor: AppColors.primaryLight.withOpacity(0.1),
+        selectedColor: AppColors.primary.withValues(alpha: 0.1),
+        secondarySelectedColor: AppColors.primaryLight.withValues(alpha: 0.1),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         labelStyle: GoogleFonts.inter(
           fontSize: 14,
@@ -345,7 +345,7 @@ class ModernTheme {
       
       // Navigation Bar Theme
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: AppColors.white.withOpacity(0.9),
+        backgroundColor: AppColors.white.withValues(alpha: 0.9),
         elevation: 8,
         height: 80,
         labelTextStyle: MaterialStateProperty.all(
@@ -476,7 +476,7 @@ class ModernTheme {
       
       // Card Theme - Dark Glass Effect
       cardTheme: CardThemeData(
-        color: AppColors.surfaceDark.withOpacity(0.8),
+        color: AppColors.surfaceDark.withValues(alpha: 0.8),
         shadowColor: AppColors.shadowDark,
         elevation: 0,
         shape: RoundedRectangleBorder(
