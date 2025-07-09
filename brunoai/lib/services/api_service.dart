@@ -121,7 +121,8 @@ class ApiService {
         
         // Extract response from Bruno Master Agent
         final brunoMessage = ChatMessage(
-          text: responseData['response'] ?? 
+          text: responseData['result']?['bruno_response'] ?? 
+                responseData['response'] ?? 
                 responseData['primary_response'] ?? 
                 'I apologize, but I had trouble processing that request.',
           isFromUser: false,
