@@ -6,6 +6,7 @@ Central coordinator for the optimized Bruno AI agent ecosystem
 
 import asyncio
 import json
+import re
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 from loguru import logger
@@ -94,17 +95,34 @@ class BrunoMasterAgentV2(BaseAgent):
         # Analyze user request
         request_analysis = await self._analyze_user_request(user_message, context)
         
-        # Route to appropriate workflow
-        if action == "plan_meals" or "plan meals" in user_message.lower():
+        # Route to appropriate workflow with intelligent detection
+        user_message_lower = user_message.lower()
+        
+        # Detect meal planning requests
+        meal_planning_keywords = [
+            "plan meals", "meal plan", "meals for", "food for", "want", "need", "create", 
+            "caribbean", "italian", "mexican", "chinese", "recipes", "cook", "prepare",
+            "week", "month", "day", "breakfast", "lunch", "dinner", "cuisine", "diet"
+        ]
+        
+        # Check if message contains budget/cost info (strong indicator of meal planning)
+        has_budget_info = any(symbol in user_message_lower for symbol in ["$", "dollar", "budget", "cost", "spend", "price"])
+        
+        # Check if message contains meal planning keywords
+        has_meal_keywords = any(keyword in user_message_lower for keyword in meal_planning_keywords)
+        
+        if (action == "plan_meals" or 
+            has_meal_keywords or 
+            (has_budget_info and len(user_message.split()) > 3)):
             return await self.orchestrate_meal_planning(request_analysis)
         
-        elif action == "budget_coaching" or any(word in user_message.lower() for word in ["budget", "save", "spending"]):
+        elif action == "budget_coaching" or any(word in user_message_lower for word in ["save", "spending", "overspend"]):
             return await self.provide_budget_coaching(request_analysis)
         
-        elif action == "adapt_meal_plan" or "update" in user_message.lower():
+        elif action == "adapt_meal_plan" or "update" in user_message_lower:
             return await self.adapt_meal_plan_real_time(request_analysis)
         
-        elif action == "create_shopping_list" or "shopping" in user_message.lower():
+        elif action == "create_shopping_list" or "shopping" in user_message_lower:
             return await self.create_instacart_shopping_experience(request_analysis)
         
         else:
@@ -420,39 +438,133 @@ class BrunoMasterAgentV2(BaseAgent):
     async def _analyze_user_request(self, message: str, context: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze user request to extract intent and parameters"""
         
-        analysis_prompt = f"""
-        Analyze this user message and extract structured information:
-        Message: "{message}"
-        Context: {json.dumps(context, indent=2)}
-        
-        Extract:
-        1. Budget amount (if mentioned)
-        2. Family size (if mentioned)
-        3. Dietary restrictions
-        4. Timeframe (week, month, etc.)
-        5. Location information
-        6. Primary intent/action requested
-        7. Any specific preferences
-        
-        Return as JSON structure.
-        """
-        
-        analysis_result = await self.call_gemini(analysis_prompt, context)
+        # Basic parsing fallback first
+        fallback_analysis = self._basic_message_parsing(message, context)
         
         try:
+            analysis_prompt = f"""
+            Analyze this user message and extract structured information:
+            Message: "{message}"
+            Context: {json.dumps(context, indent=2)}
+            
+            Extract:
+            1. Budget amount (if mentioned) - look for $, dollar amounts, numbers
+            2. Family size (if mentioned)
+            3. Dietary restrictions
+            4. Timeframe (week, month, etc.)
+            5. Location information
+            6. Primary intent/action requested
+            7. Any specific preferences (cuisine type, etc.)
+            
+            Return as JSON structure with these exact keys:
+            {{
+                "budget": number or 0,
+                "family_size": number or 1,
+                "dietary_restrictions": [],
+                "timeframe": "week",
+                "location": {{}},
+                "intent": "meal_planning",
+                "preferences": {{}}
+            }}
+            """
+            
+            analysis_result = await self.call_gemini(analysis_prompt, context)
+            
             # Parse the AI response as JSON
             parsed_analysis = json.loads(analysis_result)
             parsed_analysis['original_message'] = message
+            
+            # Merge with fallback analysis for any missing values
+            for key, value in fallback_analysis.items():
+                if key not in parsed_analysis or not parsed_analysis[key]:
+                    parsed_analysis[key] = value
+            
             return parsed_analysis
-        except json.JSONDecodeError:
-            # Fallback if JSON parsing fails
-            return {
-                "original_message": message,
-                "budget": context.get('budget', 0),
-                "family_size": context.get('family_size', 1),
-                "location": context.get('location', {}),
-                "intent": "general_meal_planning"
-            }
+            
+        except (json.JSONDecodeError, Exception) as e:
+            logger.warning(f"AI analysis failed: {e}, using fallback parsing")
+            return fallback_analysis
+    
+    def _basic_message_parsing(self, message: str, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Basic message parsing as fallback"""
+        message_lower = message.lower()
+        
+        # Extract budget amount
+        budget = 0
+        budget_patterns = [
+            r'\$([0-9]+(?:\.[0-9]{2})?)',  # $200 or $200.00
+            r'([0-9]+)\s*dollars?',         # 200 dollars
+            r'budget.*?([0-9]+)',           # budget of 200
+            r'have.*?([0-9]+)',             # I have 200
+            r'([0-9]+)\s*bucks?'            # 200 bucks
+        ]
+        
+        for pattern in budget_patterns:
+            match = re.search(pattern, message_lower)
+            if match:
+                budget = float(match.group(1))
+                break
+        
+        # Extract family size
+        family_size = context.get('family_size', 1)
+        family_patterns = [
+            r'family of ([0-9]+)',
+            r'([0-9]+) people',
+            r'([0-9]+) person',
+            r'for ([0-9]+)',
+        ]
+        
+        for pattern in family_patterns:
+            match = re.search(pattern, message_lower)
+            if match:
+                family_size = int(match.group(1))
+                break
+        
+        # Extract timeframe
+        timeframe = "week"
+        if any(word in message_lower for word in ["week", "weekly"]):
+            timeframe = "week"
+        elif any(word in message_lower for word in ["month", "monthly"]):
+            timeframe = "month"
+        elif any(word in message_lower for word in ["day", "daily", "today"]):
+            timeframe = "day"
+        
+        # Extract cuisine preferences
+        cuisine_keywords = {
+            "caribbean": ["caribbean", "jamaican", "cuban", "puerto rican"],
+            "italian": ["italian", "pasta", "pizza", "mediterranean"],
+            "mexican": ["mexican", "tex-mex", "tacos", "burritos"],
+            "asian": ["chinese", "japanese", "thai", "korean", "asian"],
+            "indian": ["indian", "curry", "spicy"]
+        }
+        
+        preferences = {}
+        for cuisine, keywords in cuisine_keywords.items():
+            if any(keyword in message_lower for keyword in keywords):
+                preferences["cuisine"] = cuisine
+                break
+        
+        # Extract dietary restrictions
+        dietary_restrictions = []
+        if any(word in message_lower for word in ["vegetarian", "veggie"]):
+            dietary_restrictions.append("vegetarian")
+        if any(word in message_lower for word in ["vegan"]):
+            dietary_restrictions.append("vegan")
+        if any(word in message_lower for word in ["gluten-free", "gluten free"]):
+            dietary_restrictions.append("gluten_free")
+        if any(word in message_lower for word in ["keto", "ketogenic"]):
+            dietary_restrictions.append("keto")
+        
+        return {
+            "original_message": message,
+            "budget": budget,
+            "family_size": family_size,
+            "dietary_restrictions": dietary_restrictions,
+            "timeframe": timeframe,
+            "location": context.get('location', {}),
+            "intent": "meal_planning",
+            "preferences": preferences
+        }
     
     async def _delegate_to_agent(self, agent_name: str, task: Dict[str, Any]) -> Dict[str, Any]:
         """Delegate task to specialized agent"""
