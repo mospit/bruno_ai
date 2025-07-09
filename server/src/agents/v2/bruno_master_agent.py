@@ -214,10 +214,10 @@ class BrunoMasterAgentV2(BaseAgent):
         return {
             "success": True,
             "bruno_response": bruno_response,
-            "meal_plan": recipe_result,
-            "shopping_experience": shopping_result,
-            "budget_analysis": budget_analysis,
-            "nutrition_analysis": nutrition_analysis,
+            "meal_plan": self.safe_json_response(recipe_result),
+            "shopping_experience": self.safe_json_response(shopping_result),
+            "budget_analysis": self.safe_json_response(budget_analysis),
+            "nutrition_analysis": self.safe_json_response(nutrition_analysis),
             "coordination_details": {
                 "agents_used": ["budget_analyst_agent", "nutrition_guide_agent", "instacart_integration_agent", "recipe_chef_agent"],
                 "parallel_execution": True,
@@ -267,8 +267,8 @@ class BrunoMasterAgentV2(BaseAgent):
         return {
             "success": True,
             "bruno_coaching": coaching_response,
-            "budget_insights": budget_analysis,
-            "market_opportunities": market_trends,
+            "budget_insights": self.safe_json_response(budget_analysis),
+            "market_opportunities": self.safe_json_response(market_trends),
             "actionable_tips": await self._generate_actionable_tips(budget_analysis, market_trends)
         }
     
@@ -334,9 +334,9 @@ class BrunoMasterAgentV2(BaseAgent):
                 "success": True,
                 "adaptations_made": True,
                 "bruno_response": bruno_response,
-                "updated_meal_plan": adapted_recipes,
-                "updated_shopping": updated_shopping,
-                "adaptation_details": adaptations_needed
+                "updated_meal_plan": self.safe_json_response(adapted_recipes),
+                "updated_shopping": self.safe_json_response(updated_shopping),
+                "adaptation_details": self.safe_json_response(adaptations_needed)
             }
         else:
             bruno_response = await self.call_gemini(
@@ -390,7 +390,7 @@ class BrunoMasterAgentV2(BaseAgent):
         return {
             "success": True,
             "bruno_response": bruno_response,
-            "shopping_experience": shopping_result,
+            "shopping_experience": self.safe_json_response(shopping_result),
             "instacart_ready": True
         }
     

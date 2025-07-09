@@ -15,6 +15,13 @@ from loguru import logger
 from pydantic import BaseModel
 import google.generativeai as genai
 
+# JSON serialization helper for datetime objects
+def json_serializer(obj):
+    """JSON serializer for objects not serializable by default json code"""
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
+
 # Import system modules with error handling
 try:
     from database.repositories import (
@@ -494,3 +501,14 @@ class CacheManager:
             )
         except Exception as e:
             logger.warning(f"Cache storage failed for {cache_key}: {e}")
+    
+    def safe_json_response(self, data: Any) -> Any:
+        """Safely serialize data for JSON response, handling datetime objects"""
+        if isinstance(data, dict):
+            return {k: self.safe_json_response(v) for k, v in data.items()}
+        elif isinstance(data, list):
+            return [self.safe_json_response(item) for item in data]
+        elif isinstance(data, datetime):
+            return data.isoformat()
+        else:
+            return data
