@@ -186,7 +186,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                 child: TabBar(
                   controller: _tabController,
                   labelColor: Theme.of(context).primaryColor,
-                  unselectedLabelColor: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                  unselectedLabelColor: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
                   indicatorColor: Theme.of(context).primaryColor,
                   indicatorWeight: 3,
                   tabs: const [
@@ -239,14 +239,14 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                     Text(
                       '${provider.shoppingList.length} items',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                       ),
                     ),
                     if (provider.shoppingList.isNotEmpty) ...[
                       Text(
                         ' • ',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                          color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                         ),
                       ),
                       Text(
@@ -267,7 +267,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
               onPressed: () => _showClearCartDialog(context, provider),
               icon: const Icon(Icons.delete_outline_rounded),
               style: IconButton.styleFrom(
-                backgroundColor: Colors.red.withOpacity(0.1),
+                backgroundColor: Colors.red.withValues(alpha: 0.1),
                 foregroundColor: Colors.red,
               ),
               tooltip: 'Clear Cart',
@@ -277,7 +277,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close_rounded),
             style: IconButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+              backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             ),
           ),
         ],
@@ -302,7 +302,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                 hintText: 'Search for products...',
                 prefixIcon: Icon(
                   Icons.search_rounded,
-                  color: Theme.of(context).primaryColor.withOpacity(0.7),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
                 ),
                 suffixIcon: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -323,7 +323,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                       onPressed: () => _showAdvancedFilters(context),
                       icon: Icon(
                         Icons.tune_rounded,
-                        color: Theme.of(context).primaryColor.withOpacity(0.7),
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
                       ),
                       tooltip: 'Advanced filters',
                     ),
@@ -331,7 +331,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                 ),
                 border: InputBorder.none,
                 hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                 ),
               ),
               onChanged: (value) {
@@ -392,8 +392,8 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                           _selectedCategory = category;
                         });
                       },
-                      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                      selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                      backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                      selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                       checkmarkColor: Theme.of(context).primaryColor,
                       labelStyle: TextStyle(
                         color: isSelected 
@@ -452,17 +452,17 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                         decoration: BoxDecoration(
                           color: isSelected
                               ? Theme.of(context).primaryColor
-                              : Colors.white.withOpacity(0.8),
+                              : Colors.white.withValues(alpha: 0.8),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: isSelected
                                 ? Theme.of(context).primaryColor
-                                : Theme.of(context).primaryColor.withOpacity(0.3),
+                                : Theme.of(context).primaryColor.withValues(alpha: 0.3),
                             width: isSelected ? 2 : 1,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
+                              color: Colors.black.withValues(alpha: 0.08),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -566,13 +566,13 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
               Icon(
                 Icons.search_rounded,
                 size: 64,
-                color: Theme.of(context).primaryColor.withOpacity(0.5),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
               ),
               const SizedBox(height: 16),
               Text(
                 'Search for products',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Theme.of(context).textTheme.titleLarge?.color?.withOpacity(0.7),
+                  color: Theme.of(context).textTheme.titleLarge?.color?.withValues(alpha: 0.7),
                 ),
               ),
               const SizedBox(height: 8),
@@ -580,7 +580,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                 'Use the search bar above to find products to add to your cart',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                 ),
               ),
             ],
@@ -606,13 +606,13 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
               Icon(
                 Icons.search_off_rounded,
                 size: 64,
-                color: Theme.of(context).primaryColor.withOpacity(0.5),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
               ),
               const SizedBox(height: 16),
               Text(
                 'No products found',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Theme.of(context).textTheme.titleLarge?.color?.withOpacity(0.7),
+                  color: Theme.of(context).textTheme.titleLarge?.color?.withValues(alpha: 0.7),
                 ),
               ),
               const SizedBox(height: 8),
@@ -620,7 +620,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                 'Try searching for "bananas", "milk", or "chicken"',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                 ),
               ),
             ],
@@ -674,7 +674,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               ),
               child: Icon(
                 _getItemIcon(product.category),
@@ -702,7 +702,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: Theme.of(context).primaryColor.withOpacity(0.1),
+                          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                         ),
                         child: Text(
                           product.category,
@@ -716,7 +716,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                       Text(
                         'per ${product.unit}',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                          color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                         ),
                       ),
                     ],
@@ -726,7 +726,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                     Text(
                       product.notes,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.5),
+                        color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                         fontStyle: FontStyle.italic,
                       ),
                     ),
