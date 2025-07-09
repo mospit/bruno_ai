@@ -55,10 +55,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.85),
+                    color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.85),
                     border: Border(
                       bottom: BorderSide(
-                        color: Theme.of(context).dividerColor.withOpacity(0.2),
+                        color: Theme.of(context).dividerColor.withValues(alpha: 0.2),
                         width: 0.5,
                       ),
                     ),
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: Icon(
@@ -102,19 +102,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 color: provider.shoppingList.isNotEmpty
-                                    ? AppColors.primary.withOpacity(0.1)
+                                    ? AppColors.primary.withValues(alpha: 0.1)
                                     : AppColors.gray100,
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
                                   color: provider.shoppingList.isNotEmpty
-                                      ? AppColors.primary.withOpacity(0.3)
+                                      ? AppColors.primary.withValues(alpha: 0.3)
                                       : AppColors.gray200,
                                   width: 2,
                                 ),
                                 boxShadow: [
                                   if (provider.shoppingList.isNotEmpty)
                                     BoxShadow(
-                                      color: AppColors.primary.withOpacity(0.2),
+                                      color: AppColors.primary.withValues(alpha: 0.2),
                                       blurRadius: 12,
                                       offset: const Offset(0, 4),
                                     ),
@@ -160,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppColors.error.withOpacity(0.4),
+                                        color: AppColors.error.withValues(alpha: 0.4),
                                         blurRadius: 8,
                                         offset: const Offset(0, 2),
                                       ),

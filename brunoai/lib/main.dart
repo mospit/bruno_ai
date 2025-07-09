@@ -6,7 +6,6 @@ import 'providers/bruno_provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/pantry_screen.dart';
 import 'theme/modern_theme.dart';
-import 'utils/animation_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

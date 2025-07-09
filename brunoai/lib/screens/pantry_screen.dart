@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/pantry_item.dart';
 import '../providers/bruno_provider.dart';
 
 class PantryScreen extends StatelessWidget {
+  const PantryScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pantry Inventory'),
+        title: const Text('Pantry Inventory'),
       ),
       body: Consumer<BrunoProvider>(
         builder: (context, provider, child) => ListView.builder(
@@ -30,7 +31,7 @@ class PantryScreen extends StatelessWidget {
         onPressed: () {
           // Navigate to add new pantry item screen
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

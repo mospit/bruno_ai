@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import '../theme/app_colors.dart';
-import '../utils/animation_manager.dart';
 
 enum BrunoMood {
   friendly,    // Default smile
@@ -193,7 +192,7 @@ class _BrunoAvatarState extends State<BrunoAvatar>
   Color _getBrunoColor() {
     switch (widget.mood) {
       case BrunoMood.excited:
-        return AppColors.primary.withOpacity(0.9);
+        return AppColors.primary.withValues(alpha: 0.9);
       case BrunoMood.celebrating:
         return AppColors.instacartGreen;
       case BrunoMood.concerned:
@@ -203,7 +202,7 @@ class _BrunoAvatarState extends State<BrunoAvatar>
       case BrunoMood.helpful:
         return AppColors.primary;
       case BrunoMood.sleepy:
-        return AppColors.primary.withOpacity(0.6);
+        return AppColors.primary.withValues(alpha: 0.6);
       default:
         return AppColors.primary;
     }
@@ -358,7 +357,7 @@ class _BrunoAvatarState extends State<BrunoAvatar>
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -388,7 +387,7 @@ class _BrunoAvatarState extends State<BrunoAvatar>
       child: CircularProgressIndicator(
         value: widget.budgetProgress.clamp(0.0, 1.0),
         strokeWidth: 4,
-        backgroundColor: Colors.grey.withOpacity(0.2),
+        backgroundColor: Colors.grey.withValues(alpha: 0.2),
         valueColor: AlwaysStoppedAnimation<Color>(
           widget.budgetProgress < 0.7
               ? Colors.green
@@ -487,19 +486,19 @@ class _BrunoAvatarState extends State<BrunoAvatar>
                       gradient: RadialGradient(
                         colors: [
                           _getBrunoColor(),
-                          _getBrunoColor().withOpacity(0.8),
+                          _getBrunoColor().withValues(alpha: 0.8),
                         ],
                       ),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: _getBrunoColor().withOpacity(0.3),
+                          color: _getBrunoColor().withValues(alpha: 0.3),
                           blurRadius: widget.size * 0.15,
                           offset: Offset(0, widget.size * 0.08),
                           spreadRadius: 2,
                         ),
                         BoxShadow(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withValues(alpha: 0.3),
                           blurRadius: widget.size * 0.1,
                           offset: Offset(-widget.size * 0.03, -widget.size * 0.03),
                         ),
@@ -520,7 +519,7 @@ class _BrunoAvatarState extends State<BrunoAvatar>
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
+                                  color: Colors.black.withValues(alpha: 0.1),
                                   blurRadius: 2,
                                   offset: const Offset(0, 1),
                                 ),
@@ -556,7 +555,7 @@ class _BrunoAvatarState extends State<BrunoAvatar>
                             width: widget.size * 0.1,
                             height: widget.size * 0.1,
                             decoration: BoxDecoration(
-                              color: Colors.pink.withOpacity(0.7),
+                              color: Colors.pink.withValues(alpha: 0.7),
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -568,7 +567,7 @@ class _BrunoAvatarState extends State<BrunoAvatar>
                             width: widget.size * 0.1,
                             height: widget.size * 0.1,
                             decoration: BoxDecoration(
-                              color: Colors.pink.withOpacity(0.7),
+                              color: Colors.pink.withValues(alpha: 0.7),
                               shape: BoxShape.circle,
                             ),
                           ),

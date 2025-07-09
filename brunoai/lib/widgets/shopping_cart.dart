@@ -24,12 +24,9 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
   bool _isSearching = false;
   List<ShoppingItem> _searchResults = [];
   String _sortOption = 'name'; // name, price_low, price_high, date_added
-  bool _isLoadingMore = false;
   List<String> _recentSearches = [];
   bool _showOnlyInStock = true;
   double _maxPrice = 100.0;
-  String _selectedStore = 'Instacart';
-  Map<String, int> _recentlyAddedItems = {}; // item.id -> quantity
 
   // Mock product database for search
   // Instacart API Endpoint
@@ -89,12 +86,12 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
           _searchResults = [];
         });
       }
-    } on http.ClientException catch (e) {
+    } on http.ClientException {
       _showErrorSnackBar('Connection Error: Please check your internet connection');
       setState(() {
         _searchResults = [];
       });
-    } on FormatException catch (e) {
+    } on FormatException {
       _showErrorSnackBar('Data Error: Invalid response from server');
       setState(() {
         _searchResults = [];
