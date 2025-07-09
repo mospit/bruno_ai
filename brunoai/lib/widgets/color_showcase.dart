@@ -191,29 +191,38 @@ class ColorShowcase extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Display Large',
-          style: Theme.of(context).textTheme.displayLarge,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Headline Large',
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Title Large',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Body Large - This is a sample of body text that shows how the typography system works.',
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Body Medium - Smaller body text for secondary content.',
-          style: Theme.of(context).textTheme.bodyMedium,
+        Builder(
+          builder: (context) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Display Large',
+                  style: Theme.of(context).textTheme.displayLarge,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Headline Large',
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Title Large',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Body Large - This is a sample of body text that shows how the typography system works.',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Body Medium - Smaller body text for secondary content.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            );
+          },
         ),
       ],
     );
@@ -224,25 +233,29 @@ class ColorShowcase extends StatelessWidget {
       children: [
         Expanded(
           child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Modern Card',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
+            child: Builder(
+              builder: (context) {
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Modern Card',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'This card uses the new design system with modern colors and typography.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'This card uses the new design system with modern colors and typography.',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         ),
@@ -270,11 +283,15 @@ class ColorShowcase extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  'This container showcases the primary color system.',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.primaryDark,
-                  ),
+                Builder(
+                  builder: (context) {
+                    return Text(
+                      'This container showcases the primary color system.',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.primaryDark,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

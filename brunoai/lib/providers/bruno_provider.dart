@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/chat_message.dart';
 import '../models/shopping_item.dart';
 import '../models/pantry_item.dart';
+import '../services/api_service.dart';
 
 class BrunoProvider extends ChangeNotifier {
   // Chat state
@@ -9,6 +10,10 @@ class BrunoProvider extends ChangeNotifier {
   bool _isTyping = false;
   String _currentBudget = '';
   int _familySize = 1;
+  
+  // API Service
+  final ApiService _apiService = ApiService();
+  bool _isApiInitialized = false;
   
 // Shopping state
   List<ShoppingItem> _shoppingList = [
@@ -364,7 +369,19 @@ class BrunoProvider extends ChangeNotifier {
     notifyListeners();
   }
   
-  // Simulate Bruno AI response
+  // Initialize API service
+  Future<void> _initializeApiService() async {
+    if (!_isApiInitialized) {
+      try {
+        await _apiService.initialize();
+        _isApiInitialized = true;
+      } catch (e) {
+        print('Failed to initialize API service: $e');
+      }
+    }
+  }
+  
+  // Send message to Bruno AI server
   Future<void> sendMessageToBruno(String userMessage) async {
     // Add user message
     addMessage(ChatMessage(
@@ -376,24 +393,86 @@ class BrunoProvider extends ChangeNotifier {
     // Show typing indicator
     setTyping(true);
     
-    // Simulate API delay
-    await Future.delayed(const Duration(seconds: 2));
-    
-    // Generate Bruno response based on user input
-    String brunoResponse = _generateBrunoResponse(userMessage);
-    
-    // Add Bruno response
-    addMessage(ChatMessage(
-      text: brunoResponse,
-      isFromUser: false,
-      timestamp: DateTime.now(),
-      hasShoppingAction: userMessage.toLowerCase().contains('budget') || 
-                        userMessage.toLowerCase().contains('meal'),
-    ));
+    try {
+      // Initialize API service if needed
+      await _initializeApiService();
+      
+      // Send message to Bruno AI server
+      final response = await _apiService.sendMessageToBruno(
+        message: userMessage,
+        userId: 'flutter_user_${DateTime.now().millisecondsSinceEpoch}',
+        context: {
+          'current_budget': _currentBudget,
+          'family_size': _familySize,
+          'dietary_restrictions': _dietaryRestrictions,
+          'preferred_delivery_time': _preferredDeliveryTime,
+          'selected_store': _selectedStore,
+        },
+        budgetLimit: double.tryParse(_currentBudget),
+        familySize: _familySize,
+        dietaryRestrictions: _dietaryRestrictions,
+      );
+      
+      if (response.isSuccess && response.data != null) {
+        final brunoMessage = response.data!;
+        
+        // Update shopping list if provided
+        if (brunoMessage.metadata?['shopping_list'] != null) {
+          final shoppingData = brunoMessage.metadata!['shopping_list'] as List;
+          final shoppingItems = shoppingData.map((item) {
+            return ShoppingItem(
+              name: item['name'] ?? 'Unknown Item',
+              price: (item['price'] ?? 0.0).toDouble(),
+              quantity: (item['quantity'] ?? 1).toInt(),
+              category: item['category'] ?? 'General',
+              unit: item['unit'] ?? 'item',
+              notes: item['notes'] ?? '',
+            );
+          }).toList();
+          updateShoppingList(shoppingItems);
+        }
+        
+        // Update budget if provided
+        if (brunoMessage.metadata?['budget_info'] != null) {
+          final budgetInfo = brunoMessage.metadata!['budget_info'] as Map<String, dynamic>;
+          if (budgetInfo['budget'] != null) {
+            setBudget(budgetInfo['budget'].toString());
+          }
+        }
+        
+        // Add Bruno response
+        addMessage(brunoMessage);
+        
+      } else {
+        // Fallback to mock response if API fails
+        String fallbackResponse = _generateBrunoResponse(userMessage);
+        addMessage(ChatMessage(
+          text: '⚠️ Server connection issue. Using offline mode:\n\n$fallbackResponse',
+          isFromUser: false,
+          timestamp: DateTime.now(),
+          hasShoppingAction: userMessage.toLowerCase().contains('budget') || 
+                            userMessage.toLowerCase().contains('meal'),
+        ));
+      }
+      
+    } catch (e) {
+      print('Error sending message to Bruno: $e');
+      
+      // Fallback to mock response on error
+      String fallbackResponse = _generateBrunoResponse(userMessage);
+      addMessage(ChatMessage(
+        text: '⚠️ Connection error. Using offline mode:\n\n$fallbackResponse',
+        isFromUser: false,
+        timestamp: DateTime.now(),
+        hasShoppingAction: userMessage.toLowerCase().contains('budget') || 
+                          userMessage.toLowerCase().contains('meal'),
+      ));
+    }
     
     setTyping(false);
   }
   
+  // Keep the mock response as fallback
   String _generateBrunoResponse(String userMessage) {
     String message = userMessage.toLowerCase();
     
@@ -413,10 +492,10 @@ class BrunoProvider extends ChangeNotifier {
     
     if (message.contains('instacart') || message.contains('order') || message.contains('shop')) {
       updateShoppingList([
-        ShoppingItem(name: 'Chicken breast', price: 8.99, quantity: 2),
-        ShoppingItem(name: 'Sweet potatoes', price: 2.49, quantity: 3),
-        ShoppingItem(name: 'Broccoli', price: 3.99, quantity: 1),
-        ShoppingItem(name: 'Rice', price: 4.99, quantity: 1),
+        ShoppingItem(name: 'Chicken breast', price: 8.99, quantity: 2, category: 'Meat', unit: 'lbs', notes: ''),
+        ShoppingItem(name: 'Sweet potatoes', price: 2.49, quantity: 3, category: 'Vegetables', unit: 'lbs', notes: ''),
+        ShoppingItem(name: 'Broccoli', price: 3.99, quantity: 1, category: 'Vegetables', unit: 'bunch', notes: ''),
+        ShoppingItem(name: 'Rice', price: 4.99, quantity: 1, category: 'Grains', unit: 'bag', notes: ''),
       ]);
       return "Done! 🎉 I created your shopping list with ${_shoppingList.length} items for \$${_totalCost.toStringAsFixed(2)}.\n\nYour order will be ready for delivery from Whole Foods in 2 hours!\nYou saved \$${(double.parse(_currentBudget.isEmpty ? '80' : _currentBudget) - _totalCost).toStringAsFixed(2)} under budget! 💰";
     }
