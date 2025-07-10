@@ -216,10 +216,16 @@ class BrunoMasterAgentV2(BaseAgent):
         shopping_result = await self._delegate_to_agent("instacart_integration_agent", shopping_task)
         
         # Step 5: Generate Bruno's personalized response
-        bruno_response = await self._generate_bruno_response(
-            request_analysis, budget_analysis, nutrition_analysis, 
-            recipe_result, shopping_result, instacart_result
-        )
+        # Check if agents failed and provide fallback response
+        if ("error" in budget_analysis and "error" in nutrition_analysis and 
+            "error" in str(instacart_result) and "error" in str(recipe_result)):
+            # All agents failed, provide direct response using comprehensive personality
+            bruno_response = await self._create_direct_meal_plan_response(request_analysis)
+        else:
+            bruno_response = await self._generate_bruno_response(
+                request_analysis, budget_analysis, nutrition_analysis, 
+                recipe_result, shopping_result, instacart_result
+            )
         
         # Step 6: Learn from this interaction
         await self._learn_from_interaction(request_analysis, {
@@ -232,10 +238,10 @@ class BrunoMasterAgentV2(BaseAgent):
         return {
             "success": True,
             "bruno_response": bruno_response,
-            "meal_plan": self.safe_json_response(recipe_result),
-            "shopping_experience": self.safe_json_response(shopping_result),
-            "budget_analysis": self.safe_json_response(budget_analysis),
-            "nutrition_analysis": self.safe_json_response(nutrition_analysis),
+            "meal_plan": recipe_result,
+            "shopping_experience": shopping_result,
+            "budget_analysis": budget_analysis,
+            "nutrition_analysis": nutrition_analysis,
             "coordination_details": {
                 "agents_used": ["budget_analyst_agent", "nutrition_guide_agent", "instacart_integration_agent", "recipe_chef_agent"],
                 "parallel_execution": True,
@@ -285,8 +291,8 @@ class BrunoMasterAgentV2(BaseAgent):
         return {
             "success": True,
             "bruno_coaching": coaching_response,
-            "budget_insights": self.safe_json_response(budget_analysis),
-            "market_opportunities": self.safe_json_response(market_trends),
+            "budget_insights": budget_analysis,
+            "market_opportunities": market_trends,
             "actionable_tips": await self._generate_actionable_tips(budget_analysis, market_trends)
         }
     
@@ -352,9 +358,9 @@ class BrunoMasterAgentV2(BaseAgent):
                 "success": True,
                 "adaptations_made": True,
                 "bruno_response": bruno_response,
-                "updated_meal_plan": self.safe_json_response(adapted_recipes),
-                "updated_shopping": self.safe_json_response(updated_shopping),
-                "adaptation_details": self.safe_json_response(adaptations_needed)
+                "updated_meal_plan": adapted_recipes,
+                "updated_shopping": updated_shopping,
+                "adaptation_details": adaptations_needed
             }
         else:
             bruno_response = await self.call_gemini(
@@ -408,7 +414,7 @@ class BrunoMasterAgentV2(BaseAgent):
         return {
             "success": True,
             "bruno_response": bruno_response,
-            "shopping_experience": self.safe_json_response(shopping_result),
+            "shopping_experience": shopping_result,
             "instacart_ready": True
         }
     
@@ -469,6 +475,11 @@ class BrunoMasterAgentV2(BaseAgent):
             """
             
             analysis_result = await self.call_gemini(analysis_prompt, context)
+            
+            # Check if we got a valid response
+            if not analysis_result or analysis_result.strip() == "":
+                logger.warning("Empty Gemini response, using fallback parsing")
+                return fallback_analysis
             
             # Parse the AI response as JSON
             parsed_analysis = json.loads(analysis_result)
@@ -716,3 +727,69 @@ class BrunoMasterAgentV2(BaseAgent):
         ])
         
         return tips[:5]  # Return top 5 tips
+    
+    async def _create_direct_meal_plan_response(self, request_analysis: Dict[str, Any]) -> str:
+        """Create a direct meal plan response when agents fail"""
+        user_message = request_analysis.get('original_message', '')
+        budget = request_analysis.get('budget', 0)
+        family_size = request_analysis.get('family_size', 1)
+        cuisine = request_analysis.get('preferences', {}).get('cuisine', '')
+        timeframe = request_analysis.get('timeframe', 'week')
+        
+        # Create a comprehensive direct response using Gemini
+        prompt = f"""
+        You are Bruno, a professional and comprehensive meal planning expert. The user asked: "{user_message}"
+        
+        User Context:
+        - Budget: ${budget}
+        - Family size: {family_size}
+        - Timeframe: {timeframe}
+        - Cuisine preference: {cuisine}
+        
+        Create a detailed meal planning response that includes:
+        1. A warm, professional greeting acknowledging their request
+        2. Specific meal suggestions for {cuisine} cuisine within their ${budget} budget
+        3. Strategic budget breakdown and cost optimization tips
+        4. Nutritional benefits of the suggested meals
+        5. Practical cooking and preparation advice
+        6. Shopping recommendations
+        
+        Be comprehensive, specific, and helpful. Provide actual meal ideas, not generic advice.
+        """
+        
+        try:
+            response = await self.call_gemini(prompt, {
+                "budget": budget,
+                "family_size": family_size,
+                "cuisine": cuisine,
+                "user_message": user_message
+            })
+            
+            # If Gemini call failed or returned empty, create a rich fallback response
+            if not response or response.strip() == "":
+                logger.info("Gemini unavailable, creating rich fallback response")
+                return self._create_rich_fallback_response(user_message, budget, family_size, cuisine, timeframe)
+            
+            return response
+            
+        except Exception as e:
+            logger.error(f"Direct response generation failed: {e}")
+            # Create a rich fallback response instead of generic one
+            return self._create_rich_fallback_response(user_message, budget, family_size, cuisine, timeframe)
+    
+    def _create_rich_fallback_response(self, user_message: str, budget: float, family_size: int, 
+                                       cuisine: str, timeframe: str) -> str:
+        """Create a detailed fallback response when Gemini fails"""
+        return (
+            f"Hello! I couldn't get the latest information for you, but here's a detailed plan."\
+            f"\n\n**Estimated Budget:** ${budget} for the {timeframe}."\
+            f"\n**Family Size:** {family_size}\n**Preferred Cuisine:** {cuisine if cuisine else 'Any'}"\
+            f"\n\n**Meal Planning Overview:**\n- Breakfast, Lunch, and Dinner for each day."\
+            f"\n- Focus on affordable, nourishing meals with local ingredients."\
+            f"\n- Using your ${budget}, adjust quantities based on special offers, store brands, and seasonal sales."\
+            f"\n- Make sure to verify dietary needs and age-specific requirements."\
+            f"\n\n**Shopping Tips:**\n- Check local store flyers for discounts."\
+            f"\n- Consider exploring local farmer's markets for fresh deals."\
+            f"\n- Bulk purchase non-perishables and freeze extras."\
+            f"\n\nIf you need more specific details, please try again or explore the app for current deals."
+        )

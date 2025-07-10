@@ -233,7 +233,7 @@ class BrunoAISystemV2:
     
     async def _run_gateway(self):
         """Run the A2A gateway server"""
-        gateway_port = int(os.getenv("GATEWAY_PORT", 3000))
+        gateway_port = int(os.getenv("GATEWAY_PORT", 3001))
         gateway_host = os.getenv("GATEWAY_HOST", "0.0.0.0")
         
         config = uvicorn.Config(

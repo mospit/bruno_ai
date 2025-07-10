@@ -54,7 +54,7 @@ class PantryManagerAgentV2(BaseAgent):
         super().__init__(agent_card)
         
         # Override model for faster, cost-efficient operations
-        self.model = genai.GenerativeModel('gemini-2.5-flash-lite-preview-06-17')
+        self.model = genai.GenerativeModel('gemini-2.0-flash-lite')
         
         # Pantry data structures
         self.pantry_inventory = {}

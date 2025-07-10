@@ -19,9 +19,9 @@ class TaskComplexity(Enum):
 
 class ModelType(Enum):
     """Available Gemini models"""
-    FLASH_LITE = "gemini-2.5-flash-lite-preview-06-17"
-    FLASH = "gemini-2.5-flash"
-    PRO = "gemini-2.5-pro"
+    FLASH_LITE = "gemini-2.0-flash-lite"
+    FLASH = "gemini-1.5-flash"
+    PRO = "gemini-1.5-pro"
 
 
 class ModelRouter:
@@ -33,9 +33,9 @@ class ModelRouter:
         
         # Initialize models
         self.models = {
-            ModelType.FLASH_LITE: genai.GenerativeModel('gemini-2.5-flash-lite-preview-06-17'),
-            ModelType.FLASH: genai.GenerativeModel('gemini-2.5-flash'),
-            ModelType.PRO: genai.GenerativeModel('gemini-2.5-pro')
+            ModelType.FLASH_LITE: genai.GenerativeModel('gemini-2.0-flash-lite'),
+            ModelType.FLASH: genai.GenerativeModel('gemini-1.5-flash'),
+            ModelType.PRO: genai.GenerativeModel('gemini-1.5-pro')
         }
         
         # Task complexity routing rules

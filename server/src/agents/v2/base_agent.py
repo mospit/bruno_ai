@@ -85,7 +85,7 @@ class BaseAgent(ABC):
         
         # Initialize Gemini AI with smart model routing
         genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
-        self.model = genai.GenerativeModel('gemini-2.5-flash')  # Default model
+        self.model = genai.GenerativeModel('gemini-1.5-flash')  # Default model
         self.model_router = model_router
         
         # Initialize Redis for caching
@@ -279,11 +279,16 @@ class BaseAgent(ABC):
                 full_prompt
             )
             
-            return response.text
+            if not response or not hasattr(response, 'text') or not response.text:
+                logger.error("Gemini API returned empty or invalid response")
+                return ""
+            
+            return response.text.strip()
             
         except Exception as e:
             logger.error(f"Gemini API call failed: {e}")
-            raise
+            # Return empty string instead of raising to allow fallback logic
+            return ""
     
     def _build_prompt(self, prompt: str, context: Dict[str, Any] = None) -> str:
         """Build comprehensive prompt with agent context"""
@@ -371,12 +376,16 @@ class BaseAgent(ABC):
     async def send_message_to_agent(self, target_agent: str, message: AgentMessage) -> Dict[str, Any]:
         """Send A2A message to another agent"""
         try:
-            gateway_url = os.getenv('A2A_GATEWAY_URL', 'http://localhost:3000')
+            gateway_url = os.getenv('A2A_GATEWAY_URL', 'http://localhost:3001')
+            
+            # Convert message to dict and handle datetime serialization
+            message_dict = message.dict()
+            message_dict = self.safe_json_response(message_dict)
             
             async with httpx.AsyncClient() as client:
                 response = await client.post(
                     f"{gateway_url}/agents/{target_agent}/task",
-                    json=message.dict(),
+                    json=message_dict,
                     timeout=30.0
                 )
                 
@@ -453,6 +462,17 @@ class BaseAgent(ABC):
         except Exception as e:
             logger.error(f"Error getting recommendations: {e}")
             return []
+    
+    def safe_json_response(self, data: Any) -> Any:
+        """Safely serialize data for JSON response, handling datetime objects"""
+        if isinstance(data, dict):
+            return {k: self.safe_json_response(v) for k, v in data.items()}
+        elif isinstance(data, list):
+            return [self.safe_json_response(item) for item in data]
+        elif isinstance(data, datetime):
+            return data.isoformat()
+        else:
+            return data
 
 class CacheManager:
     """Advanced caching strategies for agent optimization"""
@@ -501,14 +521,3 @@ class CacheManager:
             )
         except Exception as e:
             logger.warning(f"Cache storage failed for {cache_key}: {e}")
-    
-    def safe_json_response(self, data: Any) -> Any:
-        """Safely serialize data for JSON response, handling datetime objects"""
-        if isinstance(data, dict):
-            return {k: self.safe_json_response(v) for k, v in data.items()}
-        elif isinstance(data, list):
-            return [self.safe_json_response(item) for item in data]
-        elif isinstance(data, datetime):
-            return data.isoformat()
-        else:
-            return data

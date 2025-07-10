@@ -5,6 +5,7 @@ Processes non-urgent tasks in batches to save 50% on API costs
 
 import asyncio
 import json
+import os
 import uuid
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
@@ -64,7 +65,7 @@ class BatchProcessor:
     def __init__(self, redis_client: Optional[redis.Redis] = None):
         # Initialize Gemini API with batch mode
         genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
-        self.model = genai.GenerativeModel('gemini-2.5-flash')
+        self.model = genai.GenerativeModel('gemini-1.5-flash')
         
         # Redis for task queue
         self.redis_client = redis_client or redis.Redis(

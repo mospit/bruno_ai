@@ -96,7 +96,7 @@ class InstacartIntegrationAgentV2(BaseAgent):
         super().__init__(agent_card)
         
         # Override model for faster, cost-efficient operations
-        self.model = genai.GenerativeModel('gemini-2.5-flash-lite-preview-06-17')
+        self.model = genai.GenerativeModel('gemini-2.0-flash-lite')
         
         # Initialize Instacart API client
         self.api_base_url = "https://connect.instacart.com/v1"
