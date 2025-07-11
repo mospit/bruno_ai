@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent2Agent (A2A) Protocol - Complete Documentation</title>
+    <style>
+      body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 80px;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+        text-align: justify;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin: 48px 0 32px 0;
+        page-break-after: avoid;
+      }
+
+      h2 {
+        font-size: 20px;
+        font-weight: bold;
+        margin: 32px 0 16px 0;
+        page-break-after: avoid;
+      }
+
+      h3 {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 24px 0 12px 0;
+        page-break-after: avoid;
+      }
+
+      h4 {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 20px 0 8px 0;
+        page-break-after: avoid;
+      }
+
+      p {
+        margin: 12px 0;
+        text-indent: 0;
+      }
+
+      ul,
+      ol {
+        margin: 12px 0;
+        padding-left: 32px;
+      }
+
+      li {
+        margin: 6px 0;
+      }
+
+      pre {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        padding: 16px;
+        margin: 16px 0;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+      }
+
+      code {
+        font-family: 'Courier New', monospace;
+        background: #f5f5f5;
+        padding: 2px 4px;
+        font-size: 12px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background: #f0f0f0;
+        font-weight: bold;
+      }
+
+      .title-page {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+
+      .version {
+        font-size: 14px;
+        color: #666;
+        margin-top: 24px;
+      }
+
+      .toc {
+        border: 1px solid #000;
+        padding: 16px;
+        margin: 24px 0;
+      }
+
+      .toc h3 {
+        margin-top: 0;
+        text-align: center;
+      }
+
+      .toc ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .toc li {
+        margin: 8px 0;
+      }
+
+      .section-break {
+        page-break-before: always;
+      }
+
+      .highlight {
+        background: #ffff99;
+        padding: 2px 4px;
+      }
+
+      .note {
+        border: 1px solid #666;
+        padding: 16px;
+        margin: 16px 0;
+        background: #f9f9f9;
+      }
+
+      .note h4 {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="title-page">
+      <h1>Agent2Agent (A2A) Protocol</h1>
+      <h2>Complete Documentation</h2>
+      <p><strong>An Open Standard for AI Agent Communication and Collaboration</strong></p>
+      <div class="version">
+        <p>Protocol Version: 0.2.5</p>
+        <p>Documentation Date: January 2025</p>
+      </div>
+    </div>
+
+    <div class="toc">
+      <h3>Table of Contents</h3>
+      <ul>
+        <li>1. Introduction</li>
+        <li>2. What is A2A?</li>
+        <li>3. Key Concepts</li>
+        <li>4. Protocol Specification</li>
+        <li>5. Python Tutorial Introduction</li>
+        <li>6. Benefits and Use Cases</li>
+        <li>7. Getting Started</li>
+        <li>8. References and Resources</li>
+      </ul>
+    </div>
+
+    <h2>1. Introduction</h2>
+
+    <p>
+      The Agent2Agent (A2A) Protocol is an open standard designed to enable seamless communication and collaboration
+      between AI agents. In a world where agents are built using diverse frameworks and by different vendors, A2A
+      provides a common language, breaking down silos and fostering interoperability.
+    </p>
+
+    <p>
+      This comprehensive documentation covers the complete A2A protocol specification, including core concepts,
+      implementation guidelines, and practical tutorials for building A2A-compliant agents.
+    </p>
+
+    <h2>2. What is A2A?</h2>
+
+    <p>
+      The Agent2Agent (A2A) Protocol is an open standard designed to solve a fundamental challenge in the rapidly
+      evolving landscape of artificial intelligence:
+      <strong
+        >how do AI agents, built by different teams, using different technologies, and owned by different organizations,
+        communicate and collaborate effectively?</strong
+      >
+    </p>
+
+    <p>
+      As AI agents become more specialized and capable, the need for them to work together on complex tasks increases.
+      Imagine a user asking their primary AI assistant to plan an international trip. This single request might involve
+      coordinating the capabilities of several specialized agents:
+    </p>
+
+    <ol>
+      <li>An agent for flight bookings</li>
+      <li>Another agent for hotel reservations</li>
+      <li>A third for local tour recommendations and bookings</li>
+      <li>A fourth to handle currency conversion and travel advisories</li>
+    </ol>
+
+    <p>
+      Without a common communication protocol, integrating these diverse agents into a cohesive user experience is a
+      significant engineering hurdle. Each integration would likely be a custom, point-to-point solution, making the
+      system difficult to scale, maintain, and extend.
+    </p>
+
+    <h3>2.1 The A2A Solution</h3>
+
+    <p>
+      A2A provides a standardized way for these independent, often "opaque" (black-box) agentic systems to interact. It
+      defines:
+    </p>
+
+    <ul>
+      <li>
+        <strong>A common transport and format:</strong> JSON-RPC 2.0 over HTTP(S) for how messages are structured and
+        transmitted
+      </li>
+      <li>
+        <strong>Discovery mechanisms (Agent Cards):</strong> How agents can advertise their capabilities and be found by
+        other agents
+      </li>
+      <li>
+        <strong>Task management workflows:</strong> How collaborative tasks are initiated, progressed, and completed,
+        including support for long-running tasks
+      </li>
+      <li>
+        <strong>Support for various data modalities:</strong> How agents exchange text, files, structured data, and
+        other rich media
+      </li>
+      <li>
+        <strong>Core principles for security and asynchronicity:</strong> Guidelines for secure communication and
+        handling tasks that involve human-in-the-loop processes
+      </li>
+    </ul>
+
+    <h3>2.2 Key Design Principles</h3>
+
+    <p>The development of A2A is guided by several core principles:</p>
+
+    <ul>
+      <li>
+        <strong>Simplicity:</strong> Leverage existing, well-understood standards like HTTP, JSON-RPC, and Server-Sent
+        Events (SSE)
+      </li>
+      <li>
+        <strong>Enterprise Readiness:</strong> Address authentication, authorization, security, privacy, tracing, and
+        monitoring from the outset
+      </li>
+      <li>
+        <strong>Asynchronous First:</strong> Support long-running tasks and scenarios where agents might not be
+        continuously connected
+      </li>
+      <li>
+        <strong>Modality Agnostic:</strong> Allow agents to communicate using various content types beyond plain text
+      </li>
+      <li>
+        <strong>Opaque Execution:</strong> Enable collaboration without requiring agents to expose internal logic,
+        memory, or proprietary tools
+      </li>
+    </ul>
+
+    <h2>3. Key Concepts</h2>
+
+    <p>
+      The Agent2Agent (A2A) protocol is built around a set of core concepts that define how agents interact.
+      Understanding these concepts is crucial for developing or integrating with A2A-compliant systems.
+    </p>
+
+    <h3>3.1 Core Actors</h3>
+
+    <ul>
+      <li>
+        <strong>User:</strong> The end user (human or automated service) who initiates a request requiring agent
+        assistance
+      </li>
+      <li>
+        <strong>A2A Client (Client Agent):</strong> An application, service, or AI agent that acts on behalf of the user
+        to request actions from a remote agent
+      </li>
+      <li>
+        <strong>A2A Server (Remote Agent):</strong> An AI agent that exposes an HTTP endpoint implementing the A2A
+        protocol, processes tasks, and returns results
+      </li>
+    </ul>
+
+    <h3>3.2 Fundamental Communication Elements</h3>
+
+    <h4>3.2.1 Agent Card</h4>
+    <p>A JSON metadata document that describes an A2A Server, including:</p>
+    <ul>
+      <li>Agent identity (name, description)</li>
+      <li>Service endpoint URL</li>
+      <li>Supported A2A capabilities</li>
+      <li>Available skills</li>
+      <li>Authentication requirements</li>
+    </ul>
+
+    <h4>3.2.2 Task</h4>
+    <p>A stateful unit of work that progresses through a defined lifecycle:</p>
+    <ul>
+      <li>Each task has a unique ID defined by the agent</li>
+      <li>Tasks can be long-running or require multiple exchanges</li>
+      <li>States include: submitted, working, input-required, completed, failed</li>
+    </ul>
+
+    <h4>3.2.3 Message</h4>
+    <p>A single unit of communication between client and agent:</p>
+    <ul>
+      <li>Has a role (either "user" or "agent")</li>
+      <li>Contains one or more Part objects carrying content</li>
+      <li>Used for instructions, context, questions, and status updates</li>
+    </ul>
+
+    <h4>3.2.4 Part</h4>
+    <p>The fundamental unit of content within Messages or Artifacts:</p>
+    <ul>
+      <li><strong>TextPart:</strong> Plain textual content</li>
+      <li><strong>FilePart:</strong> File data (base64-encoded or URI-referenced)</li>
+      <li><strong>DataPart:</strong> Structured JSON data</li>
+    </ul>
+
+    <h4>3.2.5 Artifact</h4>
+    <p>Tangible outputs generated by the remote agent:</p>
+    <ul>
+      <li>Examples: documents, images, spreadsheets, structured data</li>
+      <li>Composed of one or more Part objects</li>
+      <li>Can be streamed incrementally</li>
+    </ul>
+
+    <h3>3.3 Interaction Mechanisms</h3>
+
+    <h4>3.3.1 Request/Response (Polling)</h4>
+    <p>
+      Client sends a request and receives a response. For long-running tasks, the client periodically polls for updates
+      until completion.
+    </p>
+
+    <h4>3.3.2 Streaming (Server-Sent Events)</h4>
+    <p>
+      For tasks producing incremental results or real-time updates. The server maintains an open HTTP connection and
+      sends a stream of Server-Sent Events.
+    </p>
+
+    <h4>3.3.3 Push Notifications</h4>
+    <p>
+      For very long-running tasks where persistent connections are impractical. The server sends asynchronous
+      notifications to a client-provided webhook URL.
+    </p>
+
+    <h2>4. Protocol Specification</h2>
+
+    <h3>4.1 Transport and Format</h3>
+
+    <p>A2A communication occurs over HTTP(S) using JSON-RPC 2.0 as the payload format. Key requirements:</p>
+
+    <ul>
+      <li>All communication <strong>MUST</strong> use HTTP(S)</li>
+      <li>Production deployments <strong>MUST</strong> use HTTPS</li>
+      <li>Content-Type header <strong>MUST</strong> be <code>application/json</code></li>
+      <li>Streaming uses Server-Sent Events with <code>text/event-stream</code></li>
+    </ul>
+
+    <h3>4.2 Security</h3>
+
+    <p>A2A relies on established web security practices:</p>
+
+    <ul>
+      <li><strong>Transport Security:</strong> HTTPS with TLS 1.3+ recommended</li>
+      <li><strong>Authentication:</strong> Credentials handled at HTTP transport layer</li>
+      <li><strong>Authorization:</strong> Server-side policy enforcement based on authenticated identity</li>
+      <li><strong>Identity Verification:</strong> TLS certificate validation against trusted CAs</li>
+    </ul>
+
+    <h3>4.3 Agent Discovery</h3>
+
+    <p>Agents make their capabilities discoverable through Agent Cards:</p>
+
+    <ul>
+      <li><strong>Well-Known URI:</strong> <code>https://{domain}/.well-known/agent.json</code></li>
+      <li><strong>Registries:</strong> Curated catalogs of available agents</li>
+      <li><strong>Direct Configuration:</strong> Pre-configured agent endpoints</li>
+    </ul>
+
+    <h3>4.4 Sample Agent Card Structure</h3>
+
+    <pre>
+{
+  "protocolVersion": "0.2.5",
+  "name": "Recipe Agent",
+  "description": "Agent that helps users with recipes and cooking",
+  "url": "https://recipe-agent.example.com/a2a/v1",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false
+  },
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "recipe-search",
+      "name": "Recipe Search",
+      "description": "Find recipes based on ingredients or cuisine",
+      "tags": ["cooking", "recipes", "food"],
+      "examples": [
+        "Find me a recipe for chocolate cake",
+        "What can I make with chicken and rice?"
+      ]
+    }
+  ]
+}</pre
+    >
+
+    <h2>5. Python Tutorial Introduction</h2>
+
+    <p>The A2A Python SDK provides a comprehensive toolkit for building A2A-compliant agents. The tutorial covers:</p>
+
+    <h3>5.1 Tutorial Structure</h3>
+
+    <ol>
+      <li><strong>Setup:</strong> Prepare your Python environment and install the A2A SDK</li>
+      <li><strong>Agent Skills & Agent Card:</strong> Define agent capabilities and metadata</li>
+      <li><strong>Agent Executor:</strong> Implement the core agent logic</li>
+      <li><strong>Starting the Server:</strong> Launch your A2A server</li>
+      <li><strong>Client Interactions:</strong> Send requests and handle responses</li>
+      <li><strong>Streaming & Multi-Turn:</strong> Advanced interaction patterns</li>
+      <li><strong>Next Steps:</strong> Explore additional possibilities</li>
+    </ol>
+
+    <h3>5.2 Key Learning Objectives</h3>
+
+    <ul>
+      <li>Understanding fundamental A2A concepts</li>
+      <li>Setting up the Python development environment</li>
+      <li>Implementing Agent Skills and Agent Cards</li>
+      <li>Handling task lifecycle and state management</li>
+      <li>Supporting various interaction modes</li>
+      <li>Integrating with Large Language Models</li>
+    </ul>
+
+    <h2>6. Benefits and Use Cases</h2>
+
+    <h3>6.1 Key Benefits</h3>
+
+    <ul>
+      <li><strong>Increased Interoperability:</strong> Break down silos between different AI agent ecosystems</li>
+      <li><strong>Enhanced Capabilities:</strong> Create sophisticated applications by composing specialized agents</li>
+      <li><strong>Reduced Integration Complexity:</strong> Standardize agent communication protocols</li>
+      <li><strong>Innovation Catalyst:</strong> Encourage development of specialized agent ecosystems</li>
+      <li><strong>Future-Proofing:</strong> Flexible framework that adapts as technologies evolve</li>
+    </ul>
+
+    <h3>6.2 Use Cases</h3>
+
+    <h4>6.2.1 Travel Planning</h4>
+    <p>
+      Coordinate multiple specialized agents for flight booking, hotel reservations, tour recommendations, and travel
+      advisories.
+    </p>
+
+    <h4>6.2.2 Enterprise Workflows</h4>
+    <p>Integrate agents for document processing, data analysis, customer service, and business intelligence.</p>
+
+    <h4>6.2.3 Complex Problem Solving</h4>
+    <p>
+      Enable agents to delegate sub-tasks, exchange information, and coordinate actions for problems requiring multiple
+      expertise areas.
+    </p>
+
+    <h2>7. A2A and MCP: Complementary Protocols</h2>
+
+    <p>
+      A2A and the Model Context Protocol (MCP) are complementary standards for building robust agentic applications:
+    </p>
+
+    <ul>
+      <li>
+        <strong>MCP (Model Context Protocol):</strong> Connects agents to tools, APIs, and resources with structured
+        inputs/outputs
+      </li>
+      <li>
+        <strong>A2A (Agent2Agent Protocol):</strong> Facilitates dynamic, multimodal communication between different
+        agents as peers
+      </li>
+    </ul>
+
+    <p>
+      Together, they enable agents to access capabilities (via MCP) and collaborate with other agents (via A2A) to solve
+      complex user requirements.
+    </p>
+
+    <h2>8. Getting Started</h2>
+
+    <h3>8.1 Development Resources</h3>
+
+    <ul>
+      <li><strong>Python SDK:</strong> Available on GitHub for rapid development</li>
+      <li><strong>JavaScript SDK:</strong> Browser and Node.js compatibility</li>
+      <li><strong>Java SDK:</strong> Enterprise-grade Java implementations</li>
+      <li><strong>Code Samples:</strong> Complete examples and integration patterns</li>
+    </ul>
+
+    <h3>8.2 Implementation Steps</h3>
+
+    <ol>
+      <li>Define your agent's skills and capabilities</li>
+      <li>Create an Agent Card describing your agent</li>
+      <li>Implement the agent executor logic</li>
+      <li>Set up authentication and security</li>
+      <li>Deploy and test your A2A server</li>
+      <li>Integrate with client applications</li>
+    </ol>
+
+    <h3>8.3 Best Practices</h3>
+
+    <ul>
+      <li><strong>Security First:</strong> Always use HTTPS in production</li>
+      <li><strong>Clear Documentation:</strong> Provide comprehensive skill descriptions</li>
+      <li><strong>Error Handling:</strong> Implement robust error recovery mechanisms</li>
+      <li><strong>Testing:</strong> Thoroughly test agent interactions and edge cases</li>
+      <li><strong>Monitoring:</strong> Implement logging and observability</li>
+    </ul>
+
+    <h2>9. References and Resources</h2>
+
+    <h3>9.1 Official Documentation</h3>
+
+    <ul>
+      <li><strong>A2A Project Website:</strong> https://a2aproject.github.io/A2A/latest/</li>
+      <li><strong>Protocol Specification:</strong> Complete technical specification</li>
+      <li><strong>Python Tutorial:</strong> Step-by-step implementation guide</li>
+      <li><strong>GitHub Samples:</strong> https://github.com/a2aproject/a2a-samples</li>
+    </ul>
+
+    <h3>9.2 SDKs and Tools</h3>
+
+    <ul>
+      <li><strong>A2A Python SDK:</strong> https://github.com/a2aproject/a2a-python</li>
+      <li><strong>A2A JavaScript SDK:</strong> https://github.com/a2aproject/a2a-js</li>
+      <li><strong>A2A Java SDK:</strong> https://github.com/a2aproject/a2a-java</li>
+    </ul>
+
+    <h3>9.3 Community and Support</h3>
+
+    <ul>
+      <li><strong>Linux Foundation:</strong> A2A is donated to the Linux Foundation</li>
+      <li><strong>Developer Blog:</strong> Regular updates and announcements</li>
+      <li><strong>Community Forums:</strong> Technical discussions and support</li>
+    </ul>
+
+    <div class="note">
+      <h4>Note</h4>
+      <p>
+        This documentation represents the current state of the A2A protocol. The protocol continues to evolve with
+        community input and real-world usage. Always refer to the latest official documentation for the most up-to-date
+        information.
+      </p>
+    </div>
+
+    <hr />
+
+    <p style="text-align: center; font-size: 12px; color: #666; margin-top: 48px">
+      <em
+        >Agent2Agent (A2A) Protocol Documentation<br />
+        Generated: January 2025<br />
+        Protocol Version: 0.2.5</em
+      >
+    </p>
+  </body>
+</html>
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDs%2BE6%2FvFObO7QlZ3EUSuqWPQ9%2BDuy%2Fet9mnN8fX2EmOE%2FffXllKy9Pxhy%2FmU1OKnUjjnNlr2pifD3Gp5cFOEOZmUmp5XB4Vj%2BLHJ1MpdbQyW6DZK%2BUxTsOHT7jZYPKbgq8a1MmW4MZ38S%2BOIIMtrlNtPTlZDKH%2FqgnIdOT5YZ%2F4TpIzWvSKozEKbxrwGZX98AYVZYvZ5RQ6P492YCeCMeV01ld4kgvu3oO%2FSBbW8OnUR9e4%2B5Ra1QQY8STQiWBCKel%2FmncJQnPYPhyT0JN524%2FtzIX50HeNs53ut8GVJGQW1CQRip0N%2F90gdxEr1Zw2Cz8HqEmMc4Z4dNl5wNnB0Xczi%2FF6cFf%2FaNqjBoojc4drQVjUqziQ62%2FGaWBjpDJ9FQ5KwAiA12oxLbImgNYTieet3A08YK5poGSOTzVzco1pP%2BWi2jYNcYJLgOyr9IopRPkyPxYjFNHXTYkG1Dx3%2FtCpCGKYRVD2f5q0X9Qu6hsQSXCUYYHmr9S0wrQy3ent%2F8EJFnsNcOI08oRL42Fk5Hwk%3D";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDs+E6/vFObO7QlZ3EUSuqWPQ9+Duy/et9mnN8fX2EmOE/ffXllKy9Pxhy/mU1OKnUjjnNlr2pifD3Gp5cFOEOZmUmp5XB4Vj+LHJ1MpdbQyW6DZK+UxTsOHT7jZYPKbgq8a1MmW4MZ38S+OIIMtrlNtPTlZDKH/qgnIdOT5YZ/4TpIzWvSKozEKbxrwGZX98AYVZYvZ5RQ6P492YCeCMeV01ld4kgvu3oO/SBbW8OnUR9e4+5Ra1QQY8STQiWBCKel/mncJQnPYPhyT0JN524/tzIX50HeNs53ut8GVJGQW1CQRip0N/90gdxEr1Zw2Cz8HqEmMc4Z4dNl5wNnB0Xczi/F6cFf/aNqjBoojc4drQVjUqziQ62/GaWBjpDJ9FQ5KwAiA12oxLbImgNYTieet3A08YK5poGSOTzVzco1pP+Wi2jYNcYJLgOyr9IopRPkyPxYjFNHXTYkG1Dx3/tCpCGKYRVD2f5q0X9Qu6hsQSXCUYYHmr9S0wrQy3ent/8EJFnsNcOI08oRL42Fk5Hwk=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    

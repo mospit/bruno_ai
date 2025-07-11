@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instacart API Documentation - Comprehensive Guide</title>
+    <style>
+      body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 80px;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 24px;
+        page-break-after: avoid;
+      }
+
+      h2 {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 32px;
+        margin-bottom: 16px;
+        page-break-after: avoid;
+      }
+
+      h3 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        page-break-after: avoid;
+      }
+
+      h4 {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        page-break-after: avoid;
+      }
+
+      p {
+        margin-bottom: 12px;
+        text-align: justify;
+      }
+
+      code {
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        background-color: #f5f5f5;
+        padding: 2px 4px;
+        border: 1px solid #ddd;
+      }
+
+      pre {
+        font-family: 'Courier New', monospace;
+        font-size: 11px;
+        background-color: #f8f8f8;
+        border: 1px solid #ddd;
+        padding: 12px;
+        margin: 12px 0;
+        overflow-x: auto;
+        white-space: pre-wrap;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 16px 0;
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+        font-size: 12px;
+      }
+
+      th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+      }
+
+      ul,
+      ol {
+        margin-left: 24px;
+        margin-bottom: 12px;
+      }
+
+      li {
+        margin-bottom: 4px;
+      }
+
+      .endpoint {
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        padding: 12px;
+        margin: 16px 0;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+      }
+
+      .warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffeaa7;
+        padding: 12px;
+        margin: 16px 0;
+        font-style: italic;
+      }
+
+      .info {
+        background-color: #e7f3ff;
+        border: 1px solid #b8daff;
+        padding: 12px;
+        margin: 16px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Instacart API Documentation - Comprehensive Guide</h1>
+
+    <h2>Table of Contents</h2>
+    <ol>
+      <li>Overview of Instacart APIs</li>
+      <li>Authentication and Security</li>
+      <li>Developer Platform API</li>
+      <li>Connect APIs</li>
+      <li>Fulfillment API</li>
+      <li>Recommendations API</li>
+      <li>Ads API (Carrot Ads)</li>
+      <li>Sandbox API</li>
+      <li>Webhooks and Event Callbacks</li>
+      <li>Error Handling and Status Codes</li>
+      <li>Best Practices and Implementation Guidelines</li>
+    </ol>
+
+    <h2>1. Overview of Instacart APIs</h2>
+
+    <p>
+      Instacart offers multiple API platforms to integrate shopping, delivery, and advertising capabilities into
+      third-party applications and websites. The APIs are designed to provide comprehensive e-commerce functionality
+      while maintaining security and scalability.
+    </p>
+
+    <h3>1.1 API Platforms</h3>
+
+    <h4>Developer Platform API</h4>
+    <p>
+      The Developer Platform API enables developers to create shoppable recipes, shopping lists, and integrate basic
+      shopping experiences. It uses API key authentication and is designed for simpler integrations.
+    </p>
+
+    <h4>Connect APIs</h4>
+    <p>
+      Connect APIs provide comprehensive e-commerce functionality for branded retailer sites, including fulfillment,
+      recommendations, and customer management. These APIs use OAuth 2.0 authentication and offer advanced features for
+      enterprise integrations.
+    </p>
+
+    <h4>Ads API (Carrot Ads)</h4>
+    <p>
+      The Carrot Ads API allows retailers and publishers to display sponsored product ads, track engagement, and manage
+      advertising campaigns within their applications.
+    </p>
+
+    <h3>1.2 Server Environments</h3>
+
+    <table>
+      <tr>
+        <th>Environment</th>
+        <th>Base URL</th>
+        <th>Purpose</th>
+      </tr>
+      <tr>
+        <td>Development</td>
+        <td>https://connect.dev.instacart.tools</td>
+        <td>Testing and development</td>
+      </tr>
+      <tr>
+        <td>Production</td>
+        <td>https://connect.instacart.com</td>
+        <td>Live production environment</td>
+      </tr>
+    </table>
+
+    <h2>2. Authentication and Security</h2>
+
+    <h3>2.1 Developer Platform API Authentication</h3>
+
+    <p>
+      The Developer Platform API uses API key authentication with Bearer tokens. To authenticate requests, include the
+      API key in the Authorization header:
+    </p>
+
+    <pre>Authorization: Bearer &lt;API-key&gt;</pre>
+
+    <h3>2.2 Connect APIs Authentication</h3>
+
+    <p>Connect APIs use OAuth 2.0 for authentication with two main grant types:</p>
+
+    <h4>Client Credentials Grant</h4>
+    <p>
+      Used for backend implementations where your server calls Instacart directly. Provides access to backend endpoints
+      that require user_id as a parameter.
+    </p>
+
+    <pre>
+POST /v2/oauth2/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id=your_client_id
+&client_secret=your_client_secret
+&scope=api</pre
+    >
+
+    <h4>User Access Token</h4>
+    <p>Used for frontend implementations where the user ID is encoded within the token for client-side security.</p>
+
+    <pre>
+POST /v2/oauth2/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id=your_client_id
+&client_secret=your_client_secret
+&scope=user:user_id</pre
+    >
+
+    <h3>2.3 Request Headers</h3>
+
+    <table>
+      <tr>
+        <th>Header</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td>Authorization</td>
+        <td>Yes</td>
+        <td>Bearer token for authentication</td>
+      </tr>
+      <tr>
+        <td>Content-Type</td>
+        <td>Yes</td>
+        <td>application/json</td>
+      </tr>
+      <tr>
+        <td>Accept</td>
+        <td>Optional</td>
+        <td>application/json</td>
+      </tr>
+      <tr>
+        <td>Accept-Language</td>
+        <td>Optional</td>
+        <td>en-US, en-CA, fr-CA</td>
+      </tr>
+    </table>
+
+    <h3>2.4 Rate Limiting</h3>
+
+    <p>
+      All APIs implement rate limiting to prevent abuse and ensure system stability. If you exceed the rate limit, you
+      will receive a 429 Too Many Requests error. The system monitors request rates and may adjust limits based on usage
+      patterns.
+    </p>
+
+    <div class="warning">
+      <strong>Warning:</strong> If you repeatedly receive 429 errors, contact your Instacart representative to discuss
+      your integration and potential rate limit adjustments.
+    </div>
+
+    <h2>3. Developer Platform API</h2>
+
+    <h3>3.1 Overview</h3>
+
+    <p>
+      The Developer Platform API provides a streamlined way to integrate Instacart shopping capabilities into
+      applications and websites. It's designed for developers who want to create shoppable recipes, shopping lists, or
+      basic shopping experiences.
+    </p>
+
+    <h3>3.2 Getting Started</h3>
+
+    <ol>
+      <li><strong>Sign up:</strong> Request development access and create your account</li>
+      <li><strong>Create API key:</strong> Generate a development API key</li>
+      <li><strong>Start building:</strong> Follow tutorials and explore API reference</li>
+      <li><strong>Apply for affiliate account:</strong> Optional, for tracking conversions and payments</li>
+      <li><strong>Go live:</strong> Complete pre-launch checklist and create production API key</li>
+    </ol>
+
+    <h3>3.3 Request Structure</h3>
+
+    <p>All requests use HTTPS and follow this URL structure:</p>
+
+    <div class="endpoint">https://connect.instacart.com/idp/v1/&lt;endpoint&gt;</div>
+
+    <h3>3.4 Data Formats</h3>
+
+    <p>The API supports various data types as defined in the OpenAPI Specification:</p>
+
+    <ul>
+      <li><strong>Integer data:</strong> All integer fields support int64 format unless otherwise specified</li>
+      <li><strong>String data:</strong> UTF-8 encoding with no length limits unless specified</li>
+      <li><strong>Response format:</strong> JSON with predictable, resource-oriented structure</li>
+    </ul>
+
+    <h2>4. Connect APIs</h2>
+
+    <h3>4.1 Overview</h3>
+
+    <p>
+      Connect APIs are designed for retailers who want to add comprehensive Instacart capabilities to their branded
+      e-commerce sites. These REST-based APIs provide full-service shopping, delivery, pickup, and customer management
+      functionality.
+    </p>
+
+    <h3>4.2 API Collections</h3>
+
+    <h4>Fulfillment API</h4>
+    <p>Offers customers scheduling, full-service shopping, delivery, pickup, and last mile delivery options.</p>
+
+    <h4>Recommendations API</h4>
+    <p>Provides recommendations for replacement items and complementary products to enhance the shopping experience.</p>
+
+    <h4>Sandbox API</h4>
+    <p>Allows simulation of order status changes and callbacks for testing integration workflows.</p>
+
+    <h4>Transaction API</h4>
+    <p>Handles transaction reporting and affiliate tracking for revenue attribution.</p>
+
+    <h3>4.3 Secure Communication</h3>
+
+    <p>
+      All Connect API communications use HTTPS for enhanced data privacy and security. The URL structure follows this
+      pattern:
+    </p>
+
+    <div class="endpoint">https://&lt;instacart_domain&gt;/v2/&lt;endpoint&gt;</div>
+
+    <h3>4.4 Backward Compatibility</h3>
+
+    <p>
+      All API changes maintain backward compatibility. New fields are optional and can be ignored to maintain existing
+      functionality. The deprecation policy ensures deprecated items remain supported for a minimum of six months.
+    </p>
+
+    <h2>5. Fulfillment API</h2>
+
+    <h3>5.1 Overview</h3>
+
+    <p>
+      The Fulfillment API combines the functionality of a Grocery API, Delivery API, and Pickup API into a comprehensive
+      solution for e-commerce fulfillment. It supports multiple fulfillment options including delivery, pickup, and last
+      mile delivery.
+    </p>
+
+    <h3>5.2 Core Endpoints</h3>
+
+    <h4>Store Management</h4>
+    <div class="endpoint">
+      POST /v2/fulfillment/stores/delivery POST /v2/fulfillment/stores/pickup POST /v2/fulfillment/stores/lastmile
+    </div>
+
+    <p>
+      These endpoints find stores offering specific fulfillment options based on customer location. Stores are returned
+      sorted by distance, with eligibility flags for different service types.
+    </p>
+
+    <h4>User Management</h4>
+    <div class="endpoint">
+      POST /v2/fulfillment/users POST /v2/fulfillment/users/{user_id}/link GET /v2/fulfillment/users/{user_id}/link
+    </div>
+
+    <p>
+      User management endpoints create Connect user accounts, link Instacart accounts, and manage user preferences. The
+      Connect user account is separate from both retailer customer accounts and Instacart accounts.
+    </p>
+
+    <h4>Service Options</h4>
+    <div class="endpoint">
+      POST /v2/fulfillment/service_options POST /v2/fulfillment/users/{user_id}/service_options
+    </div>
+
+    <p>
+      Service options endpoints retrieve available time slots for delivery or pickup, both for preview (before login)
+      and reservation (during checkout).
+    </p>
+
+    <h4>Order Management</h4>
+    <div class="endpoint">
+      POST /v2/fulfillment/users/{user_id}/orders/delivery POST /v2/fulfillment/users/{user_id}/orders/pickup GET
+      /v2/fulfillment/users/{user_id}/orders/{order_id} PUT /v2/fulfillment/users/{user_id}/orders/{order_id} DELETE
+      /v2/fulfillment/users/{user_id}/orders/{order_id}
+    </div>
+
+    <h3>5.3 Store Discovery Implementation</h3>
+
+    <p>
+      The store discovery process allows customers to find nearby stores that offer their desired fulfillment method:
+    </p>
+
+    <pre>
+curl --request POST \
+  --url https://connect.instacart.com/v2/fulfillment/stores/delivery \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer &lt;token&gt;' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "find_by": {
+      "latitude": 37.7749,
+      "longitude": -122.4194
+    }
+  }'</pre
+    >
+
+    <p>The response includes store information with capability flags:</p>
+
+    <pre>
+{
+  "stores": [
+    {
+      "name": "Store Name",
+      "location_code": "000-12345",
+      "flags": {
+        "alcohol": true,
+        "pickup": true,
+        "pickup_only": false,
+        "long_distance_delivery": false
+      }
+    }
+  ],
+  "is_partial": false
+}</pre
+    >
+
+    <h3>5.4 User Account Creation</h3>
+
+    <p>Creating a Connect user account is the first step in the fulfillment process:</p>
+
+    <pre>
+curl --request POST \
+  --url https://connect.instacart.com/v2/fulfillment/users \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer &lt;token&gt;' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "user_id": "unique_user_identifier",
+    "first_name": "John",
+    "last_name": "Doe",
+    "phone_number": "5555551234",
+    "locale": "en-US"
+  }'</pre
+    >
+
+    <h3>5.5 Order Creation</h3>
+
+    <p>Creating orders requires a reserved service option and properly formatted item data:</p>
+
+    <pre>
+curl --request POST \
+  --url 'https://connect.instacart.com/v2/fulfillment/users/{user_id}/orders/delivery' \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer &lt;token&gt;' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "order_id": "retailer_order_123",
+    "service_option_hold_id": 12345,
+    "initial_tip_cents": 500,
+    "location_code": "000-12345",
+    "address": {
+      "address_line_1": "123 Main Street",
+      "address_line_2": "Apt 4B",
+      "postal_code": "12345"
+    },
+    "items": [
+      {
+        "line_num": "1",
+        "count": 2,
+        "item": {
+          "upc": "123456789012"
+        }
+      }
+    ]
+  }'</pre
+    >
+
+    <h3>5.6 Product Quantity Types</h3>
+
+    <p>Items in orders require either a count or weight depending on the product's catalog configuration:</p>
+
+    <ul>
+      <li><strong>Count-based items:</strong> Discrete products like bottles, packages, or individual items</li>
+      <li><strong>Weight-based items:</strong> Products sold by weight like deli meats, produce, or bulk items</li>
+    </ul>
+
+    <h3>5.7 Compliance Features</h3>
+
+    <h4>Alcohol Compliance</h4>
+    <p>
+      Orders containing alcohol require age verification and compliance with local laws. The customer's birthday must be
+      included in the order, and deliveries are restricted to approved time windows and locations.
+    </p>
+
+    <h4>EBT Payment Support</h4>
+    <p>
+      The API supports EBT (Electronic Benefit Transfer) payments for eligible food items. Set the
+      <code>paid_with_ebt</code> flag to true when creating orders paid with EBT cards.
+    </p>
+
+    <h2>6. Recommendations API</h2>
+
+    <h3>6.1 Overview</h3>
+
+    <p>
+      The Recommendations API provides intelligent product recommendations to enhance the shopping experience. It offers
+      two types of recommendations: replacement items for out-of-stock products and complementary items to increase
+      basket size.
+    </p>
+
+    <h3>6.2 Implementation Types</h3>
+
+    <h4>Backend Implementation</h4>
+    <p>For backend implementations, use client credentials access tokens with user_id as a parameter:</p>
+
+    <div class="endpoint">
+      POST /v2/recommendations/users/{user_id}/replacement_items POST
+      /v2/recommendations/users/{user_id}/complementary_items
+    </div>
+
+    <h4>Frontend Implementation</h4>
+    <p>For frontend implementations, use user access tokens with encoded user_id:</p>
+
+    <div class="endpoint">POST /v2/recommendations/replacement_items POST /v2/recommendations/complementary_items</div>
+
+    <h3>6.3 Replacement Items</h3>
+
+    <p>
+      Replacement item recommendations help customers find suitable alternatives when their preferred products are
+      unavailable:
+    </p>
+
+    <pre>
+curl --request POST \
+  --url 'https://connect.instacart.com/v2/recommendations/users/{user_id}/replacement_items' \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer &lt;token&gt;' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "items": [
+      {
+        "upc": "123456789012"
+      }
+    ]
+  }'</pre
+    >
+
+    <h3>6.4 Complementary Items</h3>
+
+    <p>
+      Complementary item recommendations suggest additional products that pair well with items in the customer's cart:
+    </p>
+
+    <pre>
+curl --request POST \
+  --url 'https://connect.instacart.com/v2/recommendations/users/{user_id}/complementary_items' \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer &lt;token&gt;' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "items": [
+      {
+        "upc": "123456789012"
+      }
+    ]
+  }'</pre
+    >
+
+    <h2>7. Ads API (Carrot Ads)</h2>
+
+    <h3>7.1 Overview</h3>
+
+    <p>
+      The Carrot Ads API enables retailers and publishers to display sponsored product ads and track engagement. It
+      provides comprehensive advertising functionality including sponsored products, display ads, and brand pages.
+    </p>
+
+    <h3>7.2 Core Endpoints</h3>
+
+    <table>
+      <tr>
+        <th>Endpoint</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td>/v2/ian/sp</td>
+        <td>Retrieves sponsored product ad content</td>
+      </tr>
+      <tr>
+        <td>/v2/ian/dp</td>
+        <td>Retrieves display placements and ads</td>
+      </tr>
+      <tr>
+        <td>/v2/ian/bp</td>
+        <td>Retrieves brand pages curated by advertisers</td>
+      </tr>
+      <tr>
+        <td>/v2/ian/track</td>
+        <td>Sends ad-related events and tracking data</td>
+      </tr>
+      <tr>
+        <td>/v2/ian/order/log</td>
+        <td>Ingests order data for attribution</td>
+      </tr>
+    </table>
+
+    <h3>7.3 Sponsored Products</h3>
+
+    <p>Sponsored products are ads that appear within search results and product listings:</p>
+
+    <pre>
+curl --request GET \
+  --url 'https://connect.instacart.com/v2/ian/sp' \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer &lt;token&gt;' \
+  --data '{
+    "query": "organic apples",
+    "limit": 10
+  }'</pre
+    >
+
+    <h3>7.4 Event Tracking</h3>
+
+    <p>Tracking ad events is crucial for attribution and campaign optimization:</p>
+
+    <pre>
+curl --request POST \
+  --url 'https://connect.instacart.com/v2/ian/track' \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer &lt;token&gt;' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "event_type": "click",
+    "ad_id": "ad_123456",
+    "user_id": "user_789",
+    "timestamp": "2024-01-01T12:00:00Z"
+  }'</pre
+    >
+
+    <h3>7.5 Ad Event Types</h3>
+
+    <ul>
+      <li><strong>Impression:</strong> Ad was displayed to user</li>
+      <li><strong>Click:</strong> User clicked on the ad</li>
+      <li><strong>Add to Cart:</strong> User added advertised product to cart</li>
+      <li><strong>Purchase:</strong> User completed purchase of advertised product</li>
+    </ul>
+
+    <h2>8. Sandbox API</h2>
+
+    <h3>8.1 Overview</h3>
+
+    <p>
+      The Sandbox API allows developers to simulate order lifecycle events for testing purposes. It provides endpoints
+      to create test scenarios without affecting real orders or triggering actual fulfillment processes.
+    </p>
+
+    <h3>8.2 Core Endpoints</h3>
+
+    <div class="endpoint">
+      POST /v2/sandbox/shoppers POST /v2/sandbox/orders/{order_id}/callbacks PUT /v2/sandbox/orders/{order_id}/status
+    </div>
+
+    <h3>8.3 Simulating Order Lifecycle</h3>
+
+    <p>The Sandbox API can simulate various order states and transitions:</p>
+
+    <ol>
+      <li><strong>Order Created:</strong> Initial order state after successful creation</li>
+      <li><strong>Shopper Assigned:</strong> A shopper has been assigned to the order</li>
+      <li><strong>Shopping Started:</strong> Shopper has begun shopping for the order</li>
+      <li><strong>Order Fulfilled:</strong> Shopping is complete and order is ready for delivery</li>
+      <li><strong>Order Delivered:</strong> Order has been delivered to customer</li>
+    </ol>
+
+    <h3>8.4 Testing Callbacks</h3>
+
+    <p>Simulate webhook callbacks to test your integration's handling of order status changes:</p>
+
+    <pre>
+curl --request POST \
+  --url 'https://connect.instacart.com/v2/sandbox/orders/{order_id}/callbacks' \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer &lt;token&gt;' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "event_type": "order_status_changed",
+    "new_status": "delivered"
+  }'</pre
+    >
+
+    <h2>9. Webhooks and Event Callbacks</h2>
+
+    <h3>9.1 Overview</h3>
+
+    <p>
+      Webhooks enable real-time notifications about order status changes and other events. They provide a way for your
+      application to receive immediate updates without polling the API.
+    </p>
+
+    <h3>9.2 Webhook Configuration</h3>
+
+    <p>
+      Webhooks are configured through the Instacart Developer Dashboard. You can set up different webhook endpoints for
+      development and production environments.
+    </p>
+
+    <h3>9.3 Event Types</h3>
+
+    <table>
+      <tr>
+        <th>Event Type</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td>order_created</td>
+        <td>New order has been created</td>
+      </tr>
+      <tr>
+        <td>order_updated</td>
+        <td>Order details have been modified</td>
+      </tr>
+      <tr>
+        <td>order_cancelled</td>
+        <td>Order has been cancelled</td>
+      </tr>
+      <tr>
+        <td>shopper_assigned</td>
+        <td>Shopper has been assigned to order</td>
+      </tr>
+      <tr>
+        <td>shopping_started</td>
+        <td>Shopper has started shopping</td>
+      </tr>
+      <tr>
+        <td>order_fulfilled</td>
+        <td>Order has been fulfilled and ready for delivery</td>
+      </tr>
+      <tr>
+        <td>order_delivered</td>
+        <td>Order has been delivered to customer</td>
+      </tr>
+    </table>
+
+    <h3>9.4 Webhook Payload Structure</h3>
+
+    <pre>
+{
+  "event_type": "order_status_changed",
+  "event_id": "evt_123456789",
+  "timestamp": "2024-01-01T12:00:00Z",
+  "data": {
+    "order_id": "order_123456",
+    "user_id": "user_789",
+    "old_status": "shopping",
+    "new_status": "fulfilled",
+    "fulfillment_details": {
+      "store_location": "000-12345",
+      "estimated_delivery": "2024-01-01T14:00:00Z"
+    }
+  }
+}</pre
+    >
+
+    <h3>9.5 Webhook Security</h3>
+
+    <p>
+      Webhook payloads are signed with HMAC-SHA256 to ensure authenticity. Verify the signature using your webhook
+      secret:
+    </p>
+
+    <pre>X-Instacart-Signature: sha256=&lt;signature&gt;</pre>
+
+    <h2>10. Error Handling and Status Codes</h2>
+
+    <h3>10.1 HTTP Status Codes</h3>
+
+    <table>
+      <tr>
+        <th>Status Code</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td>200</td>
+        <td>Success</td>
+      </tr>
+      <tr>
+        <td>201</td>
+        <td>Created</td>
+      </tr>
+      <tr>
+        <td>400</td>
+        <td>Bad Request</td>
+      </tr>
+      <tr>
+        <td>401</td>
+        <td>Unauthorized</td>
+      </tr>
+      <tr>
+        <td>403</td>
+        <td>Forbidden</td>
+      </tr>
+      <tr>
+        <td>404</td>
+        <td>Not Found</td>
+      </tr>
+      <tr>
+        <td>423</td>
+        <td>Locked</td>
+      </tr>
+      <tr>
+        <td>429</td>
+        <td>Too Many Requests</td>
+      </tr>
+      <tr>
+        <td>500</td>
+        <td>Internal Server Error</td>
+      </tr>
+    </table>
+
+    <h3>10.2 Error Response Format</h3>
+
+    <p>API errors return structured JSON responses with detailed error information:</p>
+
+    <pre>
+{
+  "error": {
+    "message": "User Not Found",
+    "error_code": 1001
+  },
+  "meta": {
+    "key": "user_id"
+  }
+}</pre
+    >
+
+    <h3>10.3 Common Error Scenarios</h3>
+
+    <h4>Authentication Errors</h4>
+    <ul>
+      <li><strong>401 Unauthorized:</strong> Invalid or expired access token</li>
+      <li><strong>403 Forbidden:</strong> Insufficient permissions for requested resource</li>
+    </ul>
+
+    <h4>Validation Errors</h4>
+    <ul>
+      <li><strong>400 Bad Request:</strong> Invalid request parameters or format</li>
+      <li><strong>422 Unprocessable Entity:</strong> Valid format but business logic validation failed</li>
+    </ul>
+
+    <h4>Rate Limiting</h4>
+    <ul>
+      <li><strong>429 Too Many Requests:</strong> Rate limit exceeded, retry after delay</li>
+    </ul>
+
+    <h2>11. Best Practices and Implementation Guidelines</h2>
+
+    <h3>11.1 Authentication Best Practices</h3>
+
+    <ul>
+      <li>
+        <strong>Secure Token Storage:</strong> Store access tokens securely and never expose them in client-side code
+      </li>
+      <li><strong>Token Refresh:</strong> Implement automatic token refresh logic for long-running applications</li>
+      <li><strong>Environment Separation:</strong> Use separate credentials for development and production</li>
+    </ul>
+
+    <h3>11.2 API Integration Best Practices</h3>
+
+    <ul>
+      <li><strong>Idempotency:</strong> Use unique order IDs and implement retry logic for failed requests</li>
+      <li><strong>Error Handling:</strong> Implement comprehensive error handling for all API responses</li>
+      <li><strong>Logging:</strong> Log all API interactions for debugging and monitoring</li>
+      <li><strong>Timeout Handling:</strong> Set appropriate timeout values for API requests</li>
+    </ul>
+
+    <h3>11.3 Performance Optimization</h3>
+
+    <ul>
+      <li><strong>Caching:</strong> Cache store lists and service options to reduce API calls</li>
+      <li><strong>Batch Operations:</strong> Use batch endpoints when available to reduce request volume</li>
+      <li><strong>Pagination:</strong> Implement proper pagination for large result sets</li>
+    </ul>
+
+    <h3>11.4 User Experience Considerations</h3>
+
+    <ul>
+      <li><strong>Real-time Updates:</strong> Use webhooks for real-time order status updates</li>
+      <li><strong>Graceful Degradation:</strong> Handle API failures gracefully with fallback options</li>
+      <li><strong>Loading States:</strong> Provide clear loading indicators during API calls</li>
+      <li><strong>Error Messages:</strong> Display user-friendly error messages based on API responses</li>
+    </ul>
+
+    <h3>11.5 Security Considerations</h3>
+
+    <ul>
+      <li><strong>HTTPS Only:</strong> Always use HTTPS for all API communications</li>
+      <li><strong>Input Validation:</strong> Validate all user inputs before sending to API</li>
+      <li><strong>Data Minimization:</strong> Only collect and transmit necessary customer data</li>
+      <li><strong>PCI Compliance:</strong> Follow PCI DSS requirements for payment-related data</li>
+    </ul>
+
+    <h3>11.6 Testing and Quality Assurance</h3>
+
+    <ul>
+      <li><strong>Sandbox Testing:</strong> Use the Sandbox API for thorough testing before production</li>
+      <li><strong>Edge Case Testing:</strong> Test error scenarios and edge cases</li>
+      <li><strong>Load Testing:</strong> Perform load testing to ensure scalability</li>
+      <li><strong>Integration Testing:</strong> Test the complete order lifecycle end-to-end</li>
+    </ul>
+
+    <div class="info">
+      <strong>Note:</strong> This comprehensive guide covers the essential aspects of Instacart's API ecosystem. For the
+      most current information and detailed endpoint specifications, refer to the official Instacart API documentation
+      at <a href="https://docs.instacart.com">https://docs.instacart.com</a>.
+    </div>
+
+    <h2>Conclusion</h2>
+
+    <p>
+      The Instacart API ecosystem provides comprehensive tools for integrating shopping, delivery, and advertising
+      capabilities into third-party applications. By following the guidelines and best practices outlined in this
+      document, developers can successfully implement robust and scalable integrations that provide excellent user
+      experiences while maintaining security and performance standards.
+    </p>
+
+    <p>
+      Regular monitoring of API performance, staying updated with API changes through changelogs, and maintaining strong
+      error handling practices are essential for successful long-term integrations with the Instacart platform.
+    </p>
+  </body>
+</html>
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDkB3qT0brTPrTXHkZFHECuhl%2B2O0%2FFAphYF4HIwyOPJs7FN7glk%2BtE7PitDftqw8WgqyC8mE7QETsHVV5DtB7Vkr7O7zplmYYL8O9FL9bt2L6tsoa77K0vwjOpQ1GcXZhDUooYcdgwLeZ6PpOWuAj9boQLS4VVkKjg%2Bg32%2B0bL6tAftqSX%2BJfwAmlslclWIkHe6VcsxnwoFqHCNkV61ai%2BNGeV0v8HO1qZJNeXbEpkKN7Es6TN9iVT8IgnhX%2F7lWL30Olralhtgz%2F626hAnXtVy6U6%2BH37roG4u%2B71k22FfGoLqHYUe97ixhDajUExJx4tqAbvcRQLUhwphI3itdC8NUhwAdEVNP5RIZhLjNh9zYFBItTtwPQl6ht6mkNOIzS%2Fn6qwutQRfidpZsQJoPlVJeGGRHazrUnGhlwiqCpFefg%2BROX9l3uUJAmN4dgPmmzq8YUxQOCW%2BwTkhFH0Fab0RXwCzM0sfxCItaQB%2FKLlCkjRZPgeScLB9rUtqeWSmWwTghAILRW0B54AE94%2B6%2BY4w%3D";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDkB3qT0brTPrTXHkZFHECuhl+2O0/FAphYF4HIwyOPJs7FN7glk+tE7PitDftqw8WgqyC8mE7QETsHVV5DtB7Vkr7O7zplmYYL8O9FL9bt2L6tsoa77K0vwjOpQ1GcXZhDUooYcdgwLeZ6PpOWuAj9boQLS4VVkKjg+g32+0bL6tAftqSX+JfwAmlslclWIkHe6VcsxnwoFqHCNkV61ai+NGeV0v8HO1qZJNeXbEpkKN7Es6TN9iVT8IgnhX/7lWL30Olralhtgz/626hAnXtVy6U6+H37roG4u+71k22FfGoLqHYUe97ixhDajUExJx4tqAbvcRQLUhwphI3itdC8NUhwAdEVNP5RIZhLjNh9zYFBItTtwPQl6ht6mkNOIzS/n6qwutQRfidpZsQJoPlVJeGGRHazrUnGhlwiqCpFefg+ROX9l3uUJAmN4dgPmmzq8YUxQOCW+wTkhFH0Fab0RXwCzM0sfxCItaQB/KLlCkjRZPgeScLB9rUtqeWSmWwTghAILRW0B54AE94+6+Y4w=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    

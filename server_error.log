@@ -1,0 +1,115 @@
+2025-07-10 05:12:15.632 | WARNING  | agents.v2.base_agent:<module>:42 - Preference engine not available: attempted relative import beyond top-level package
+2025-07-10 05:12:15.635 | WARNING  | agents.v2.base_agent:<module>:48 - Auth manager not available: attempted relative import beyond top-level package
+2025-07-10 05:12:15.639 | INFO     | agents.v2.model_router:__init__:85 - ModelRouter initialized with smart cost optimization
+2025-07-10 05:12:15 | INFO | agents.v2.a2a_gateway:__init__:72 - Bruno A2A Gateway V2.0 initialized
+2025-07-10 05:12:15 | INFO | __main__:__init__:37 - Bruno AI System V2.0 initialized
+2025-07-10 05:12:15 | INFO | __main__:start_system:172 - Starting Bruno AI System V2.0...
+2025-07-10 05:12:15 | INFO | __main__:initialize_agents:41 - Initializing Bruno AI agents...
+2025-07-10 05:12:15 | INFO | agents.v2.base_agent:__init__:111 - Initialized Bruno Master Agent v2.0.0
+2025-07-10 05:12:15 | INFO | agents.v2.bruno_master_agent:__init__:87 - Bruno Master Agent V2.0 initialized successfully
+2025-07-10 05:12:15 | INFO | agents.v2.base_agent:__init__:111 - Initialized Instacart Integration Agent v2.0.0
+2025-07-10 05:12:15 | INFO | agents.v2.instacart_integration_agent:__init__:115 - Instacart Integration Agent V2.0 initialized successfully
+2025-07-10 05:12:15 | INFO | agents.v2.base_agent:__init__:111 - Initialized Budget Analyst Agent v2.0.0
+2025-07-10 05:12:15 | INFO | agents.v2.budget_analyst_agent:__init__:62 - Budget Analyst Agent V2.0 initialized
+2025-07-10 05:12:15 | INFO | agents.v2.base_agent:__init__:111 - Initialized Recipe Chef Agent v2.0.0
+2025-07-10 05:12:15 | INFO | agents.v2.recipe_chef_agent:__init__:71 - Recipe Chef Agent V2.0 initialized successfully
+2025-07-10 05:12:15 | INFO | agents.v2.base_agent:__init__:111 - Initialized Nutrition Guide Agent v2.0.0
+2025-07-10 05:12:15 | INFO | agents.v2.nutrition_guide_agent:__init__:55 - Nutrition Guide Agent V2.0 initialized successfully
+2025-07-10 05:12:15 | INFO | agents.v2.base_agent:__init__:111 - Initialized Pantry Manager Agent v2.0.0
+2025-07-10 05:12:15 | INFO | agents.v2.pantry_manager_agent:__init__:63 - Pantry Manager Agent V2.0 initialized successfully
+2025-07-10 05:12:15 | INFO | __main__:initialize_agents:54 - Successfully initialized 6 agents
+2025-07-10 05:12:15 | INFO | __main__:_create_agent_servers:77 - Created server for bruno_master_agent on port 8080
+2025-07-10 05:12:15 | INFO | __main__:_create_agent_servers:77 - Created server for instacart_integration_agent on port 8081
+2025-07-10 05:12:15 | INFO | __main__:_create_agent_servers:77 - Created server for budget_analyst_agent on port 8082
+2025-07-10 05:12:15 | INFO | __main__:_create_agent_servers:77 - Created server for recipe_chef_agent on port 8083
+2025-07-10 05:12:15 | INFO | __main__:_create_agent_servers:77 - Created server for nutrition_guide_agent on port 8084
+2025-07-10 05:12:15 | INFO | __main__:_create_agent_servers:77 - Created server for pantry_manager_agent on port 8085
+2025-07-10 05:12:15 | INFO | __main__:start_system:179 - Starting A2A Gateway...
+2025-07-10 05:12:15 | INFO | __main__:_run_gateway:249 - Starting A2A Gateway on 0.0.0.0:3001
+INFO:     Started server process [42520]
+INFO:     Waiting for application startup.
+2025-07-10 05:12:15 | INFO | agents.v2.a2a_gateway:start_background_tasks:345 - Background tasks started
+2025-07-10 05:12:15 | INFO | agents.v2.a2a_gateway:startup_event:537 - Bruno A2A Gateway V2.0 started successfully
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:3001 (Press CTRL+C to quit)
+2025-07-10 05:12:17 | INFO | __main__:start_system:186 - Starting agent servers...
+2025-07-10 05:12:17 | INFO | __main__:_run_agent_server:231 - Starting bruno_master_agent server on port 8080
+INFO:     Started server process [42520]
+INFO:     Waiting for application startup.
+2025-07-10 05:12:17 | INFO | __main__:_run_agent_server:231 - Starting instacart_integration_agent server on port 8081
+INFO:     Started server process [42520]
+INFO:     Waiting for application startup.
+2025-07-10 05:12:17 | INFO | __main__:_run_agent_server:231 - Starting budget_analyst_agent server on port 8082
+INFO:     Started server process [42520]
+INFO:     Waiting for application startup.
+2025-07-10 05:12:17 | INFO | __main__:_run_agent_server:231 - Starting recipe_chef_agent server on port 8083
+INFO:     Started server process [42520]
+INFO:     Waiting for application startup.
+2025-07-10 05:12:17 | INFO | __main__:_run_agent_server:231 - Starting nutrition_guide_agent server on port 8084
+INFO:     Started server process [42520]
+INFO:     Waiting for application startup.
+2025-07-10 05:12:17 | INFO | __main__:_run_agent_server:231 - Starting pantry_manager_agent server on port 8085
+INFO:     Started server process [42520]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Application startup complete.
+INFO:     Application startup complete.
+INFO:     Application startup complete.
+INFO:     Application startup complete.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+INFO:     Uvicorn running on http://0.0.0.0:8081 (Press CTRL+C to quit)
+INFO:     Uvicorn running on http://0.0.0.0:8082 (Press CTRL+C to quit)
+INFO:     Uvicorn running on http://0.0.0.0:8083 (Press CTRL+C to quit)
+INFO:     Uvicorn running on http://0.0.0.0:8084 (Press CTRL+C to quit)
+INFO:     Uvicorn running on http://0.0.0.0:8085 (Press CTRL+C to quit)
+2025-07-10 05:12:19 | INFO | __main__:start_system:198 - Registering agents with gateway...
+2025-07-10 05:12:20 | INFO | agents.v2.a2a_gateway:register_agent:149 - Agent bruno_master_agent registered successfully
+2025-07-10 05:12:20 | INFO | __main__:_register_agent_with_gateway:156 - Successfully registered bruno_master_agent with gateway
+2025-07-10 05:12:21 | INFO | agents.v2.a2a_gateway:register_agent:149 - Agent instacart_integration_agent registered successfully
+2025-07-10 05:12:21 | INFO | __main__:_register_agent_with_gateway:156 - Successfully registered instacart_integration_agent with gateway
+2025-07-10 05:12:22 | INFO | agents.v2.a2a_gateway:register_agent:149 - Agent budget_analyst_agent registered successfully
+2025-07-10 05:12:22 | INFO | __main__:_register_agent_with_gateway:156 - Successfully registered budget_analyst_agent with gateway
+2025-07-10 05:12:23 | INFO | agents.v2.a2a_gateway:register_agent:149 - Agent recipe_chef_agent registered successfully
+2025-07-10 05:12:23 | INFO | __main__:_register_agent_with_gateway:156 - Successfully registered recipe_chef_agent with gateway
+2025-07-10 05:12:23 | INFO | agents.v2.a2a_gateway:register_agent:149 - Agent nutrition_guide_agent registered successfully
+2025-07-10 05:12:23 | INFO | __main__:_register_agent_with_gateway:156 - Successfully registered nutrition_guide_agent with gateway
+2025-07-10 05:12:24 | INFO | agents.v2.a2a_gateway:register_agent:149 - Agent pantry_manager_agent registered successfully
+2025-07-10 05:12:24 | INFO | __main__:_register_agent_with_gateway:156 - Successfully registered pantry_manager_agent with gateway
+2025-07-10 05:12:24 | INFO | __main__:start_system:205 - Bruno AI System V2.0 started successfully!
+2025-07-10 05:12:24 | INFO | __main__:start_system:206 - Gateway running on http://localhost:3001
+2025-07-10 05:12:24 | INFO | __main__:start_system:207 - Agents running on ports 8080-8085
+2025-07-10 13:03:32 | INFO | agents.v2.base_agent:process_task:129 - Processing task task_1752170612.245979 for Bruno Master Agent
+2025-07-10 13:03:36 | WARNING | agents.v2.bruno_master_agent:_analyze_user_request:496 - AI analysis failed: Expecting value: line 1 column 1 (char 0), using fallback parsing
+2025-07-10 13:03:36 | INFO | agents.v2.bruno_master_agent:orchestrate_meal_planning:134 - Starting meal planning orchestration
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [42520]
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [42520]
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [42520]
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [42520]
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [42520]
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [42520]
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [42520]
+2025-07-10 13:03:59 | INFO | __main__:run_system:309 - System shutdown requested
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1752170641.975577   44212 init.cc:232] grpc_wait_for_shutdown_with_timeout() timed out.

@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bruno AI Style Guide</title>
+    <style>
+      body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 80px;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 32px;
+        page-break-after: avoid;
+      }
+
+      h2 {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 32px;
+        margin-bottom: 16px;
+        page-break-after: avoid;
+      }
+
+      h3 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        page-break-after: avoid;
+      }
+
+      h4 {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        page-break-after: avoid;
+      }
+
+      p {
+        margin-bottom: 12px;
+        text-align: justify;
+      }
+
+      ul,
+      ol {
+        margin-bottom: 12px;
+        padding-left: 24px;
+      }
+
+      li {
+        margin-bottom: 6px;
+      }
+
+      .color-swatch {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 1px solid #ccc;
+        vertical-align: middle;
+        margin-right: 8px;
+      }
+
+      .section-break {
+        margin-top: 40px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 16px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f5f5f5;
+        font-weight: bold;
+      }
+
+      .code-text {
+        font-family: 'Courier New', monospace;
+        background-color: #f8f8f8;
+        padding: 2px 4px;
+        border: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Bruno AI Style Guide</h1>
+
+    <h2>1. Introduction</h2>
+    <p>
+      This style guide defines the visual, interactive, and tonal standards for the Bruno AI mobile app, ensuring a
+      consistent, intuitive, and user-empowering experience. Designed for cross-platform use (iOS/Android), it draws
+      from 2025 best practices in mobile UI/UX, emphasizing minimalism, personalization, and accessibility for
+      collaborative apps like grocery shopping and meal prep tools.
+    </p>
+
+    <p>
+      The guide is comprehensive for LLM implementation and should be used as a reference prompt for generating screens,
+      text, or components. For example: "Generate a dashboard card following the Bruno AI style guide's typography and
+      color rules."
+    </p>
+
+    <h3>Key Principles</h3>
+    <ul>
+      <li>
+        <strong>User-Centric Empowerment</strong>: Designs prioritize collaboration, adapting to user wants without
+        overwhelming elements. Favor clean layouts with gesture support for intuitive flows.
+      </li>
+      <li>
+        <strong>Bear-Inspired Warmth</strong>: Subtle whimsy (e.g., rounded shapes evoking Bruno's fur) balanced with
+        professionalism for a "talking bear" feel.
+      </li>
+      <li>
+        <strong>Accessibility First</strong>: High contrast, scalable text, and voice integration for inclusivity.
+      </li>
+      <li>
+        <strong>Cross-Platform Consistency</strong>: Follow Material Design 3 (Android) and Human Interface Guidelines
+        (iOS) hybrids with rounded components, fluid animations, and adaptive layouts.
+      </li>
+      <li>
+        <strong>Trends 2025</strong>: Voice-first interactions, AI-driven personalization, and eco-friendly subtle
+        animations.
+      </li>
+    </ul>
+
+    <div class="section-break"></div>
+
+    <h2>2. Branding and Identity</h2>
+
+    <h3>Logo and Mascot</h3>
+    <ul>
+      <li>
+        <strong>Logo</strong>: A stylized bear face (Bruno) with a subtle apron, in Warm Brown (#8B4513). Variants
+        include full logo with name in sans-serif font and icon-only version for app icon.
+      </li>
+      <li>
+        <strong>Tagline</strong>: "Your Collaborative Kitchen Companion" – Used in onboarding and marketing materials.
+      </li>
+      <li>
+        <strong>Mascot Usage</strong>: Bruno appears in headers/chat as a smiling avatar and in subtle animations (e.g.,
+        paw wave for loading). Limit to 20% of UI to maintain professionalism.
+      </li>
+      <li><strong>App Icon</strong>: Bear face on Soft Beige background, with green accent for Instacart tie-in.</li>
+    </ul>
+
+    <h3>Voice and Tone</h3>
+    <p>
+      Bruno embodies a warm, professional bear persona that is confident, adaptive, and questioning. The voice should
+      avoid slang and use collaborative language such as "we" and "let's" to foster partnership. Sentence length should
+      be kept short for readability (15-25 words maximum).
+    </p>
+
+    <p>
+      For LLM implementation: "Generate text in Bruno's voice: Warm, practical, user-focused, with subtle bear charm
+      like 'my bear instincts say...'."
+    </p>
+
+    <div class="section-break"></div>
+
+    <h2>3. Color Palette</h2>
+    <p>
+      A nature-inspired color scheme designed for warmth and approachability, with high contrast meeting WCAG AA
+      compliance standards.
+    </p>
+
+    <h3>Primary Colors</h3>
+    <table>
+      <tr>
+        <th>Color</th>
+        <th>Hex Code</th>
+        <th>Usage</th>
+      </tr>
+      <tr>
+        <td><span class="color-swatch" style="background-color: #8b4513"></span>Warm Brown</td>
+        <td>#8B4513</td>
+        <td>Headers, buttons, Bruno elements, chat bubbles</td>
+      </tr>
+      <tr>
+        <td><span class="color-swatch" style="background-color: #43b02a"></span>Instacart Green</td>
+        <td>#43B02A</td>
+        <td>Action buttons, progress bars, "Add to Cart" functions</td>
+      </tr>
+    </table>
+
+    <h3>Secondary Colors</h3>
+    <table>
+      <tr>
+        <th>Color</th>
+        <th>Hex Code</th>
+        <th>Usage</th>
+      </tr>
+      <tr>
+        <td><span class="color-swatch" style="background-color: #d2b48c"></span>Soft Beige</td>
+        <td>#D2B48C</td>
+        <td>Backgrounds, cards</td>
+      </tr>
+      <tr>
+        <td><span class="color-swatch" style="background-color: #228b22"></span>Deep Forest Green</td>
+        <td>#228B22</td>
+        <td>Icons, borders in pantry/shopping sections</td>
+      </tr>
+      <tr>
+        <td><span class="color-swatch" style="background-color: #f5f5f5"></span>Light Gray</td>
+        <td>#F5F5F5</td>
+        <td>Text fields, neutral backgrounds</td>
+      </tr>
+    </table>
+
+    <h3>Accent Colors</h3>
+    <table>
+      <tr>
+        <th>Color</th>
+        <th>Hex Code</th>
+        <th>Usage</th>
+      </tr>
+      <tr>
+        <td><span class="color-swatch" style="background-color: #ffd700"></span>Golden Yellow</td>
+        <td>#FFD700</td>
+        <td>Highlights, deals, positive feedback</td>
+      </tr>
+      <tr>
+        <td><span class="color-swatch" style="background-color: #ff4500"></span>Error Red</td>
+        <td>#FF4500</td>
+        <td>Warnings and error states (softened for non-alarm)</td>
+      </tr>
+      <tr>
+        <td><span class="color-swatch" style="background-color: #20b2aa"></span>Success Blue-Green</td>
+        <td>#20B2AA</td>
+        <td>Confirmations and success messages</td>
+      </tr>
+    </table>
+
+    <h3>Usage Guidelines</h3>
+    <ul>
+      <li>Limit to 3-4 colors per screen</li>
+      <li>Use gradients sparingly (brown to green for transitions)</li>
+      <li>Dark mode: Invert to darker brown (#5A3A1F) primaries with lighter accents</li>
+      <li>For LLM: "Apply color palette: Use Warm Brown for accents, ensure contrast ratio greater than 4.5:1"</li>
+    </ul>
+
+    <div class="section-break"></div>
+
+    <h2>4. Typography</h2>
+    <p>
+      Sans-serif fonts are used throughout for modern readability, with scalable text sizes (minimum 16px base size).
+    </p>
+
+    <h3>Font Family</h3>
+    <ul>
+      <li><strong>Primary</strong>: Roboto (Android) or SF Pro (iOS) for platform consistency</li>
+      <li><strong>Fallback</strong>: System sans-serif fonts</li>
+    </ul>
+
+    <h3>Typography Hierarchy</h3>
+    <table>
+      <tr>
+        <th>Element</th>
+        <th>Size</th>
+        <th>Weight</th>
+        <th>Color</th>
+        <th>Usage</th>
+      </tr>
+      <tr>
+        <td>Headings (H1)</td>
+        <td>24px</td>
+        <td>Bold</td>
+        <td>Warm Brown</td>
+        <td>Screen titles</td>
+      </tr>
+      <tr>
+        <td>Subheadings (H2)</td>
+        <td>18px</td>
+        <td>Medium</td>
+        <td>Warm Brown</td>
+        <td>Card titles, section headers</td>
+      </tr>
+      <tr>
+        <td>Body Text</td>
+        <td>16px</td>
+        <td>Regular</td>
+        <td>Dark Gray (#333333)</td>
+        <td>Descriptions, general content</td>
+      </tr>
+      <tr>
+        <td>Captions</td>
+        <td>14px</td>
+        <td>Light</td>
+        <td>Medium Gray</td>
+        <td>Timestamps, tags, metadata</td>
+      </tr>
+      <tr>
+        <td>Button Text</td>
+        <td>16px</td>
+        <td>Bold</td>
+        <td>White</td>
+        <td>Action buttons on colored backgrounds</td>
+      </tr>
+    </table>
+
+    <h3>Formatting Guidelines</h3>
+    <ul>
+      <li>Line height: 1.5x font size for optimal readability</li>
+      <li>Letter spacing: 0.5% for improved legibility</li>
+      <li>Text alignment: Left-aligned for body text</li>
+      <li>Emphasis: Use bold sparingly for important information</li>
+      <li>
+        For LLM: "Use typography: H1 for titles in 24px Bold Warm Brown; ensure body text is 16px with 1.5 line height"
+      </li>
+    </ul>
+
+    <div class="section-break"></div>
+
+    <h2>5. Icons and Imagery</h2>
+
+    <h3>Icon Style</h3>
+    <ul>
+      <li><strong>Style</strong>: Line icons with rounded edges, 24-48px size range</li>
+      <li><strong>Colors</strong>: Deep Forest Green or Warm Brown for consistency</li>
+      <li><strong>Theme</strong>: Bear-themed where appropriate (e.g., paw print for pantry)</li>
+      <li><strong>Icon Set</strong>: Use Material Icons for cross-platform consistency</li>
+    </ul>
+
+    <h3>Key Application Icons</h3>
+    <table>
+      <tr>
+        <th>Function</th>
+        <th>Icon</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td>Home</td>
+        <td>House</td>
+        <td>Dashboard/main screen navigation</td>
+      </tr>
+      <tr>
+        <td>Chat</td>
+        <td>Speech bubble</td>
+        <td>Conversation with Bruno</td>
+      </tr>
+      <tr>
+        <td>Pantry</td>
+        <td>Refrigerator/Paw print</td>
+        <td>Food inventory management</td>
+      </tr>
+      <tr>
+        <td>Shopping</td>
+        <td>Shopping cart</td>
+        <td>Grocery list and purchasing</td>
+      </tr>
+      <tr>
+        <td>Prep</td>
+        <td>Plate/Utensils</td>
+        <td>Meal preparation and recipes</td>
+      </tr>
+    </table>
+
+    <h3>Imagery Guidelines</h3>
+    <ul>
+      <li>Use high-resolution photos for food items and recipes</li>
+      <li>Bruno illustrations should maintain earthy, natural styling</li>
+      <li>Avoid stock imagery in favor of realistic, user-generated content</li>
+      <li>All images must include appropriate alt text for accessibility</li>
+      <li>Icons should be scalable vector format (SVG) for crisp rendering</li>
+    </ul>
+
+    <h3>Animation Guidelines</h3>
+    <ul>
+      <li>Subtle animations with 300ms ease-in timing</li>
+      <li>Cart shake animation for adding items</li>
+      <li>Bruno-specific animations: paw wave for loading states</li>
+      <li>Keep animations minimal and purposeful</li>
+    </ul>
+
+    <div class="section-break"></div>
+
+    <h2>6. UI Components</h2>
+
+    <h3>Buttons</h3>
+    <ul>
+      <li><strong>Primary Buttons</strong>: Instacart Green background, white text, 8px border radius</li>
+      <li><strong>Secondary Buttons</strong>: Warm Brown outline, brown text, transparent background</li>
+      <li><strong>States</strong>: Hover (lighten by 10%), Disabled (grayed out), Active (slightly darker)</li>
+      <li><strong>Sizing</strong>: Minimum 44px height for touch accessibility</li>
+    </ul>
+
+    <h3>Cards</h3>
+    <ul>
+      <li><strong>Background</strong>: Soft Beige with 16px border radius</li>
+      <li><strong>Shadow</strong>: Subtle 2px shadow for depth</li>
+      <li><strong>Expandable</strong>: Include chevron icon for collapsible content</li>
+      <li><strong>Padding</strong>: 16px internal padding for content</li>
+    </ul>
+
+    <h3>Progress Indicators</h3>
+    <ul>
+      <li><strong>Progress Bars</strong>: Horizontal layout, Instacart Green fill on Light Gray track</li>
+      <li><strong>Labels</strong>: Percentage or fraction display in bold text</li>
+      <li><strong>Loading States</strong>: Animated Bruno paw or simple spinner</li>
+    </ul>
+
+    <h3>Input Fields</h3>
+    <ul>
+      <li><strong>Style</strong>: Rounded fields with clear placeholder text</li>
+      <li><strong>Icons</strong>: Voice and photo upload icons positioned inside field</li>
+      <li><strong>Focus States</strong>: Warm Brown border highlight</li>
+      <li><strong>Validation</strong>: Clear error messaging with Error Red color</li>
+    </ul>
+
+    <h3>Modal Dialogs</h3>
+    <ul>
+      <li><strong>Size</strong>: 80% of screen width, center-positioned</li>
+      <li><strong>Controls</strong>: Close X button and confirm/cancel actions</li>
+      <li><strong>Background</strong>: Semi-transparent overlay for context</li>
+    </ul>
+
+    <div class="section-break"></div>
+
+    <h2>7. Layout and Navigation</h2>
+
+    <h3>Grid System</h3>
+    <ul>
+      <li><strong>Base Unit</strong>: 8px for consistent spacing</li>
+      <li><strong>Margins</strong>: 16px side margins, 8px between elements</li>
+      <li><strong>Responsive Design</strong>: Adapt from grid to list view on smaller screens</li>
+      <li><strong>Breakpoints</strong>: Design for phone, tablet, and landscape orientations</li>
+    </ul>
+
+    <h3>Navigation Structure</h3>
+    <ul>
+      <li><strong>Bottom Tab Bar</strong>: Maximum 5 primary navigation items</li>
+      <li><strong>Overflow Menu</strong>: Hamburger menu for additional options</li>
+      <li><strong>Deep Linking</strong>: Direct navigation from chat to relevant screens</li>
+      <li><strong>Back Navigation</strong>: Clear breadcrumb trail and back button placement</li>
+    </ul>
+
+    <h3>Screen Flow</h3>
+    <ul>
+      <li><strong>Home Hub</strong>: Central dashboard with quick access to all functions</li>
+      <li><strong>Task-Based Flow</strong>: Logical progression from planning to execution</li>
+      <li><strong>Context Switching</strong>: Seamless movement between related tasks</li>
+    </ul>
+
+    <div class="section-break"></div>
+
+    <h2>8. Interactions and Gestures</h2>
+
+    <h3>Gesture Support</h3>
+    <ul>
+      <li><strong>Swipe</strong>: Left/right for tab navigation, up/down for item deletion</li>
+      <li><strong>Drag and Drop</strong>: Reorder items in lists and move between categories</li>
+      <li><strong>Pinch Zoom</strong>: Scale images and detailed views</li>
+      <li><strong>Pull to Refresh</strong>: Update content in list views</li>
+    </ul>
+
+    <h3>Animation Specifications</h3>
+    <ul>
+      <li><strong>Micro-animations</strong>: 200ms fade-in for cards and content</li>
+      <li><strong>Transitions</strong>: Ease-out curve for natural feeling</li>
+      <li><strong>Loading States</strong>: Bruno paw animation with gentle bounce</li>
+      <li><strong>Feedback</strong>: Subtle scale animation for button presses</li>
+    </ul>
+
+    <h3>Haptic Feedback</h3>
+    <ul>
+      <li><strong>Tap Confirmation</strong>: Light haptic feedback for button presses</li>
+      <li><strong>Success Actions</strong>: Medium haptic for completed tasks</li>
+      <li><strong>Error States</strong>: Distinct haptic pattern for warnings</li>
+    </ul>
+
+    <div class="section-break"></div>
+
+    <h2>9. Accessibility Standards</h2>
+
+    <h3>Compliance Requirements</h3>
+    <ul>
+      <li><strong>WCAG 2.2 AA</strong>: Meet or exceed accessibility guidelines</li>
+      <li><strong>Dynamic Text</strong>: Support text scaling up to 200% without loss of functionality</li>
+      <li><strong>Screen Reader</strong>: Full VoiceOver and TalkBack support with descriptive labels</li>
+      <li><strong>Contrast Ratios</strong>: Minimum 4.5:1 for normal text, 3:1 for large text</li>
+    </ul>
+
+    <h3>Inclusive Design Features</h3>
+    <ul>
+      <li><strong>Color Blindness</strong>: Use patterns and textures in addition to color coding</li>
+      <li><strong>Motor Accessibility</strong>: Minimum 44px touch targets for all interactive elements</li>
+      <li><strong>Cognitive Accessibility</strong>: Clear, simple language with consistent navigation</li>
+      <li><strong>Voice Navigation</strong>: Full voice control capability for hands-free operation</li>
+    </ul>
+
+    <h3>Implementation Guidelines</h3>
+    <ul>
+      <li><strong>Alt Text</strong>: Descriptive alternative text for all images and icons</li>
+      <li><strong>Focus Management</strong>: Logical tab order and clear focus indicators</li>
+      <li><strong>Error Prevention</strong>: Clear validation and confirmation dialogs</li>
+      <li><strong>Multiple Input Methods</strong>: Support for voice, text, and touch input</li>
+    </ul>
+
+    <div class="section-break"></div>
+
+    <h2>10. Cross-Platform Consistency</h2>
+
+    <h3>iOS Adaptations</h3>
+    <ul>
+      <li>Follow Human Interface Guidelines for navigation patterns</li>
+      <li>Use SF Pro font family for text rendering</li>
+      <li>Implement iOS-specific gestures (edge swipe for back navigation)</li>
+      <li>Adapt button styles to iOS conventions while maintaining brand colors</li>
+    </ul>
+
+    <h3>Android Adaptations</h3>
+    <ul>
+      <li>Follow Material Design 3 principles for component behavior</li>
+      <li>Use Roboto font family for optimal Android rendering</li>
+      <li>Implement floating action buttons where appropriate</li>
+      <li>Utilize Android-specific navigation patterns (bottom sheets, navigation drawer)</li>
+    </ul>
+
+    <h3>Responsive Design</h3>
+    <ul>
+      <li><strong>Portrait Mode</strong>: Primary design orientation with vertical scrolling</li>
+      <li><strong>Landscape Mode</strong>: Adaptive layout with horizontal space utilization</li>
+      <li><strong>Tablet Support</strong>: Expanded layouts with multi-column arrangements</li>
+      <li><strong>One-Handed Use</strong>: Important controls within thumb reach</li>
+    </ul>
+
+    <div class="section-break"></div>
+
+    <h2>11. Implementation Guidelines for LLM</h2>
+
+    <h3>Design Generation Prompts</h3>
+    <ul>
+      <li>
+        <strong>Color Application</strong>: "Apply Bruno AI color palette: Use Warm Brown (#8B4513) for headers,
+        Instacart Green (#43B02A) for actions, ensure contrast ratio >4.5:1"
+      </li>
+      <li>
+        <strong>Typography</strong>: "Use Bruno AI typography: H1 24px Bold Warm Brown for titles, 16px body text with
+        1.5 line height"
+      </li>
+      <li>
+        <strong>Component Design</strong>: "Create card component: 16px border radius, Soft Beige background, 2px
+        shadow, expandable with chevron"
+      </li>
+      <li>
+        <strong>Layout Structure</strong>: "Design screen using 8px grid system, 16px margins, bottom tab navigation"
+      </li>
+    </ul>
+
+    <h3>Content Generation</h3>
+    <ul>
+      <li>
+        <strong>Voice Guidelines</strong>: "Generate text in Bruno's voice: warm, practical, user-focused, with subtle
+        bear personality"
+      </li>
+      <li><strong>Accessibility</strong>: "Include alt text for all images, ensure screen reader compatibility"</li>
+      <li><strong>Interaction Design</strong>: "Add swipe gestures with 200ms animations, include haptic feedback"</li>
+    </ul>
+
+    <div class="section-break"></div>
+
+    <h2>12. Version Control and Maintenance</h2>
+
+    <h3>Version History</h3>
+    <ul>
+      <li><strong>Version 1.0</strong> (July 11, 2025): Initial comprehensive style guide</li>
+      <li><strong>Review Schedule</strong>: Quarterly assessment for updates and improvements</li>
+      <li><strong>Trend Updates</strong>: Annual review of design trends and accessibility standards</li>
+    </ul>
+
+    <h3>Maintenance Protocol</h3>
+    <ul>
+      <li>Monitor user feedback for design effectiveness</li>
+      <li>Update color palette based on accessibility compliance changes</li>
+      <li>Refresh component library with new interaction patterns</li>
+      <li>Maintain consistency across platform updates (iOS/Android)</li>
+    </ul>
+
+    <p style="text-align: center; margin-top: 40px; font-style: italic">
+      This style guide ensures consistent, accessible, and user-friendly design implementation across all Bruno AI
+      touchpoints.
+    </p>
+  </body>
+</html>
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDmJor7y8T098zlCzlv0nYGrbGKqMDf7HBsefGze%2FRBGwNiGKjP%2FQq4gwSf%2FqDBQS7oAmYbEkZRF7ljta%2F2fBOtRJ8zpZRE72caplGVs8LNNt49qHUYvYsdMXIh218dn402wCAZlGHs%2F93jrUNz6m1t0PorLp4Py378Pb7dzOZ56iUiDvtWtDgP6kXugnBZvLXHmNqOw3ZRvAWkhqLvcI8KcNOKj7LlG0s9o60p9VAuoF4yTQv6E2rjJbchTfYFXBkiIr0elV40zpDqb3uCjfi400YqzhrbTzRif3JULEUPsMulhDpTqTfQddBXq8syj5yPjCgtFIMOv%2BPEgmFsPxfokpL6w%2BIJctL34zgA2bF1%2Bn2PEt0Gwk%2FZwWove55SK4UrH3UEVEY2fov6zCHi%2BvgYq7UVElTxMclsczThmrd6PuM%2BMnpRRh%2Fsxpo3DvUrgblFWQDTjvU3ApjBlYePEfKKBQ%2FUOu2FcnF20CCNMaitj6GNbBOJVvmE7bFAkTFjKkOg%3D%3D";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDmJor7y8T098zlCzlv0nYGrbGKqMDf7HBsefGze/RBGwNiGKjP/Qq4gwSf/qDBQS7oAmYbEkZRF7ljta/2fBOtRJ8zpZRE72caplGVs8LNNt49qHUYvYsdMXIh218dn402wCAZlGHs/93jrUNz6m1t0PorLp4Py378Pb7dzOZ56iUiDvtWtDgP6kXugnBZvLXHmNqOw3ZRvAWkhqLvcI8KcNOKj7LlG0s9o60p9VAuoF4yTQv6E2rjJbchTfYFXBkiIr0elV40zpDqb3uCjfi400YqzhrbTzRif3JULEUPsMulhDpTqTfQddBXq8syj5yPjCgtFIMOv+PEgmFsPxfokpL6w+IJctL34zgA2bF1+n2PEt0Gwk/ZwWove55SK4UrH3UEVEY2fov6zCHi+vgYq7UVElTxMclsczThmrd6PuM+MnpRRh/sxpo3DvUrgblFWQDTjvU3ApjBlYePEfKKBQ/UOu2FcnF20CCNMaitj6GNbBOJVvmE7bFAkTFjKkOg==";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    

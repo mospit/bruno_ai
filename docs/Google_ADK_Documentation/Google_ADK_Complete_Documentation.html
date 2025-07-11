@@ -1,0 +1,1153 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google ADK (Agent Development Kit) - Complete Documentation</title>
+    <style>
+      body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 80px;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin: 0 0 24px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      h2 {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 24px 0 12px 0;
+        border-bottom: 1px solid #000;
+        padding-bottom: 4px;
+      }
+
+      h3 {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 18px 0 8px 0;
+      }
+
+      h4 {
+        font-size: 14px;
+        font-weight: bold;
+        margin: 14px 0 6px 0;
+      }
+
+      p {
+        margin: 0 0 12px 0;
+        text-align: justify;
+      }
+
+      ul,
+      ol {
+        margin: 12px 0;
+        padding-left: 24px;
+      }
+
+      li {
+        margin: 6px 0;
+      }
+
+      code {
+        font-family: 'Courier New', monospace;
+        background: #f5f5f5;
+        padding: 2px 4px;
+        font-size: 11px;
+      }
+
+      pre {
+        font-family: 'Courier New', monospace;
+        background: #f5f5f5;
+        padding: 12px;
+        margin: 12px 0;
+        border: 1px solid #ccc;
+        font-size: 10px;
+        line-height: 1.4;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+        font-size: 12px;
+      }
+
+      th {
+        background: #f0f0f0;
+        font-weight: bold;
+      }
+
+      .note {
+        background: #f8f8f8;
+        border: 1px solid #ddd;
+        padding: 12px;
+        margin: 12px 0;
+        font-style: italic;
+      }
+
+      .example {
+        background: #fafafa;
+        border-left: 4px solid #000;
+        padding: 12px;
+        margin: 12px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Google ADK (Agent Development Kit) - Complete Documentation</h1>
+
+    <h2>Table of Contents</h2>
+    <ol>
+      <li>Introduction to ADK</li>
+      <li>Getting Started</li>
+      <li>Core Concepts</li>
+      <li>Agent Types</li>
+      <li>Tools and Tool Development</li>
+      <li>Multi-Agent Systems</li>
+      <li>Deployment Strategies</li>
+      <li>Best Practices and Development Guidelines</li>
+    </ol>
+
+    <h2>1. Introduction to ADK</h2>
+
+    <p>
+      The Agent Development Kit (ADK) is a flexible and modular framework for developing and deploying AI agents. While
+      optimized for Gemini and the Google ecosystem, ADK is model-agnostic, deployment-agnostic, and built for
+      compatibility with other frameworks. ADK was designed to make agent development feel more like software
+      development, making it easier for developers to create, deploy, and orchestrate agentic architectures that range
+      from simple tasks to complex workflows.
+    </p>
+
+    <h3>1.1 Key Features</h3>
+    <ul>
+      <li>
+        <strong>Flexible Orchestration:</strong> Define workflows using workflow agents (Sequential, Parallel, Loop) for
+        predictable pipelines, or leverage LLM-driven dynamic routing for adaptive behavior
+      </li>
+      <li>
+        <strong>Multi-Agent Architecture:</strong> Build modular and scalable applications by composing multiple
+        specialized agents in a hierarchy
+      </li>
+      <li>
+        <strong>Rich Tool Ecosystem:</strong> Equip agents with diverse capabilities using pre-built tools, custom
+        functions, or integration with third-party libraries
+      </li>
+      <li>
+        <strong>Deployment Ready:</strong> Containerize and deploy agents anywhere - locally, on Vertex AI Agent Engine,
+        or using Cloud Run/Docker
+      </li>
+      <li><strong>Built-in Evaluation:</strong> Systematically assess agent performance and execution trajectory</li>
+      <li><strong>Safety and Security:</strong> Built-in patterns for building powerful and trustworthy agents</li>
+    </ul>
+
+    <h3>1.2 Core Philosophy</h3>
+    <p>
+      ADK treats agents as self-contained execution units designed to act autonomously to achieve specific goals. Agents
+      can perform tasks, interact with users, utilize external tools, and coordinate with other agents. The foundation
+      for all agents in ADK is the BaseAgent class, which serves as the fundamental blueprint for creating functional
+      agents.
+    </p>
+
+    <h2>2. Getting Started</h2>
+
+    <h3>2.1 Installation</h3>
+
+    <h4>Python Installation</h4>
+    <pre>
+# Create and activate virtual environment
+python -m venv .venv
+source .venv/bin/activate  # macOS/Linux
+# or
+.venv\Scripts\activate.bat  # Windows CMD
+
+# Install ADK
+pip install google-adk
+</pre
+    >
+
+    <h4>Java Installation</h4>
+    <pre>
+<!-- Maven -->
+&lt;dependency&gt;
+    &lt;groupId&gt;com.google.adk&lt;/groupId&gt;
+    &lt;artifactId&gt;google-adk&lt;/artifactId&gt;
+    &lt;version&gt;0.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+
+<!-- Gradle -->
+dependencies {
+    implementation 'com.google.adk:google-adk:0.1.0'
+}
+</pre>
+
+    <h3>2.2 Quick Start Example</h3>
+
+    <div class="example">
+      <h4>Python Example - Multi-Tool Agent</h4>
+      <pre>
+from google.adk.agents import Agent
+
+def get_weather(city: str) -> dict:
+    """Retrieves the current weather report for a specified city."""
+    if city.lower() == "new york":
+        return {
+            "status": "success",
+            "report": "The weather in New York is sunny with a temperature of 25 degrees Celsius."
+        }
+    else:
+        return {
+            "status": "error",
+            "error_message": f"Weather information for '{city}' is not available."
+        }
+
+def get_current_time(city: str) -> dict:
+    """Returns the current time in a specified city."""
+    if city.lower() == "new york":
+        return {
+            "status": "success",
+            "report": "The current time in New York is 2:30 PM EST"
+        }
+    else:
+        return {
+            "status": "error",
+            "error_message": f"Sorry, I don't have timezone information for {city}."
+        }
+
+root_agent = Agent(
+    name="weather_time_agent",
+    model="gemini-2.0-flash",
+    description="Agent to answer questions about the time and weather in a city.",
+    instruction="You are a helpful agent who can answer user questions about the time and weather in a city.",
+    tools=[get_weather, get_current_time],
+)
+</pre
+      >
+    </div>
+
+    <h3>2.3 Model Configuration</h3>
+
+    <p>ADK supports multiple model providers and requires authentication setup:</p>
+
+    <h4>Gemini - Google AI Studio</h4>
+    <pre>
+# .env file
+GOOGLE_GENAI_USE_VERTEXAI=FALSE
+GOOGLE_API_KEY=your_actual_api_key_here
+</pre
+    >
+
+    <h4>Gemini - Google Cloud Vertex AI</h4>
+    <pre>
+# .env file
+GOOGLE_GENAI_USE_VERTEXAI=TRUE
+GOOGLE_CLOUD_PROJECT=your_project_id
+GOOGLE_CLOUD_LOCATION=your_location
+</pre
+    >
+
+    <h3>2.4 Running Your Agent</h3>
+
+    <p>ADK provides multiple ways to interact with your agents:</p>
+
+    <ul>
+      <li><strong>Dev UI:</strong> <code>adk web</code> - Browser-based interactive interface</li>
+      <li><strong>Terminal:</strong> <code>adk run</code> - Command-line chat interface</li>
+      <li><strong>API Server:</strong> <code>adk api_server</code> - Local FastAPI server for testing</li>
+    </ul>
+
+    <h2>3. Core Concepts</h2>
+
+    <h3>3.1 Agents</h3>
+    <p>
+      In ADK, an Agent is a self-contained execution unit designed to act autonomously to achieve specific goals. All
+      agents inherit from the BaseAgent class and can perform tasks, interact with users, utilize external tools, and
+      coordinate with other agents.
+    </p>
+
+    <h3>3.2 Tools</h3>
+    <p>
+      Tools represent specific capabilities provided to an AI agent, enabling it to perform actions and interact with
+      the world beyond its core text generation and reasoning abilities. Tools are typically modular code components
+      like Python/Java functions, class methods, or even other specialized agents.
+    </p>
+
+    <h3>3.3 Sessions and State</h3>
+    <p>
+      ADK manages conversation state through sessions, allowing agents to maintain context across interactions. State
+      can be scoped at different levels:
+    </p>
+    <ul>
+      <li><strong>Session-specific:</strong> Data specific to the current conversation</li>
+      <li>
+        <strong>User-specific:</strong> Data that persists across all sessions for a user (prefix: <code>user:</code>)
+      </li>
+      <li><strong>Application-wide:</strong> Data shared across all users (prefix: <code>app:</code>)</li>
+      <li><strong>Temporary:</strong> Data that doesn't persist (prefix: <code>temp:</code>)</li>
+    </ul>
+
+    <h3>3.4 Events and Invocation Context</h3>
+    <p>
+      Agent execution is event-driven, with each interaction generating events that contain responses, tool calls, state
+      changes, and other execution details. The InvocationContext provides agents with access to session data, state,
+      and execution environment.
+    </p>
+
+    <h2>4. Agent Types</h2>
+
+    <p>ADK provides three main categories of agents to build sophisticated applications:</p>
+
+    <h3>4.1 LLM Agents</h3>
+
+    <p>
+      LLM Agents utilize Large Language Models as their core engine to understand natural language, reason, plan,
+      generate responses, and dynamically decide how to proceed. They are ideal for flexible, language-centric tasks.
+    </p>
+
+    <h4>Key Features:</h4>
+    <ul>
+      <li>Natural language understanding and generation</li>
+      <li>Dynamic tool selection and usage</li>
+      <li>Context-aware decision making</li>
+      <li>Support for system instructions and prompting</li>
+      <li>Function calling capabilities</li>
+    </ul>
+
+    <div class="example">
+      <h4>Example LLM Agent Configuration:</h4>
+      <pre>
+llm_agent = LlmAgent(
+    name="CustomerSupport",
+    model="gemini-2.0-flash",
+    description="Handles customer support inquiries",
+    instruction="You are a helpful customer support agent. Always be polite and try to resolve issues.",
+    tools=[search_knowledge_base, create_ticket, escalate_to_human],
+    allow_transfer=True,
+    transfer_scope="sub_agents"
+)
+</pre
+      >
+    </div>
+
+    <h3>4.2 Workflow Agents</h3>
+
+    <p>
+      Workflow Agents control the execution flow of other agents in predefined, deterministic patterns without using an
+      LLM for flow control. They are perfect for structured processes needing predictable execution.
+    </p>
+
+    <h4>Sequential Agent</h4>
+    <p>
+      Executes sub-agents one after another in the order they are listed, passing the same InvocationContext
+      sequentially.
+    </p>
+
+    <div class="example">
+      <h4>Sequential Agent Example:</h4>
+      <pre>
+sequential_pipeline = SequentialAgent(
+    name="DataProcessingPipeline",
+    sub_agents=[
+        data_validator,
+        data_processor,
+        result_formatter
+    ]
+)
+</pre
+      >
+    </div>
+
+    <h4>Parallel Agent</h4>
+    <p>
+      Executes sub-agents concurrently, dramatically speeding up workflows where tasks can be performed simultaneously.
+    </p>
+
+    <div class="example">
+      <h4>Parallel Agent Example:</h4>
+      <pre>
+parallel_gatherer = ParallelAgent(
+    name="InformationGatherer",
+    sub_agents=[
+        weather_fetcher,
+        news_fetcher,
+        stock_fetcher
+    ]
+)
+</pre
+      >
+    </div>
+
+    <h4>Loop Agent</h4>
+    <p>Executes sub-agents sequentially in a loop, useful for iterative processes or monitoring tasks.</p>
+
+    <div class="example">
+      <h4>Loop Agent Example:</h4>
+      <pre>
+loop_monitor = LoopAgent(
+    name="StatusMonitor",
+    max_iterations=10,
+    sub_agents=[
+        status_checker,
+        condition_evaluator
+    ]
+)
+</pre
+      >
+    </div>
+
+    <h3>4.3 Custom Agents</h3>
+
+    <p>
+      Custom Agents are created by extending BaseAgent directly, allowing implementation of unique operational logic,
+      specific control flows, or specialized integrations not covered by standard types.
+    </p>
+
+    <div class="example">
+      <h4>Custom Agent Example:</h4>
+      <pre>
+class DatabaseAgent(BaseAgent):
+    def __init__(self, db_connection):
+        super().__init__(name="DatabaseAgent", description="Handles database operations")
+        self.db = db_connection
+    
+    async def _run_async_impl(self, ctx: InvocationContext):
+        # Custom database logic here
+        query_result = await self.execute_query(ctx.session.state.get('query'))
+        yield Event(author=self.name, content=query_result)
+</pre
+      >
+    </div>
+
+    <h2>5. Tools and Tool Development</h2>
+
+    <p>
+      Tools are the primary way agents interact with external systems and extend their capabilities beyond text
+      generation. ADK supports several types of tools:
+    </p>
+
+    <h3>5.1 Function Tools</h3>
+
+    <p>Function Tools are user-defined code components tailored to specific application needs.</p>
+
+    <h4>Standard Function Tools</h4>
+    <div class="example">
+      <pre>
+def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> dict:
+    """Calculate the distance between two geographic coordinates.
+    
+    Args:
+        lat1: Latitude of first point
+        lon1: Longitude of first point  
+        lat2: Latitude of second point
+        lon2: Longitude of second point
+        
+    Returns:
+        dict: Distance calculation result with status and distance
+    """
+    import math
+    
+    # Haversine formula implementation
+    R = 6371  # Earth's radius in kilometers
+    
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    
+    a = (math.sin(dlat/2)**2 + 
+         math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * 
+         math.sin(dlon/2)**2)
+    
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    distance = R * c
+    
+    return {
+        "status": "success",
+        "distance_km": round(distance, 2),
+        "distance_miles": round(distance * 0.621371, 2)
+    }
+</pre
+      >
+    </div>
+
+    <h4>Long Running Function Tools</h4>
+    <p>For tools that perform asynchronous operations or take significant time to complete:</p>
+
+    <div class="example">
+      <pre>
+import asyncio
+from google.adk.tools import LongRunningFunctionTool
+
+async def process_large_dataset(dataset_id: str) -> dict:
+    """Process a large dataset asynchronously."""
+    # Simulate long-running process
+    await asyncio.sleep(30)
+    
+    return {
+        "status": "completed",
+        "dataset_id": dataset_id,
+        "processed_records": 1000000
+    }
+
+long_running_tool = LongRunningFunctionTool(func=process_large_dataset)
+</pre
+      >
+    </div>
+
+    <h4>Agents as Tools</h4>
+    <p>Use another agent as a tool for a parent agent:</p>
+
+    <div class="example">
+      <pre>
+from google.adk.tools import AgentTool
+
+image_generator = LlmAgent(
+    name="ImageGenerator",
+    model="gemini-2.0-flash",
+    description="Generates images based on text prompts"
+)
+
+image_tool = AgentTool(agent=image_generator)
+
+creative_agent = LlmAgent(
+    name="CreativeAssistant",
+    model="gemini-2.0-flash",
+    tools=[image_tool]
+)
+</pre
+      >
+    </div>
+
+    <h3>5.2 Built-in Tools</h3>
+
+    <p>ADK provides ready-to-use tools for common tasks:</p>
+
+    <ul>
+      <li><strong>Google Search:</strong> Web search capabilities</li>
+      <li><strong>Code Execution:</strong> Python code execution in sandboxed environment</li>
+      <li><strong>RAG (Retrieval-Augmented Generation):</strong> Document retrieval and question answering</li>
+      <li><strong>File Processing:</strong> Handle various file formats</li>
+    </ul>
+
+    <h3>5.3 Third-Party Tools</h3>
+
+    <p>Integrate tools from popular external libraries:</p>
+
+    <ul>
+      <li><strong>LangChain Tools:</strong> Access to LangChain's extensive tool ecosystem</li>
+      <li><strong>CrewAI Tools:</strong> Integration with CrewAI tools</li>
+      <li><strong>OpenAPI Tools:</strong> Generate tools from OpenAPI specifications</li>
+      <li><strong>MCP Tools:</strong> Model Context Protocol compatibility</li>
+    </ul>
+
+    <h3>5.4 Tool Context and Advanced Features</h3>
+
+    <p>Tools can access additional contextual information through the ToolContext parameter:</p>
+
+    <div class="example">
+      <pre>
+from google.adk.tools import ToolContext
+
+def update_user_preference(preference: str, value: str, tool_context: ToolContext):
+    """Updates a user-specific preference with access to session state."""
+    user_prefs_key = "user:preferences"
+    preferences = tool_context.state.get(user_prefs_key, {})
+    preferences[preference] = value
+    tool_context.state[user_prefs_key] = preferences
+    
+    # Control agent flow
+    if preference == "language":
+        tool_context.actions.transfer_to_agent = "translation_agent"
+    
+    return {"status": "success", "updated_preference": preference}
+</pre
+      >
+    </div>
+
+    <h3>5.5 Toolsets</h3>
+
+    <p>Toolsets allow dynamic management of tool collections:</p>
+
+    <div class="example">
+      <pre>
+from google.adk.tools import BaseToolset, BaseTool
+
+class DatabaseToolset(BaseToolset):
+    def __init__(self, db_connection):
+        self.db = db_connection
+    
+    async def get_tools(self, readonly_context=None) -> list[BaseTool]:
+        """Return available tools based on user permissions."""
+        tools = [
+            FunctionTool(func=self.query_data),
+            FunctionTool(func=self.get_schema)
+        ]
+        
+        # Add admin tools if user has permissions
+        if readonly_context and readonly_context.state.get("user:role") == "admin":
+            tools.append(FunctionTool(func=self.delete_data))
+        
+        return tools
+    
+    async def close(self):
+        """Cleanup resources."""
+        await self.db.close()
+</pre
+      >
+    </div>
+
+    <h2>6. Multi-Agent Systems</h2>
+
+    <p>
+      ADK supports building sophisticated applications by composing multiple agents into collaborative systems.
+      Multi-agent systems offer enhanced modularity, specialization, reusability, and maintainability.
+    </p>
+
+    <h3>6.1 Agent Hierarchy</h3>
+
+    <p>Agents can be organized in parent-child relationships:</p>
+
+    <div class="example">
+      <pre>
+# Define specialized agents
+billing_agent = LlmAgent(name="Billing", description="Handles billing inquiries")
+support_agent = LlmAgent(name="Support", description="Handles technical support")
+
+# Create coordinator with sub-agents
+coordinator = LlmAgent(
+    name="CustomerService",
+    description="Main customer service coordinator",
+    instruction="Route requests to appropriate specialists",
+    sub_agents=[billing_agent, support_agent]
+)
+</pre
+      >
+    </div>
+
+    <h3>6.2 Communication Mechanisms</h3>
+
+    <h4>Shared Session State</h4>
+    <p>Agents communicate through shared session state:</p>
+
+    <div class="example">
+      <pre>
+agent_a = LlmAgent(
+    name="DataCollector",
+    instruction="Collect user information and save to state",
+    output_key="user_data"
+)
+
+agent_b = LlmAgent(
+    name="DataProcessor", 
+    instruction="Process data from state key 'user_data'"
+)
+
+pipeline = SequentialAgent(
+    name="UserDataPipeline",
+    sub_agents=[agent_a, agent_b]
+)
+</pre
+      >
+    </div>
+
+    <h4>LLM-Driven Delegation</h4>
+    <p>Agents can dynamically transfer control to other agents:</p>
+
+    <div class="example">
+      <pre>
+coordinator = LlmAgent(
+    name="TaskCoordinator",
+    instruction="""
+    You coordinate tasks. For complex calculations, transfer to MathAgent.
+    For creative writing, transfer to WritingAgent.
+    Use transfer_to_agent(agent_name='target') when needed.
+    """,
+    sub_agents=[math_agent, writing_agent]
+)
+</pre
+      >
+    </div>
+
+    <h3>6.3 Common Multi-Agent Patterns</h3>
+
+    <h4>Coordinator/Dispatcher Pattern</h4>
+    <p>Central agent routes requests to specialists:</p>
+
+    <div class="example">
+      <pre>
+help_desk = LlmAgent(
+    name="HelpDesk",
+    instruction="Route customer requests to appropriate departments",
+    sub_agents=[
+        billing_specialist,
+        technical_specialist, 
+        general_support
+    ]
+)
+</pre
+      >
+    </div>
+
+    <h4>Sequential Pipeline Pattern</h4>
+    <p>Multi-step process with ordered execution:</p>
+
+    <div class="example">
+      <pre>
+data_pipeline = SequentialAgent(
+    name="DataAnalysisPipeline",
+    sub_agents=[
+        data_validator,
+        data_cleaner,
+        data_analyzer,
+        report_generator
+    ]
+)
+</pre
+      >
+    </div>
+
+    <h4>Collaborative Team Pattern</h4>
+    <p>Agents work together on complex problems:</p>
+
+    <div class="example">
+      <pre>
+research_team = ParallelAgent(
+    name="ResearchTeam",
+    sub_agents=[
+        literature_reviewer,
+        data_analyst,
+        experiment_designer
+    ]
+)
+
+project_manager = LlmAgent(
+    name="ProjectManager",
+    instruction="Coordinate research activities and synthesize results",
+    sub_agents=[research_team]
+)
+</pre
+      >
+    </div>
+
+    <h2>7. Deployment Strategies</h2>
+
+    <p>ADK agents can be deployed to various environments based on production readiness and customization needs:</p>
+
+    <h3>7.1 Agent Engine in Vertex AI</h3>
+
+    <p>Agent Engine is a fully managed, auto-scaling service specifically designed for AI agents built with ADK.</p>
+
+    <h4>Features:</h4>
+    <ul>
+      <li>Fully managed infrastructure</li>
+      <li>Automatic scaling</li>
+      <li>Built-in monitoring and logging</li>
+      <li>Integration with Google Cloud services</li>
+      <li>Production-ready security</li>
+    </ul>
+
+    <h4>Deployment Process:</h4>
+    <ol>
+      <li>Package your agent code</li>
+      <li>Configure deployment settings</li>
+      <li>Deploy using ADK CLI or Google Cloud Console</li>
+      <li>Monitor through Cloud Console</li>
+    </ol>
+
+    <h3>7.2 Cloud Run</h3>
+
+    <p>Cloud Run is a managed, auto-scaling compute platform for containerized applications.</p>
+
+    <h4>Benefits:</h4>
+    <ul>
+      <li>Pay-per-use pricing model</li>
+      <li>Automatic scaling to zero</li>
+      <li>Supports any programming language</li>
+      <li>Integrated with Google Cloud ecosystem</li>
+    </ul>
+
+    <h4>Deployment Steps:</h4>
+    <ol>
+      <li>Create Dockerfile for your agent</li>
+      <li>Build and push container to Container Registry</li>
+      <li>Deploy using <code>adk deploy cloud_run</code> or <code>gcloud run deploy</code></li>
+      <li>Configure environment variables and secrets</li>
+    </ol>
+
+    <div class="example">
+      <h4>Example Dockerfile:</h4>
+      <pre>
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["adk", "api_server", "--host", "0.0.0.0", "--port", "8080"]
+</pre
+      >
+    </div>
+
+    <h3>7.3 Google Kubernetes Engine (GKE)</h3>
+
+    <p>GKE provides a managed Kubernetes environment for maximum control over deployment configuration.</p>
+
+    <h4>Use Cases:</h4>
+    <ul>
+      <li>Complex multi-agent systems</li>
+      <li>Custom infrastructure requirements</li>
+      <li>Running open-source models</li>
+      <li>Advanced scaling and networking needs</li>
+    </ul>
+
+    <h4>Deployment Configuration:</h4>
+    <div class="example">
+      <pre>
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adk-agent
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: adk-agent
+  template:
+    metadata:
+      labels:
+        app: adk-agent
+    spec:
+      containers:
+      - name: agent
+        image: gcr.io/project/adk-agent:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GOOGLE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api-secrets
+              key: google-api-key
+</pre
+      >
+    </div>
+
+    <h3>7.4 Local Development</h3>
+
+    <p>For development and testing:</p>
+
+    <ul>
+      <li><strong>Dev UI:</strong> Interactive browser interface</li>
+      <li><strong>Terminal Interface:</strong> Command-line interaction</li>
+      <li><strong>API Server:</strong> Local FastAPI server for testing</li>
+      <li><strong>Docker:</strong> Containerized local deployment</li>
+    </ul>
+
+    <h2>8. Best Practices and Development Guidelines</h2>
+
+    <h3>8.1 Agent Design Principles</h3>
+
+    <h4>Single Responsibility</h4>
+    <p>
+      Design agents with clear, focused purposes. Each agent should have a well-defined role and set of capabilities.
+    </p>
+
+    <h4>Clear Instructions</h4>
+    <p>
+      Provide detailed, specific instructions to LLM agents. Include context about when to use tools, how to handle
+      errors, and expected behavior patterns.
+    </p>
+
+    <div class="example">
+      <pre>
+good_instruction = """
+You are a customer support agent for an e-commerce platform.
+
+Guidelines:
+1. Always greet customers politely
+2. For order issues, use the get_order_status tool first
+3. If you cannot resolve an issue, use escalate_to_human tool
+4. Never make promises about refunds without checking policies
+5. Always end with asking if there's anything else you can help with
+"""
+</pre
+      >
+    </div>
+
+    <h4>Tool Documentation</h4>
+    <p>Write comprehensive docstrings for tools with clear parameter descriptions and return value explanations.</p>
+
+    <div class="example">
+      <pre>
+def search_products(query: str, category: str = None, max_results: int = 10) -> dict:
+    """Search for products in the catalog.
+    
+    Args:
+        query: Search terms to look for in product names and descriptions
+        category: Optional category filter (electronics, clothing, books, etc.)
+        max_results: Maximum number of results to return (1-50)
+        
+    Returns:
+        dict: Search results with the following structure:
+            - status: "success" or "error"
+            - results: List of product dictionaries if successful
+            - error_message: Error description if failed
+            - total_found: Total number of matching products
+    """
+</pre
+      >
+    </div>
+
+    <h3>8.2 Error Handling</h3>
+
+    <h4>Graceful Degradation</h4>
+    <p>Design agents and tools to handle failures gracefully:</p>
+
+    <div class="example">
+      <pre>
+def fetch_weather_data(city: str) -> dict:
+    """Fetch weather data with proper error handling."""
+    try:
+        # Attempt to fetch from primary service
+        data = primary_weather_service.get_weather(city)
+        return {"status": "success", "data": data, "source": "primary"}
+    except ServiceUnavailableError:
+        try:
+            # Fallback to secondary service
+            data = backup_weather_service.get_weather(city)
+            return {"status": "success", "data": data, "source": "backup"}
+        except Exception as e:
+            return {
+                "status": "error",
+                "error_message": f"Weather data unavailable for {city}",
+                "error_type": "service_unavailable"
+            }
+    except Exception as e:
+        return {
+            "status": "error", 
+            "error_message": f"Unexpected error: {str(e)}",
+            "error_type": "unknown"
+        }
+</pre
+      >
+    </div>
+
+    <h3>8.3 State Management</h3>
+
+    <h4>State Organization</h4>
+    <p>Use consistent naming conventions for state keys:</p>
+
+    <ul>
+      <li><code>user:profile.*</code> - User profile information</li>
+      <li><code>user:preferences.*</code> - User preferences</li>
+      <li><code>app:config.*</code> - Application configuration</li>
+      <li><code>session:current.*</code> - Current session data</li>
+      <li><code>temp:processing.*</code> - Temporary processing data</li>
+    </ul>
+
+    <h4>State Validation</h4>
+    <p>Validate state data before use:</p>
+
+    <div class="example">
+      <pre>
+def get_user_preference(key: str, default=None, tool_context: ToolContext):
+    """Safely retrieve user preference with validation."""
+    prefs = tool_context.state.get("user:preferences", {})
+    
+    if not isinstance(prefs, dict):
+        # Reset corrupted preferences
+        prefs = {}
+        tool_context.state["user:preferences"] = prefs
+    
+    return prefs.get(key, default)
+</pre
+      >
+    </div>
+
+    <h3>8.4 Security Considerations</h3>
+
+    <h4>Input Validation</h4>
+    <p>Always validate inputs in tools and agents:</p>
+
+    <div class="example">
+      <pre>
+def process_user_data(data: dict, tool_context: ToolContext) -> dict:
+    """Process user data with proper validation."""
+    
+    # Validate required fields
+    required_fields = ["email", "name"]
+    for field in required_fields:
+        if field not in data or not data[field]:
+            return {
+                "status": "error",
+                "error_message": f"Missing required field: {field}"
+            }
+    
+    # Validate email format
+    email = data["email"]
+    if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+        return {
+            "status": "error", 
+            "error_message": "Invalid email format"
+        }
+    
+    # Process validated data
+    return process_validated_data(data)
+</pre
+      >
+    </div>
+
+    <h4>Secret Management</h4>
+    <p>Use environment variables and secure secret management for sensitive data:</p>
+
+    <div class="example">
+      <pre>
+import os
+from google.adk.agents import Agent
+
+# Don't hardcode secrets
+api_key = os.getenv("EXTERNAL_API_KEY")
+if not api_key:
+    raise ValueError("EXTERNAL_API_KEY environment variable required")
+
+agent = Agent(
+    name="SecureAgent",
+    model="gemini-2.0-flash",
+    tools=[secure_api_tool]
+)
+</pre
+      >
+    </div>
+
+    <h3>8.5 Performance Optimization</h3>
+
+    <h4>Efficient Tool Design</h4>
+    <ul>
+      <li>Cache frequently accessed data</li>
+      <li>Use connection pooling for database/API calls</li>
+      <li>Implement proper timeouts</li>
+      <li>Consider async/await for I/O-bound operations</li>
+    </ul>
+
+    <h4>Agent Orchestration</h4>
+    <ul>
+      <li>Use ParallelAgent for independent tasks</li>
+      <li>Minimize state sharing between parallel agents</li>
+      <li>Design agents for stateless operation when possible</li>
+      <li>Implement circuit breakers for external dependencies</li>
+    </ul>
+
+    <h3>8.6 Testing and Evaluation</h3>
+
+    <h4>Unit Testing Tools</h4>
+    <div class="example">
+      <pre>
+import pytest
+from unittest.mock import Mock
+
+def test_weather_tool():
+    """Test weather tool with mocked API."""
+    # Test successful case
+    result = get_weather("New York")
+    assert result["status"] == "success"
+    assert "temperature" in result["data"]
+    
+    # Test error case
+    result = get_weather("Invalid City")
+    assert result["status"] == "error"
+    assert "error_message" in result
+</pre
+      >
+    </div>
+
+    <h4>Agent Testing</h4>
+    <div class="example">
+      <pre>
+async def test_customer_support_agent():
+    """Test customer support agent behavior."""
+    agent = create_customer_support_agent()
+    
+    # Test order inquiry
+    response = await agent.process("What's the status of order #12345?")
+    assert "order" in response.lower()
+    
+    # Test escalation
+    response = await agent.process("I want to speak to a manager")
+    assert "escalating" in response.lower()
+</pre
+      >
+    </div>
+
+    <h3>8.7 Monitoring and Observability</h3>
+
+    <h4>Logging Best Practices</h4>
+    <div class="example">
+      <pre>
+import logging
+from google.adk.tools import ToolContext
+
+logger = logging.getLogger(__name__)
+
+def important_business_function(data: dict, tool_context: ToolContext) -> dict:
+    """Business function with proper logging."""
+    
+    logger.info(f"Processing request for user {tool_context.session.user_id}")
+    
+    try:
+        result = process_business_logic(data)
+        logger.info(f"Successfully processed {len(data)} items")
+        return {"status": "success", "result": result}
+        
+    except Exception as e:
+        logger.error(f"Failed to process request: {str(e)}", exc_info=True)
+        return {"status": "error", "error_message": "Processing failed"}
+</pre
+      >
+    </div>
+
+    <h4>Metrics Collection</h4>
+    <p>Track important metrics for agent performance:</p>
+    <ul>
+      <li>Response times</li>
+      <li>Success/failure rates</li>
+      <li>Tool usage frequency</li>
+      <li>User satisfaction scores</li>
+      <li>Resource utilization</li>
+    </ul>
+
+    <div class="note">
+      <strong>Note:</strong> This documentation provides a comprehensive overview of Google ADK capabilities and best
+      practices. For the most up-to-date information, API references, and detailed tutorials, visit the official ADK
+      documentation at <a href="https://google.github.io/adk-docs/">https://google.github.io/adk-docs/</a>.
+    </div>
+  </body>
+</html>
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDkp1vklQS%2F8AvQuffMzY0fHzL5CmuESoep6Ho8HSnTJRHYP%2FO1Cxri8xfeEr6a1OYlhdGm%2B%2F0tEOdbX1PmsLteE2YyOFwg3LPVAbTm2S%2Fau3CCyzEcMvBXtl6zmF0CjyeyY98mJBzQWTTGXiK8bhVHxvVzqd9K5skebt3OSiIuf%2BMKw07VXB3oZlV1AlGZD%2B2Ak1U8l3vihQYc4bbd%2BKtrrD8WFLbKGauGiM5lfsPQIJb4lTusjXhisQ%2FWmBpRq%2Fdj12VT9yqo8HYzYomdH0mWfgv0cRRibonTEVORi1d2MLfWzWBPbgxOzU%2BNnh2u7%2BgqFuBHSBe1yR3pvLFaBT1zoUQm5rJ64Ka1OU9Xl5sZJ08msvDTwBRebiQJbvVBINET03H%2F4OH5QBDouogt1sS7xvoDZHWnGpYj%2FLH4hc7UrVwkPWelZwqGioEZjN7nQpd19mX7Kkaon5%2BptvkI1YZlhWyZt2O7vIOjZn%2FzzZHL4CuTs7XEknWAD3kxuRIruFFszSShCSKhE6I%2FJOyCPRB%2FM%3D";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDkp1vklQS/8AvQuffMzY0fHzL5CmuESoep6Ho8HSnTJRHYP/O1Cxri8xfeEr6a1OYlhdGm+/0tEOdbX1PmsLteE2YyOFwg3LPVAbTm2S/au3CCyzEcMvBXtl6zmF0CjyeyY98mJBzQWTTGXiK8bhVHxvVzqd9K5skebt3OSiIuf+MKw07VXB3oZlV1AlGZD+2Ak1U8l3vihQYc4bbd+KtrrD8WFLbKGauGiM5lfsPQIJb4lTusjXhisQ/WmBpRq/dj12VT9yqo8HYzYomdH0mWfgv0cRRibonTEVORi1d2MLfWzWBPbgxOzU+Nnh2u7+gqFuBHSBe1yR3pvLFaBT1zoUQm5rJ64Ka1OU9Xl5sZJ08msvDTwBRebiQJbvVBINET03H/4OH5QBDouogt1sS7xvoDZHWnGpYj/LH4hc7UrVwkPWelZwqGioEZjN7nQpd19mX7Kkaon5+ptvkI1YZlhWyZt2O7vIOjZn/zzZHL4CuTs7XEknWAD3kxuRIruFFszSShCSKhE6I/JOyCPRB/M=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    

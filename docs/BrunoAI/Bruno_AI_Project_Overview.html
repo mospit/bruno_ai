@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bruno AI Project Overview</title>
+    <style>
+      body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 80px;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        margin-top: 0;
+      }
+
+      h2 {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        color: #000;
+      }
+
+      h3 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 25px;
+        margin-bottom: 12px;
+        color: #000;
+      }
+
+      p {
+        margin-bottom: 12px;
+        text-align: justify;
+        font-size: 12px;
+      }
+
+      ul,
+      ol {
+        margin-left: 20px;
+        margin-bottom: 12px;
+      }
+
+      li {
+        margin-bottom: 8px;
+        text-align: justify;
+        font-size: 12px;
+      }
+
+      strong {
+        font-weight: bold;
+      }
+
+      em {
+        font-style: italic;
+      }
+
+      .agent-list {
+        margin-left: 0;
+        list-style: none;
+      }
+
+      .agent-list li {
+        margin-bottom: 10px;
+        padding-left: 20px;
+        position: relative;
+      }
+
+      .agent-list li:before {
+        content: counter(item, decimal) '.';
+        counter-increment: item;
+        position: absolute;
+        left: 0;
+        font-weight: bold;
+      }
+
+      .agent-list {
+        counter-reset: item;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Bruno AI Project Overview</h1>
+
+    <h2>Executive Summary</h2>
+    <p>
+      Bruno AI is an innovative mobile application designed to serve as a collaborative assistant for everyday
+      food-related tasks. Built around a friendly, fictional bear character named Bruno, the app leverages advanced AI
+      agent architecture to help users manage groceries, track food inventory, and prepare meals efficiently. By
+      emphasizing user-driven interactions, Bruno AI acts as a supportive partner rather than a prescriptive guide,
+      adapting to individual preferences and needs without imposing external agendas like health-focused
+      recommendations. The project evolves from previous versions with a streamlined V3.0 agent system, incorporating
+      modern AI frameworks for seamless collaboration and real-time responsiveness. As of July 10, 2025, this overview
+      captures the project's core elements, including its goal, features, technical foundation, and future potential.
+    </p>
+
+    <h2>Project Goal and Objectives</h2>
+    <p>
+      The primary goal of Bruno AI is to assist users with grocery shopping, food management, and meal preparation in a
+      collaborative, empowering way. Unlike traditional apps that dictate plans or prioritize specific outcomes (e.g.,
+      nutrition), Bruno AI focuses on listening to and delivering on what users explicitly want—whether that's building
+      a budget-friendly shopping list, suggesting ways to use existing pantry items, or providing quick prep ideas for a
+      busy week. This user-centric approach fosters a sense of teamwork, making users feel like they're working
+      alongside a reliable companion to simplify daily routines.
+    </p>
+
+    <p><strong>Key Objectives:</strong></p>
+    <ul>
+      <li>
+        <strong>Collaborative Assistance:</strong> Enable real-time, adaptive support where Bruno queries user
+        preferences (e.g., "What items do you want to prioritize?") and refines outputs based on feedback.
+      </li>
+      <li>
+        <strong>Practical Delivery:</strong> Streamline tasks like one-click Instacart shopping, inventory tracking, and
+        meal prep without forcing changes—empowering users to manage food on their terms.
+      </li>
+      <li>
+        <strong>Accessibility and Efficiency:</strong> Target budget-conscious families, students, and professionals
+        with affordable, intuitive tools that save time and reduce waste.
+      </li>
+      <li>
+        <strong>Scalability and Innovation:</strong> Build a modular system that evolves with user needs, aiming for
+        high retention (e.g., 70% week-1) through responsive, non-intrusive interactions.
+      </li>
+    </ul>
+
+    <p>
+      Success is measured by user engagement metrics (e.g., session duration >10 minutes, 15% Instacart conversion),
+      satisfaction (90%+ positive feedback on adaptability), and operational efficiency (response times <1.5s, 25%+ cost
+      savings via optimizations).
+    </p>
+
+    <h2>Key Features</h2>
+    <p>Bruno AI offers a suite of integrated features powered by AI agents and external services:</p>
+    <ul>
+      <li>
+        <strong>Grocery Shopping Support:</strong> Real-time pricing and list creation via Instacart API, with deep
+        links for seamless ordering. Users can specify wants (e.g., "under $50, focus on staples"), and Bruno adapts
+        dynamically.
+      </li>
+      <li>
+        <strong>Food Management:</strong> AI-driven pantry tracking, expiration predictions, and waste reduction
+        suggestions. Collaborative elements include user input for custom organization (e.g., "Prioritize these items").
+      </li>
+      <li>
+        <strong>Meal Preparation Assistance:</strong> Practical recipe generation and prep ideas tailored to user
+        inputs, such as available ingredients or time constraints, without health mandates.
+      </li>
+      <li>
+        <strong>Conversational Interface:</strong> Mobile app with voice/text chat, real-time streaming, and feedback
+        loops for iterative refinement.
+      </li>
+      <li>
+        <strong>Budget and Customization Tools:</strong> Predictive spending forecasts and personalization, always
+        confirming user wants (e.g., "Does this match your preferences?").
+      </li>
+      <li>
+        <strong>Integration and Extensibility:</strong> Seamless with Instacart for shopping; expandable via APIs for
+        future tools like smart kitchen devices.
+      </li>
+    </ul>
+
+    <h2>V3.0 Agent System</h2>
+    <p>
+      The V3.0 architecture represents a significant evolution, adopting a hybrid mesh-workflow topology using Google's
+      Agent Development Kit (ADK) for orchestration, Agent2Agent (A2A) Protocol for peer-to-peer collaboration, and
+      Model Context Protocol (MCP) for structured tool integration. This design eliminates the central Master Agent from
+      previous versions, reducing bottlenecks and enabling distributed, scalable interactions. Agents are built as ADK
+      LlmAgents (powered by Gemini models), with workflow agents (e.g., ParallelAgent for concurrent tasks) handling
+      dynamic orchestration.
+    </p>
+
+    <h3>Core Agents (5 LlmAgents)</h3>
+    <p>
+      Each agent is modular, collaborative, and user-focused, using A2A for direct peer communication (e.g., JSON-RPC
+      over HTTP) and MCP for tool access (e.g., Instacart API calls).
+    </p>
+    <ol class="agent-list">
+      <li>
+        <strong>Pantry Manager Agent</strong> (Gemini-2.5-flash-lite): Tracks inventory and suggests uses based on user
+        wants; collaborates via A2A with Instacart for replenishment.
+      </li>
+      <li>
+        <strong>Instacart Integration Agent</strong> (Gemini-2.5-flash-lite): Handles pricing, lists, and orders; uses
+        MCP for API structure and A2A for real-time updates.
+      </li>
+      <li>
+        <strong>Recipe Chef Agent</strong> (Gemini-2.5-flash): Generates prep ideas adapted to user-specified
+        ingredients/time; peers with Budget via A2A.
+      </li>
+      <li>
+        <strong>Budget Analyst Agent</strong> (Gemini-2.5-flash): Forecasts and optimizes costs per user limits;
+        integrates MCP for analytics tools.
+      </li>
+      <li>
+        <strong>Reflection & Feedback Agent</strong> (Gemini-2.5-flash): Reviews outputs, gathers user input (e.g., "How
+        can we adjust this?"), and iterates for better alignment—added in V3.0 for enhanced collaboration.
+      </li>
+    </ol>
+
+    <h3>Orchestration and Infrastructure</h3>
+    <ul>
+      <li>
+        <strong>Gateway Workflow Agent</strong> (ADK ParallelAgent): Entry point that spawns parallel/sequential flows
+        (e.g., pantry check + budgeting simultaneously).
+      </li>
+      <li>
+        <strong>Communication:</strong> A2A for task/messages (with Agent Cards for discovery); SSE streaming for live
+        feedback.
+      </li>
+      <li><strong>Data Layer:</strong> Redis/PostgreSQL for caching (85% hit ratio); ML models for predictions.</li>
+      <li>
+        <strong>Enhancements:</strong> Token Optimizer module (via ADK CustomAgent) for 20-30% savings by compressing
+        prompts and model routing.
+      </li>
+      <li><strong>Deployment:</strong> ADK on Vertex AI for auto-scaling; Kubernetes-ready.</li>
+    </ul>
+
+    <p>
+      This system achieves ~30% faster responses and 99%+ reliability, focusing on collaborative delivery (e.g., agents
+      adapt via user queries).
+    </p>
+
+    <h2>Bruno's Personality: The Wise Culinary Bear</h2>
+    <p>
+      Bruno is portrayed as a professional yet characterful bear—a thoughtful strategist with a warm, bear-like charm.
+      His voice is confident and practical, with subtle whimsy (e.g., "As a bear who's foraged many a deal...") to make
+      interactions feel like talking to a real, helpful bear. He prioritizes user wants, asking clarifying questions and
+      adapting without judgment.
+    </p>
+
+    <h2>Technical Stack and Improvements</h2>
+    <ul>
+      <li>
+        <strong>Frameworks:</strong> ADK (agent building/orchestration), A2A (collaboration), MCP (tools like Instacart
+        API).
+      </li>
+      <li>
+        <strong>Improvements:</strong> Token management via optimizer (reduces multi-agent overhead); Reflection Agent
+        for feedback loops; Cost analytics for 25%+ savings.
+      </li>
+      <li><strong>Monitoring:</strong> ADK evaluation framework for metrics like task success (95% target).</li>
+    </ul>
+
+    <h2>Future Roadmap</h2>
+    <ul>
+      <li><strong>Short-term:</strong> Enhance voice integration and multi-language support.</li>
+      <li><strong>Medium-term:</strong> Add agents for sustainability or personalization.</li>
+      <li><strong>Long-term:</strong> Expand to smart home integrations and international grocery partners.</li>
+    </ul>
+
+    <p>
+      This overview positions Bruno AI as a user-empowering tool, with V3.0's architecture enabling seamless
+      collaboration. For detailed specs or expansions, provide feedback!
+    </p>
+  </body>
+</html>
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDprxOcZDfgFPVGqDMOiBufcJjzACJ0ytCivN%2BYNtXfjsNbpSrJm6M5JE85YlCY3%2BrHeZjknPJj1fBPSi8dEMiVRbl%2Fn4Lt3qHsvpXdO%2FE%2BRck8qAj7iik1Q6k5EuHf8yH9F02lSDULaxqx73Hj2asfVZdke9MjzqVUdEMN%2BU3dIgmjW9Vl4HXGS60z2AKdElr%2BhDaj0EqRQxP1yMP1LdoWb7t6SPp1wGpCgyD0v5NcmQvw3YDq43zUEGhw7DgUkuTeruAHao%2Bn2zbWHN08aGbt4cVODQNVO9vNL21n5yuZO4bObdDRemGsQWlq%2FCD9TMA6CH5dWaZuAQQ78hJ0BP6XOKe23Evh9GN6G7mw6fc7RIFETqrFCo0eHmcglt46SMI2yLZce83jlxNb1985G3BBGaYA6snMym19VYv6vAm%2Bsfr68eE2varufLGeIx%2BQbWYVheUco1bxjFBfrBvs9z8EV5dcsk5S6nUvFt5tJRjWmPX1Ky6a3Bz8YgwM3RN2FDsCmNan1dFJd1wPUjYtJoAQ0%3D";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDprxOcZDfgFPVGqDMOiBufcJjzACJ0ytCivN+YNtXfjsNbpSrJm6M5JE85YlCY3+rHeZjknPJj1fBPSi8dEMiVRbl/n4Lt3qHsvpXdO/E+Rck8qAj7iik1Q6k5EuHf8yH9F02lSDULaxqx73Hj2asfVZdke9MjzqVUdEMN+U3dIgmjW9Vl4HXGS60z2AKdElr+hDaj0EqRQxP1yMP1LdoWb7t6SPp1wGpCgyD0v5NcmQvw3YDq43zUEGhw7DgUkuTeruAHao+n2zbWHN08aGbt4cVODQNVO9vNL21n5yuZO4bObdDRemGsQWlq/CD9TMA6CH5dWaZuAQQ78hJ0BP6XOKe23Evh9GN6G7mw6fc7RIFETqrFCo0eHmcglt46SMI2yLZce83jlxNb1985G3BBGaYA6snMym19VYv6vAm+sfr68eE2varufLGeIx+QbWYVheUco1bxjFBfrBvs9z8EV5dcsk5S6nUvFt5tJRjWmPX1Ky6a3Bz8YgwM3RN2FDsCmNan1dFJd1wPUjYtJoAQ0=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    

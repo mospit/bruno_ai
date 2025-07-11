@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Example Agent Flow</title>
+    <style>
+      body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 80px;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+      }
+      h1 {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 24px;
+        margin-top: 0;
+      }
+      h2 {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 24px;
+        margin-bottom: 12px;
+      }
+      h3 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 18px;
+        margin-bottom: 10px;
+      }
+      h4 {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 16px;
+        margin-bottom: 8px;
+      }
+      p {
+        margin-bottom: 12px;
+        text-align: justify;
+      }
+      ul,
+      ol {
+        margin-bottom: 12px;
+        padding-left: 40px;
+      }
+      li {
+        margin-bottom: 6px;
+      }
+      strong {
+        font-weight: bold;
+      }
+      em {
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Example Agent Flow</h1>
+
+    <h2>Fulfilling a User Task with Bruno AI V3.0 Agent System</h2>
+
+    <p>
+      To illustrate how the V3.0 agent system handles a user query like "I want Caribbean meals for 4 people on a $200
+      budget," I'll break it down step-by-step. This scenario emphasizes the app's goal of collaborative assistance:
+      Bruno AI acts as a partner, querying user wants (e.g., specific dishes or prep preferences) and adapting
+      iteratively without imposing unrelated suggestions. The system uses ADK for orchestration (e.g., ParallelAgent for
+      concurrent tasks), A2A for peer collaboration (e.g., JSON-RPC messages between agents), and MCP for structured
+      tool access (e.g., Instacart API calls). No central master agent means distributed, efficient flows.
+    </p>
+
+    <p>
+      The process focuses on user empowerment: Agents confirm preferences, generate practical outputs (shopping lists,
+      inventory checks, prep ideas), and refine via feedback. Estimated metrics: Response time <1.5s; Token efficiency
+      via optimizer (20-30% savings); User alignment 95%+ through iterations.
+    </p>
+
+    <h3>Step 1: Query Intake and Initial Orchestration (Gateway Workflow Agent)</h3>
+
+    <p>
+      <strong>How it Starts:</strong> The user's query enters via the mobile app's conversational UI. The Gateway
+      Workflow Agent (an ADK ParallelAgent) analyzes the intent: Caribbean-themed meal prep for 4, under $200. It spawns
+      parallel tasks to avoid delays, routing to relevant agents based on A2A Agent Cards (metadata describing skills
+      like "recipe-search" or "budget-optimization").
+    </p>
+
+    <p>
+      <strong>Collaboration Trigger:</strong> Gateway broadcasts the query context (e.g., budget, party size, cuisine)
+      via A2A messages, enabling peers to self-coordinate.
+    </p>
+
+    <p>
+      <strong>User Focus:</strong> Bruno responds initially: "Got it—Caribbean meals for 4 on $200. What specific wants
+      do you have, like favorite dishes or using pantry items?"
+    </p>
+
+    <h3>Step 2: Parallel Task Execution (Core Agents Activate)</h3>
+
+    <p>
+      The Gateway uses ADK's ParallelAgent to run concurrent subtasks, ensuring quick aggregation. Agents communicate
+      via A2A for real-time sharing (e.g., SSE streaming for updates).
+    </p>
+
+    <h4>Recipe Chef Agent (Lead for Meal Ideas)</h4>
+
+    <p>
+      <strong>Role in Task:</strong> Generates Caribbean recipe suggestions (e.g., jerk chicken, rice and peas) scaled
+      for 4, based on user wants. Uses MCP tools for recipe databases (structured queries like "fetch Caribbean recipes
+      under 1-hour prep").
+    </p>
+
+    <p>
+      <strong>Collaboration:</strong> Sends A2A message to Budget Analyst ("Validate costs for these ingredients?") and
+      Pantry Manager ("Check for available staples like rice?"). Adapts if user specifies (e.g., "Make it vegetarian").
+    </p>
+
+    <p><strong>Output:</strong> A list of 3-5 meal ideas with prep steps, sent back to Gateway for aggregation.</p>
+
+    <h4>Budget Analyst Agent (Cost Validation)</h4>
+
+    <p>
+      <strong>Role in Task:</strong> Forecasts total spend ($200 cap), simulating costs for recipes. Uses MCP for
+      pricing tools (e.g., aggregate estimates).
+    </p>
+
+    <p>
+      <strong>Collaboration:</strong> Receives A2A from Recipe Chef, queries Instacart Agent via peer link ("Current
+      prices for jerk seasoning?"). Suggests adjustments like "Swap for cheaper alternatives to fit $200."
+    </p>
+
+    <p>
+      <strong>Output:</strong> Breakdown (e.g., "$45 per meal, total $180—room for extras?"), ensuring user-driven (no
+      unsolicited cuts).
+    </p>
+
+    <h4>Instacart Integration Agent (Shopping Fulfillment)</h4>
+
+    <p>
+      <strong>Role in Task:</strong> Builds a shopping list from recipes, checking real-time prices/availability within
+      $200. Uses MCP for Instacart API (e.g., structured calls: "Search items: plantains, quantity:4").
+    </p>
+
+    <p>
+      <strong>Collaboration:</strong> A2A with Pantry Manager ("Avoid duplicates from inventory?") and Budget Analyst
+      ("Optimize for deals?"). Generates deep links for one-click ordering.
+    </p>
+
+    <p><strong>Output:</strong> Curated list (e.g., "Items totaling $175 from local stores—ready to order?").</p>
+
+    <h4>Pantry Manager Agent (Inventory Check)</h4>
+
+    <p>
+      <strong>Role in Task:</strong> Scans user pantry (via app data) for Caribbean-compatible items (e.g., spices,
+      rice), suggesting integrations to reduce shopping needs.
+    </p>
+
+    <p>
+      <strong>Collaboration:</strong> A2A peers with Instacart ("Replenish low coconut milk?") and Recipe Chef ("Adapt
+      recipes to use existing onions?").
+    </p>
+
+    <p><strong>Output:</strong> Report like "You have rice—saves $5; want to prioritize other staples?"</p>
+
+    <h3>Step 3: Aggregation and Iteration (Reflection & Feedback Agent)</h3>
+
+    <p>
+      <strong>Role in Task:</strong> The Gateway transitions to a SequentialAgent flow for review. This agent aggregates
+      outputs (e.g., combined meal plan + list under $200) and prompts user feedback: "Here's a Caribbean plan for 4:
+      Jerk tofu, etc., totaling $180. Does this match your wants, or adjust for spice level?"
+    </p>
+
+    <p>
+      <strong>Collaboration:</strong> If refinements needed (e.g., user says "Add more seafood"), it loops via ADK
+      LoopAgent, re-querying peers via A2A.
+    </p>
+
+    <p>
+      <strong>Token Management:</strong> Optimizer compresses shared contexts (e.g., summarize recipe lists) to keep
+      under limits.
+    </p>
+
+    <h3>Step 4: Final Delivery and Completion</h3>
+
+    <p>
+      <strong>User-Centric Close:</strong> Bruno presents the plan via app (e.g., "Based on your inputs, here's your
+      customized Caribbean setup for 4—shopping link ready. Anything else?").
+    </p>
+
+    <p>
+      <strong>Task Fulfillment Metrics:</strong> Completes in ~2-3 turns; 99% reliability via A2A retries and ADK
+      circuit breakers.
+    </p>
+
+    <p>
+      This flow demonstrates V3's strength: Distributed agents collaborate seamlessly (A2A/MCP) while staying adaptive
+      and non-prescriptive, fully aligning with the app's collaborative goal. If the user provides more details (e.g.,
+      pantry contents), agents refine further.
+    </p>
+  </body>
+</html>
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDoMiqOnV7D0ovCRbkEHDWIHZ2Th18kOsX5eBWNbntl%2F9Nhl5e5ZZcX9wpkT4P2eZJANFvAKSoRd9BeeJ40X4Xt0d7fFSCCmq4Ajny78ebzIJbD%2Br%2Fk%2FkVIO3zsCoDDULaO3o1EiG0474xXjHKYZlWCsiYn5MA7lz1tKpVhVPctXIm6X7N6dT%2Bj%2FM77A88H%2Bx%2BS6mjyei6GmlU2oZBOVsx9F7QD9P6s3CX4349DMu%2B%2BZYZt1eGLU3acRFHwvHCVfkNh137pXQoB%2Bvuya30rfP9Im30QhVkHQchIOmTHTcR1h57BSYBiZivEtVkY04J%2F4OTLb1Gm2BEeCP6YkKKu0Z0BflbLQ88vfFR4qBxhmEGO%2FjT%2Ftkdqvf0yLL%2Bdqb6BuNxGdM5WGlyFzEOqMNRrz3cN37E%2FMCQwPxj6MsEY9KWFPBYCMIXmW%2FlavO0VHj8rv7lzrV0XnBZpMyONAkrNAp721ixnNhE%2Fe7rVe%2F7DziYutyOsrvkCu5dbC5npwjrlMk0g%3D%3D";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDoMiqOnV7D0ovCRbkEHDWIHZ2Th18kOsX5eBWNbntl/9Nhl5e5ZZcX9wpkT4P2eZJANFvAKSoRd9BeeJ40X4Xt0d7fFSCCmq4Ajny78ebzIJbD+r/k/kVIO3zsCoDDULaO3o1EiG0474xXjHKYZlWCsiYn5MA7lz1tKpVhVPctXIm6X7N6dT+j/M77A88H+x+S6mjyei6GmlU2oZBOVsx9F7QD9P6s3CX4349DMu++ZYZt1eGLU3acRFHwvHCVfkNh137pXQoB+vuya30rfP9Im30QhVkHQchIOmTHTcR1h57BSYBiZivEtVkY04J/4OTLb1Gm2BEeCP6YkKKu0Z0BflbLQ88vfFR4qBxhmEGO/jT/tkdqvf0yLL+dqb6BuNxGdM5WGlyFzEOqMNRrz3cN37E/MCQwPxj6MsEY9KWFPBYCMIXmW/lavO0VHj8rv7lzrV0XnBZpMyONAkrNAp721ixnNhE/e7rVe/7DziYutyOsrvkCu5dbC5npwjrlMk0g==";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    

@@ -1,0 +1,2064 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flutter Framework - Complete Documentation</title>
+    <style>
+      body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 80px;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+      }
+
+      h1 {
+        font-size: 24pt;
+        font-weight: bold;
+        text-align: center;
+        margin: 0 0 24pt 0;
+        page-break-after: avoid;
+      }
+
+      h2 {
+        font-size: 18pt;
+        font-weight: bold;
+        margin: 24pt 0 12pt 0;
+        page-break-after: avoid;
+      }
+
+      h3 {
+        font-size: 14pt;
+        font-weight: bold;
+        margin: 18pt 0 6pt 0;
+        page-break-after: avoid;
+      }
+
+      h4 {
+        font-size: 12pt;
+        font-weight: bold;
+        margin: 12pt 0 6pt 0;
+        page-break-after: avoid;
+      }
+
+      p {
+        margin: 0 0 12pt 0;
+        text-align: justify;
+      }
+
+      ul,
+      ol {
+        margin: 12pt 0;
+        padding-left: 36pt;
+      }
+
+      li {
+        margin: 6pt 0;
+      }
+
+      code {
+        font-family: 'Courier New', monospace;
+        background-color: #f5f5f5;
+        padding: 2pt 4pt;
+        font-size: 10pt;
+      }
+
+      pre {
+        font-family: 'Courier New', monospace;
+        background-color: #f5f5f5;
+        padding: 12pt;
+        margin: 12pt 0;
+        border: 1pt solid #ccc;
+        font-size: 10pt;
+        overflow: visible;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 12pt 0;
+      }
+
+      th,
+      td {
+        border: 1pt solid #000;
+        padding: 6pt;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+      }
+
+      .section {
+        margin: 24pt 0;
+      }
+
+      .code-block {
+        background-color: #f9f9f9;
+        border-left: 4pt solid #ccc;
+        padding: 12pt;
+        margin: 12pt 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Flutter Framework - Complete Documentation</h1>
+
+    <div class="section">
+      <h2>Table of Contents</h2>
+      <ol>
+        <li>Introduction to Flutter</li>
+        <li>Getting Started & Installation</li>
+        <li>Fundamentals & Core Concepts</li>
+        <li>Widgets & UI Development</li>
+        <li>State Management</li>
+        <li>Layouts & Design Systems</li>
+        <li>Architecture Overview</li>
+        <li>Testing Strategies</li>
+        <li>Platform Integration</li>
+        <li>Deployment & Distribution</li>
+        <li>Best Practices & Guidelines</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>1. Introduction to Flutter</h2>
+
+      <p>
+        Flutter is Google's open-source UI software development kit for building natively compiled applications for
+        mobile, web, and desktop from a single codebase. Created by Google and first released in 2017, Flutter has
+        rapidly become one of the most popular frameworks for cross-platform development.
+      </p>
+
+      <h3>1.1 Key Features</h3>
+      <ul>
+        <li>
+          <strong>Single Codebase:</strong> Write once, run everywhere across iOS, Android, web, Windows, macOS, and
+          Linux
+        </li>
+        <li><strong>Fast Development:</strong> Hot reload enables rapid iteration and development cycles</li>
+        <li><strong>Native Performance:</strong> Compiles to native machine code for optimal performance</li>
+        <li><strong>Rich UI:</strong> Comprehensive widget library with Material Design and Cupertino components</li>
+        <li><strong>Developer Tools:</strong> Powerful debugging, profiling, and inspection tools</li>
+      </ul>
+
+      <h3>1.2 Architecture Overview</h3>
+      <p>Flutter's architecture consists of three main layers:</p>
+      <ul>
+        <li><strong>Framework (Dart):</strong> High-level APIs including widgets, rendering, and animation</li>
+        <li><strong>Engine (C++):</strong> Low-level rendering engine, text layout, and Dart runtime</li>
+        <li><strong>Embedder:</strong> Platform-specific code that integrates with the operating system</li>
+      </ul>
+
+      <h3>1.3 Why Choose Flutter</h3>
+      <p>Flutter offers significant advantages for modern application development:</p>
+      <ul>
+        <li>Reduced development time and cost through code reuse</li>
+        <li>Consistent user experience across platforms</li>
+        <li>Growing ecosystem and strong community support</li>
+        <li>Google's backing and continuous improvement</li>
+        <li>Excellent performance characteristics</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>2. Getting Started & Installation</h2>
+
+      <h3>2.1 System Requirements</h3>
+      <p>
+        Flutter supports development on Windows, macOS, Linux, and ChromeOS. Each platform has specific requirements:
+      </p>
+
+      <h4>Windows</h4>
+      <ul>
+        <li>Windows 10 or later (64-bit)</li>
+        <li>Windows PowerShell 5.0 or newer</li>
+        <li>Git for Windows</li>
+      </ul>
+
+      <h4>macOS</h4>
+      <ul>
+        <li>macOS 10.14 (Mojave) or later</li>
+        <li>Xcode (for iOS development)</li>
+        <li>Git command line tools</li>
+      </ul>
+
+      <h4>Linux</h4>
+      <ul>
+        <li>64-bit Linux distribution</li>
+        <li>Required development tools and libraries</li>
+        <li>Git version control</li>
+      </ul>
+
+      <h3>2.2 Installation Process</h3>
+      <p>The installation process involves downloading the Flutter SDK and configuring your development environment:</p>
+
+      <ol>
+        <li>Download Flutter SDK from the official website</li>
+        <li>Extract the SDK to a suitable location</li>
+        <li>Add Flutter to your system PATH</li>
+        <li>Run <code>flutter doctor</code> to verify installation</li>
+        <li>Install required platform tools (Android Studio, Xcode, etc.)</li>
+      </ol>
+
+      <h3>2.3 Development Environment Setup</h3>
+      <p>Flutter supports various IDEs and editors:</p>
+
+      <h4>Recommended IDEs</h4>
+      <ul>
+        <li><strong>Android Studio:</strong> Full-featured IDE with excellent Flutter support</li>
+        <li><strong>Visual Studio Code:</strong> Lightweight editor with Flutter extensions</li>
+        <li><strong>IntelliJ IDEA:</strong> Professional IDE with comprehensive Flutter tooling</li>
+      </ul>
+
+      <h4>Essential Plugins</h4>
+      <ul>
+        <li>Flutter plugin for syntax highlighting and tools</li>
+        <li>Dart plugin for language support</li>
+        <li>Flutter Inspector for widget debugging</li>
+      </ul>
+
+      <h3>2.4 Creating Your First Flutter App</h3>
+      <div class="code-block">
+        <pre>
+flutter create my_first_app
+cd my_first_app
+flutter run</pre
+        >
+      </div>
+
+      <p>
+        This creates a basic Flutter application with a counter example that demonstrates fundamental concepts like
+        widgets, state management, and user interaction.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>3. Fundamentals & Core Concepts</h2>
+
+      <h3>3.1 Everything is a Widget</h3>
+      <p>
+        The fundamental principle of Flutter is that "everything is a widget." Widgets are the building blocks of
+        Flutter applications, describing what the user interface should look like given the current configuration and
+        state.
+      </p>
+
+      <h4>Widget Characteristics</h4>
+      <ul>
+        <li><strong>Immutable:</strong> Widgets are immutable objects that describe UI configuration</li>
+        <li><strong>Composable:</strong> Complex UIs are built by composing simple widgets</li>
+        <li><strong>Hierarchical:</strong> Widgets form a tree structure based on parent-child relationships</li>
+      </ul>
+
+      <h3>3.2 Widget Types</h3>
+
+      <h4>StatelessWidget</h4>
+      <p>
+        StatelessWidget is used for UI components that don't change over time. They are immutable and their properties
+        cannot be modified after creation.
+      </p>
+
+      <div class="code-block">
+        <pre>
+class MyStatelessWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Text('Hello, World!');
+  }
+}</pre
+        >
+      </div>
+
+      <h4>StatefulWidget</h4>
+      <p>
+        StatefulWidget is used for components that can change over time. They maintain mutable state and can rebuild
+        their UI when the state changes.
+      </p>
+
+      <div class="code-block">
+        <pre>
+class MyStatefulWidget extends StatefulWidget {
+  @override
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
+}
+
+class _MyStatefulWidgetState extends State&lt;MyStatefulWidget&gt; {
+  int _counter = 0;
+  
+  @override
+  Widget build(BuildContext context) {
+    return Text('Counter: $_counter');
+  }
+}</pre
+        >
+      </div>
+
+      <h3>3.3 The Build Method</h3>
+      <p>
+        The build method is the heart of widget rendering. It returns a widget tree that describes the UI for the
+        current state. Flutter calls build whenever the widget needs to be rendered or re-rendered.
+      </p>
+
+      <h3>3.4 Widget Lifecycle</h3>
+      <p>Understanding the widget lifecycle is crucial for effective Flutter development:</p>
+
+      <ol>
+        <li><strong>createState():</strong> Called when StatefulWidget is inserted into the widget tree</li>
+        <li><strong>initState():</strong> Called once when the State object is created</li>
+        <li><strong>build():</strong> Called whenever the widget needs to render</li>
+        <li><strong>setState():</strong> Triggers a rebuild of the widget</li>
+        <li><strong>dispose():</strong> Called when the State object is removed permanently</li>
+      </ol>
+
+      <h3>3.5 BuildContext</h3>
+      <p>
+        BuildContext is a handle to the location of a widget in the widget tree. It provides access to inherited widgets
+        and theme data, enabling widgets to interact with their environment.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>4. Widgets & UI Development</h2>
+
+      <h3>4.1 Basic Widgets</h3>
+      <p>Flutter provides a comprehensive set of basic widgets for building user interfaces:</p>
+
+      <h4>Text Widget</h4>
+      <p>The Text widget displays styled text and supports various formatting options:</p>
+      <div class="code-block">
+        <pre>
+Text(
+  'Hello, Flutter!',
+  style: TextStyle(
+    fontSize: 24.0,
+    fontWeight: FontWeight.bold,
+    color: Colors.blue,
+  ),
+)</pre
+        >
+      </div>
+
+      <h4>Container Widget</h4>
+      <p>Container is a versatile widget that can be decorated, positioned, and sized:</p>
+      <div class="code-block">
+        <pre>
+Container(
+  width: 200.0,
+  height: 200.0,
+  decoration: BoxDecoration(
+    color: Colors.blue,
+    borderRadius: BorderRadius.circular(10.0),
+  ),
+  child: Center(child: Text('Container')),
+)</pre
+        >
+      </div>
+
+      <h4>Image Widget</h4>
+      <p>The Image widget displays images from various sources:</p>
+      <div class="code-block">
+        <pre>
+Image.network('https://example.com/image.jpg')
+Image.asset('assets/images/logo.png')
+Image.file(File('/path/to/image.jpg'))</pre
+        >
+      </div>
+
+      <h3>4.2 Input Widgets</h3>
+
+      <h4>TextField</h4>
+      <p>TextField enables user text input with extensive customization options:</p>
+      <div class="code-block">
+        <pre>
+TextField(
+  decoration: InputDecoration(
+    labelText: 'Enter your name',
+    border: OutlineInputBorder(),
+    prefixIcon: Icon(Icons.person),
+  ),
+  onChanged: (value) {
+    // Handle text changes
+  },
+)</pre
+        >
+      </div>
+
+      <h4>Button Widgets</h4>
+      <p>Flutter provides various button types for different use cases:</p>
+      <div class="code-block">
+        <pre>
+ElevatedButton(
+  onPressed: () {
+    // Handle button press
+  },
+  child: Text('Elevated Button'),
+)
+
+TextButton(
+  onPressed: () {
+    // Handle button press
+  },
+  child: Text('Text Button'),
+)
+
+IconButton(
+  icon: Icon(Icons.favorite),
+  onPressed: () {
+    // Handle icon press
+  },
+)</pre
+        >
+      </div>
+
+      <h3>4.3 Scrollable Widgets</h3>
+
+      <h4>ListView</h4>
+      <p>ListView creates scrollable lists of widgets:</p>
+      <div class="code-block">
+        <pre>
+ListView(
+  children: [
+    ListTile(title: Text('Item 1')),
+    ListTile(title: Text('Item 2')),
+    ListTile(title: Text('Item 3')),
+  ],
+)
+
+ListView.builder(
+  itemCount: items.length,
+  itemBuilder: (context, index) {
+    return ListTile(title: Text(items[index]));
+  },
+)</pre
+        >
+      </div>
+
+      <h4>GridView</h4>
+      <p>GridView arranges widgets in a scrollable grid:</p>
+      <div class="code-block">
+        <pre>
+GridView.count(
+  crossAxisCount: 2,
+  children: [
+    Container(color: Colors.red),
+    Container(color: Colors.green),
+    Container(color: Colors.blue),
+    Container(color: Colors.yellow),
+  ],
+)</pre
+        >
+      </div>
+
+      <h3>4.4 Widget Categories</h3>
+
+      <table>
+        <tr>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Examples</th>
+        </tr>
+        <tr>
+          <td>Layout</td>
+          <td>Arrange child widgets</td>
+          <td>Row, Column, Stack, Flex</td>
+        </tr>
+        <tr>
+          <td>Material Design</td>
+          <td>Material Design components</td>
+          <td>AppBar, FloatingActionButton, Card</td>
+        </tr>
+        <tr>
+          <td>Cupertino</td>
+          <td>iOS-style components</td>
+          <td>CupertinoButton, CupertinoNavigationBar</td>
+        </tr>
+        <tr>
+          <td>Animation</td>
+          <td>Animation and motion widgets</td>
+          <td>AnimatedContainer, Hero, FadeTransition</td>
+        </tr>
+        <tr>
+          <td>Interaction</td>
+          <td>Handle user input and gestures</td>
+          <td>GestureDetector, InkWell, Dismissible</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>5. State Management</h2>
+
+      <h3>5.1 Understanding State</h3>
+      <p>
+        State in Flutter refers to any data that can change over time and affects the user interface. Effective state
+        management is crucial for building scalable and maintainable applications.
+      </p>
+
+      <h4>Types of State</h4>
+      <ul>
+        <li><strong>Ephemeral State:</strong> Local state that belongs to a single widget</li>
+        <li><strong>App State:</strong> Global state shared across multiple widgets</li>
+      </ul>
+
+      <h3>5.2 Built-in State Management</h3>
+
+      <h4>setState()</h4>
+      <p>The simplest form of state management using the built-in setState method:</p>
+      <div class="code-block">
+        <pre>
+class CounterWidget extends StatefulWidget {
+  @override
+  _CounterWidgetState createState() => _CounterWidgetState();
+}
+
+class _CounterWidgetState extends State&lt;CounterWidget&gt; {
+  int _counter = 0;
+  
+  void _increment() {
+    setState(() {
+      _counter++;
+    });
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text('Count: $_counter'),
+        ElevatedButton(
+          onPressed: _increment,
+          child: Text('Increment'),
+        ),
+      ],
+    );
+  }
+}</pre
+        >
+      </div>
+
+      <h4>InheritedWidget</h4>
+      <p>InheritedWidget efficiently propagates data down the widget tree:</p>
+      <div class="code-block">
+        <pre>
+class DataProvider extends InheritedWidget {
+  final String data;
+  
+  DataProvider({
+    Key? key,
+    required this.data,
+    required Widget child,
+  }) : super(key: key, child: child);
+  
+  static DataProvider? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType&lt;DataProvider&gt;();
+  }
+  
+  @override
+  bool updateShouldNotify(DataProvider oldWidget) {
+    return data != oldWidget.data;
+  }
+}</pre
+        >
+      </div>
+
+      <h3>5.3 Advanced State Management Patterns</h3>
+
+      <h4>Provider Pattern</h4>
+      <p>Provider is a popular state management solution that wraps InheritedWidget:</p>
+      <div class="code-block">
+        <pre>
+// State class
+class CounterModel extends ChangeNotifier {
+  int _count = 0;
+  
+  int get count => _count;
+  
+  void increment() {
+    _count++;
+    notifyListeners();
+  }
+}
+
+// Usage in widget tree
+ChangeNotifierProvider(
+  create: (context) => CounterModel(),
+  child: MyApp(),
+)
+
+// Consuming the state
+Consumer&lt;CounterModel&gt;(
+  builder: (context, counter, child) {
+    return Text('Count: ${counter.count}');
+  },
+)</pre
+        >
+      </div>
+
+      <h4>BLoC Pattern</h4>
+      <p>Business Logic Component (BLoC) pattern separates business logic from UI:</p>
+      <div class="code-block">
+        <pre>
+// Events
+abstract class CounterEvent {}
+class Increment extends CounterEvent {}
+
+// States
+class CounterState {
+  final int count;
+  CounterState(this.count);
+}
+
+// BLoC
+class CounterBloc extends Bloc&lt;CounterEvent, CounterState&gt; {
+  CounterBloc() : super(CounterState(0)) {
+    on&lt;Increment&gt;((event, emit) {
+      emit(CounterState(state.count + 1));
+    });
+  }
+}</pre
+        >
+      </div>
+
+      <h4>Riverpod</h4>
+      <p>Riverpod is a modern state management solution that addresses Provider limitations:</p>
+      <div class="code-block">
+        <pre>
+// Provider definition
+final counterProvider = StateNotifierProvider&lt;CounterNotifier, int&gt;(
+  (ref) => CounterNotifier(),
+);
+
+class CounterNotifier extends StateNotifier&lt;int&gt; {
+  CounterNotifier() : super(0);
+  
+  void increment() => state++;
+}
+
+// Usage in widget
+Consumer(
+  builder: (context, ref, child) {
+    final count = ref.watch(counterProvider);
+    return Text('Count: $count');
+  },
+)</pre
+        >
+      </div>
+
+      <h3>5.4 State Management Comparison</h3>
+
+      <table>
+        <tr>
+          <th>Solution</th>
+          <th>Complexity</th>
+          <th>Learning Curve</th>
+          <th>Best For</th>
+        </tr>
+        <tr>
+          <td>setState</td>
+          <td>Low</td>
+          <td>Easy</td>
+          <td>Local widget state</td>
+        </tr>
+        <tr>
+          <td>Provider</td>
+          <td>Medium</td>
+          <td>Moderate</td>
+          <td>Most applications</td>
+        </tr>
+        <tr>
+          <td>BLoC</td>
+          <td>High</td>
+          <td>Steep</td>
+          <td>Enterprise applications</td>
+        </tr>
+        <tr>
+          <td>Riverpod</td>
+          <td>Medium</td>
+          <td>Moderate</td>
+          <td>Modern applications</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>6. Layouts & Design Systems</h2>
+
+      <h3>6.1 Layout Fundamentals</h3>
+      <p>
+        Flutter's layout system is based on widgets that arrange their children according to specific rules.
+        Understanding constraints and how they flow through the widget tree is essential for effective layout design.
+      </p>
+
+      <h4>Layout Rule</h4>
+      <p>The fundamental layout rule in Flutter is: "Constraints go down. Sizes go up. Parent sets position."</p>
+
+      <h3>6.2 Basic Layout Widgets</h3>
+
+      <h4>Row and Column</h4>
+      <p>Row and Column are fundamental layout widgets for arranging children horizontally and vertically:</p>
+      <div class="code-block">
+        <pre>
+// Row - horizontal layout
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    Icon(Icons.star),
+    Icon(Icons.favorite),
+    Icon(Icons.thumb_up),
+  ],
+)
+
+// Column - vertical layout
+Column(
+  mainAxisAlignment: MainAxisAlignment.center,
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Text('Title'),
+    Text('Subtitle'),
+    ElevatedButton(
+      onPressed: () {},
+      child: Text('Action'),
+    ),
+  ],
+)</pre
+        >
+      </div>
+
+      <h4>Stack</h4>
+      <p>Stack allows widgets to overlap each other:</p>
+      <div class="code-block">
+        <pre>
+Stack(
+  children: [
+    Container(
+      width: 200,
+      height: 200,
+      color: Colors.blue,
+    ),
+    Positioned(
+      top: 20,
+      left: 20,
+      child: Text('Overlay Text'),
+    ),
+  ],
+)</pre
+        >
+      </div>
+
+      <h4>Flex and Flexible</h4>
+      <p>Control how children occupy available space:</p>
+      <div class="code-block">
+        <pre>
+Row(
+  children: [
+    Expanded(
+      flex: 2,
+      child: Container(color: Colors.red),
+    ),
+    Expanded(
+      flex: 1,
+      child: Container(color: Colors.green),
+    ),
+    Flexible(
+      child: Container(color: Colors.blue),
+    ),
+  ],
+)</pre
+        >
+      </div>
+
+      <h3>6.3 Responsive Design</h3>
+
+      <h4>MediaQuery</h4>
+      <p>MediaQuery provides information about the current device:</p>
+      <div class="code-block">
+        <pre>
+Widget build(BuildContext context) {
+  final screenSize = MediaQuery.of(context).size;
+  final orientation = MediaQuery.of(context).orientation;
+  
+  return Container(
+    width: screenSize.width * 0.8,
+    height: orientation == Orientation.portrait ? 200 : 100,
+    child: Text('Responsive Container'),
+  );
+}</pre
+        >
+      </div>
+
+      <h4>LayoutBuilder</h4>
+      <p>LayoutBuilder provides constraints from the parent widget:</p>
+      <div class="code-block">
+        <pre>
+LayoutBuilder(
+  builder: (context, constraints) {
+    if (constraints.maxWidth > 600) {
+      return TwoColumnLayout();
+    } else {
+      return SingleColumnLayout();
+    }
+  },
+)</pre
+        >
+      </div>
+
+      <h3>6.4 Material Design</h3>
+      <p>Flutter includes comprehensive Material Design components:</p>
+
+      <h4>Material App Structure</h4>
+      <div class="code-block">
+        <pre>
+MaterialApp(
+  title: 'My App',
+  theme: ThemeData(
+    primarySwatch: Colors.blue,
+    visualDensity: VisualDensity.adaptivePlatformDensity,
+  ),
+  home: Scaffold(
+    appBar: AppBar(
+      title: Text('Home'),
+    ),
+    body: Center(
+      child: Text('Hello, Material!'),
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {},
+      child: Icon(Icons.add),
+    ),
+  ),
+)</pre
+        >
+      </div>
+
+      <h4>Common Material Widgets</h4>
+      <ul>
+        <li><strong>Scaffold:</strong> Basic layout structure with app bar, body, and floating action button</li>
+        <li><strong>AppBar:</strong> Material Design app bar with title and actions</li>
+        <li><strong>Card:</strong> Material Design card with elevation and rounded corners</li>
+        <li><strong>Drawer:</strong> Navigation drawer that slides in from the side</li>
+        <li><strong>BottomNavigationBar:</strong> Bottom navigation with multiple tabs</li>
+      </ul>
+
+      <h3>6.5 Cupertino Design</h3>
+      <p>Flutter also provides iOS-style Cupertino components:</p>
+
+      <div class="code-block">
+        <pre>
+CupertinoApp(
+  title: 'My iOS App',
+  theme: CupertinoThemeData(
+    primaryColor: CupertinoColors.systemBlue,
+  ),
+  home: CupertinoPageScaffold(
+    navigationBar: CupertinoNavigationBar(
+      middle: Text('Home'),
+    ),
+    child: Center(
+      child: CupertinoButton(
+        child: Text('Cupertino Button'),
+        onPressed: () {},
+      ),
+    ),
+  ),
+)</pre
+        >
+      </div>
+
+      <h3>6.6 Theming</h3>
+      <p>Flutter provides powerful theming capabilities for consistent design:</p>
+
+      <div class="code-block">
+        <pre>
+ThemeData(
+  primarySwatch: Colors.purple,
+  accentColor: Colors.amber,
+  fontFamily: 'Roboto',
+  textTheme: TextTheme(
+    headline1: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    bodyText1: TextStyle(fontSize: 16),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      primary: Colors.purple,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
+  ),
+)</pre
+        >
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>7. Architecture Overview</h2>
+
+      <h3>7.1 Flutter Architecture Layers</h3>
+      <p>Flutter's architecture is designed as a layered system with clear separation of concerns:</p>
+
+      <h4>Framework Layer (Dart)</h4>
+      <ul>
+        <li><strong>Foundation:</strong> Basic building blocks and utilities</li>
+        <li><strong>Animation:</strong> Animation system and tweening</li>
+        <li><strong>Painting:</strong> Drawing and painting APIs</li>
+        <li><strong>Gestures:</strong> Touch and gesture recognition</li>
+        <li><strong>Rendering:</strong> Render object tree and layout</li>
+        <li><strong>Widgets:</strong> Widget composition abstraction</li>
+        <li><strong>Material/Cupertino:</strong> Design language implementations</li>
+      </ul>
+
+      <h4>Engine Layer (C++)</h4>
+      <ul>
+        <li><strong>Skia/Impeller:</strong> Graphics rendering engine</li>
+        <li><strong>Dart VM:</strong> Dart runtime and garbage collection</li>
+        <li><strong>Text Layout:</strong> Text rendering and typography</li>
+        <li><strong>Platform Channels:</strong> Communication with native code</li>
+      </ul>
+
+      <h4>Embedder Layer</h4>
+      <ul>
+        <li><strong>Platform Integration:</strong> OS-specific code for each platform</li>
+        <li><strong>Event Loop:</strong> Platform event handling</li>
+        <li><strong>Surface Management:</strong> Rendering surface management</li>
+      </ul>
+
+      <h3>7.2 Rendering Pipeline</h3>
+      <p>Flutter's rendering pipeline follows these steps:</p>
+
+      <ol>
+        <li><strong>Build:</strong> Widget tree construction and element tree creation</li>
+        <li><strong>Layout:</strong> Size and position calculation for render objects</li>
+        <li><strong>Paint:</strong> Drawing commands generation for visual elements</li>
+        <li><strong>Composite:</strong> Layering and final scene assembly</li>
+        <li><strong>Rasterization:</strong> GPU rendering to pixels</li>
+      </ol>
+
+      <h3>7.3 Widget Tree vs Element Tree vs Render Tree</h3>
+
+      <table>
+        <tr>
+          <th>Tree Type</th>
+          <th>Purpose</th>
+          <th>Characteristics</th>
+        </tr>
+        <tr>
+          <td>Widget Tree</td>
+          <td>UI configuration</td>
+          <td>Immutable, rebuilt frequently</td>
+        </tr>
+        <tr>
+          <td>Element Tree</td>
+          <td>Widget lifecycle management</td>
+          <td>Mutable, persists between builds</td>
+        </tr>
+        <tr>
+          <td>Render Tree</td>
+          <td>Layout and painting</td>
+          <td>Handles actual rendering operations</td>
+        </tr>
+      </table>
+
+      <h3>7.4 Application Architecture Patterns</h3>
+
+      <h4>Model-View-ViewModel (MVVM)</h4>
+      <p>MVVM separates UI logic from business logic:</p>
+      <div class="code-block">
+        <pre>
+// Model
+class User {
+  final String name;
+  final String email;
+  User({required this.name, required this.email});
+}
+
+// ViewModel
+class UserViewModel extends ChangeNotifier {
+  User? _user;
+  User? get user => _user;
+  
+  Future&lt;void&gt; loadUser() async {
+    _user = await UserRepository.getUser();
+    notifyListeners();
+  }
+}
+
+// View
+class UserView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer&lt;UserViewModel&gt;(
+      builder: (context, viewModel, child) {
+        return Text(viewModel.user?.name ?? 'Loading...');
+      },
+    );
+  }
+}</pre
+        >
+      </div>
+
+      <h4>Clean Architecture</h4>
+      <p>Clean Architecture promotes separation of concerns through layered structure:</p>
+      <ul>
+        <li><strong>Presentation Layer:</strong> Widgets, pages, and UI logic</li>
+        <li><strong>Domain Layer:</strong> Business logic, entities, and use cases</li>
+        <li><strong>Data Layer:</strong> Repositories, data sources, and models</li>
+      </ul>
+
+      <h3>7.5 Performance Considerations</h3>
+
+      <h4>Build Optimization</h4>
+      <ul>
+        <li>Use <code>const</code> constructors when possible</li>
+        <li>Minimize widget rebuilds with proper state management</li>
+        <li>Leverage <code>RepaintBoundary</code> to isolate repaints</li>
+        <li>Use <code>ListView.builder</code> for large lists</li>
+      </ul>
+
+      <h4>Memory Management</h4>
+      <ul>
+        <li>Dispose controllers and streams properly</li>
+        <li>Use weak references for callbacks</li>
+        <li>Optimize image loading and caching</li>
+        <li>Monitor memory usage with profiling tools</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>8. Testing Strategies</h2>
+
+      <h3>8.1 Types of Testing</h3>
+      <p>
+        Flutter supports three main types of testing, each serving different purposes in ensuring application quality:
+      </p>
+
+      <table>
+        <tr>
+          <th>Test Type</th>
+          <th>Purpose</th>
+          <th>Scope</th>
+          <th>Speed</th>
+        </tr>
+        <tr>
+          <td>Unit Tests</td>
+          <td>Test individual functions and classes</td>
+          <td>Single unit of code</td>
+          <td>Fast</td>
+        </tr>
+        <tr>
+          <td>Widget Tests</td>
+          <td>Test widget behavior and UI</td>
+          <td>Individual widgets</td>
+          <td>Medium</td>
+        </tr>
+        <tr>
+          <td>Integration Tests</td>
+          <td>Test complete app or large features</td>
+          <td>Full application</td>
+          <td>Slow</td>
+        </tr>
+      </table>
+
+      <h3>8.2 Unit Testing</h3>
+      <p>Unit tests verify the behavior of individual functions, methods, or classes:</p>
+
+      <div class="code-block">
+        <pre>
+// lib/calculator.dart
+class Calculator {
+  int add(int a, int b) => a + b;
+  int subtract(int a, int b) => a - b;
+}
+
+// test/calculator_test.dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:my_app/calculator.dart';
+
+void main() {
+  group('Calculator', () {
+    late Calculator calculator;
+    
+    setUp(() {
+      calculator = Calculator();
+    });
+    
+    test('should add two numbers correctly', () {
+      // Arrange
+      const a = 5;
+      const b = 3;
+      
+      // Act
+      final result = calculator.add(a, b);
+      
+      // Assert
+      expect(result, equals(8));
+    });
+    
+    test('should subtract two numbers correctly', () {
+      expect(calculator.subtract(10, 4), equals(6));
+    });
+  });
+}</pre
+        >
+      </div>
+
+      <h4>Mocking Dependencies</h4>
+      <p>Use mocking to isolate units under test:</p>
+      <div class="code-block">
+        <pre>
+// Using mockito
+import 'package:mockito/mockito.dart';
+import 'package:mockito/annotations.dart';
+
+@GenerateMocks([ApiService])
+void main() {
+  test('should fetch user data', () async {
+    // Arrange
+    final mockApiService = MockApiService();
+    final userRepository = UserRepository(mockApiService);
+    
+    when(mockApiService.getUser(1))
+        .thenAnswer((_) async => User(id: 1, name: 'John'));
+    
+    // Act
+    final user = await userRepository.fetchUser(1);
+    
+    // Assert
+    expect(user.name, equals('John'));
+    verify(mockApiService.getUser(1)).called(1);
+  });
+}</pre
+        >
+      </div>
+
+      <h3>8.3 Widget Testing</h3>
+      <p>Widget tests verify that widgets display correctly and respond to interactions:</p>
+
+      <div class="code-block">
+        <pre>
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Build the widget
+    await tester.pumpWidget(MyApp());
+    
+    // Verify initial state
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
+    
+    // Tap the '+' icon and trigger a frame
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    
+    // Verify counter has incremented
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
+  });
+  
+  testWidgets('should display error message when input is invalid', 
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: MyForm()));
+    
+    // Enter invalid input
+    await tester.enterText(find.byType(TextField), 'invalid');
+    await tester.tap(find.text('Submit'));
+    await tester.pump();
+    
+    // Check for error message
+    expect(find.text('Invalid input'), findsOneWidget);
+  });
+}</pre
+        >
+      </div>
+
+      <h4>Common Widget Test Patterns</h4>
+      <ul>
+        <li><strong>Finding Widgets:</strong> Use finders to locate widgets in the widget tree</li>
+        <li><strong>Interacting:</strong> Simulate user interactions like taps and text input</li>
+        <li><strong>Pumping:</strong> Trigger widget rebuilds and animations</li>
+        <li><strong>Verifying:</strong> Assert expected widget states and properties</li>
+      </ul>
+
+      <h3>8.4 Integration Testing</h3>
+      <p>Integration tests verify that different parts of the app work together correctly:</p>
+
+      <div class="code-block">
+        <pre>
+// integration_test/app_test.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:my_app/main.dart' as app;
+
+void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  
+  group('end-to-end test', () {
+    testWidgets('complete user flow', (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
+      
+      // Navigate to login screen
+      await tester.tap(find.text('Login'));
+      await tester.pumpAndSettle();
+      
+      // Enter credentials
+      await tester.enterText(find.byKey(Key('email')), 'test@example.com');
+      await tester.enterText(find.byKey(Key('password')), 'password123');
+      
+      // Submit form
+      await tester.tap(find.text('Submit'));
+      await tester.pumpAndSettle();
+      
+      // Verify successful login
+      expect(find.text('Welcome'), findsOneWidget);
+    });
+  });
+}</pre
+        >
+      </div>
+
+      <h3>8.5 Test Organization and Best Practices</h3>
+
+      <h4>Test Structure</h4>
+      <ul>
+        <li>Organize tests in a mirror structure of your lib directory</li>
+        <li>Use descriptive test names that explain the expected behavior</li>
+        <li>Group related tests using <code>group()</code> function</li>
+        <li>Use <code>setUp()</code> and <code>tearDown()</code> for common initialization</li>
+      </ul>
+
+      <h4>Testing Best Practices</h4>
+      <ul>
+        <li>Follow the AAA pattern: Arrange, Act, Assert</li>
+        <li>Test one thing at a time</li>
+        <li>Use meaningful assertions with descriptive error messages</li>
+        <li>Mock external dependencies to ensure test isolation</li>
+        <li>Keep tests fast and independent</li>
+      </ul>
+
+      <h4>Continuous Integration</h4>
+      <p>Integrate testing into your CI/CD pipeline:</p>
+      <div class="code-block">
+        <pre>
+# GitHub Actions example
+name: Test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.0.0'
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter test integration_test</pre
+        >
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>9. Platform Integration</h2>
+
+      <h3>9.1 Platform Channels</h3>
+      <p>
+        Platform channels enable communication between Flutter and platform-specific code. This allows access to
+        platform APIs and native functionality not available through Flutter's core libraries.
+      </p>
+
+      <h4>Channel Types</h4>
+      <ul>
+        <li><strong>MethodChannel:</strong> For method calls with return values</li>
+        <li><strong>EventChannel:</strong> For streaming data from platform to Flutter</li>
+        <li><strong>BasicMessageChannel:</strong> For simple message passing</li>
+      </ul>
+
+      <h4>MethodChannel Example</h4>
+      <div class="code-block">
+        <pre>
+// Flutter side
+class PlatformService {
+  static const platform = MethodChannel('com.example.app/platform');
+  
+  Future&lt;String&gt; getBatteryLevel() async {
+    try {
+      final int result = await platform.invokeMethod('getBatteryLevel');
+      return 'Battery level: $result%';
+    } on PlatformException catch (e) {
+      return 'Failed to get battery level: ${e.message}';
+    }
+  }
+}</pre
+        >
+      </div>
+
+      <div class="code-block">
+        <pre>
+// Android (Kotlin) side
+class MainActivity: FlutterActivity() {
+    private val CHANNEL = "com.example.app/platform"
+    
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
+            .setMethodCallHandler { call, result ->
+                if (call.method == "getBatteryLevel") {
+                    val batteryLevel = getBatteryLevel()
+                    if (batteryLevel != -1) {
+                        result.success(batteryLevel)
+                    } else {
+                        result.error("UNAVAILABLE", "Battery level not available.", null)
+                    }
+                } else {
+                    result.notImplemented()
+                }
+            }
+    }
+    
+    private fun getBatteryLevel(): Int {
+        val batteryManager = getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+        return batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+    }
+}</pre
+        >
+      </div>
+
+      <h3>9.2 Plugin Development</h3>
+      <p>Plugins package platform channel functionality for reuse across projects:</p>
+
+      <h4>Creating a Plugin</h4>
+      <div class="code-block">
+        <pre>flutter create --template=plugin my_plugin</pre>
+      </div>
+
+      <h4>Plugin Structure</h4>
+      <ul>
+        <li><strong>lib/:</strong> Dart API and platform channel implementation</li>
+        <li><strong>android/:</strong> Android-specific implementation</li>
+        <li><strong>ios/:</strong> iOS-specific implementation</li>
+        <li><strong>example/:</strong> Example app demonstrating plugin usage</li>
+      </ul>
+
+      <h3>9.3 Platform-Specific UI</h3>
+      <p>Handle platform differences in UI and behavior:</p>
+
+      <div class="code-block">
+        <pre>
+Widget buildPlatformButton() {
+  if (Platform.isIOS) {
+    return CupertinoButton(
+      child: Text('iOS Button'),
+      onPressed: () {},
+    );
+  } else {
+    return ElevatedButton(
+      child: Text('Android Button'),
+      onPressed: () {},
+    );
+  }
+}
+
+// Or use Theme.of(context).platform
+Widget buildThemedButton(BuildContext context) {
+  final platform = Theme.of(context).platform;
+  switch (platform) {
+    case TargetPlatform.iOS:
+      return CupertinoButton(
+        child: Text('Button'),
+        onPressed: () {},
+      );
+    default:
+      return ElevatedButton(
+        child: Text('Button'),
+        onPressed: () {},
+      );
+  }
+}</pre
+        >
+      </div>
+
+      <h3>9.4 Platform Views</h3>
+      <p>Embed native platform views within Flutter widgets:</p>
+
+      <div class="code-block">
+        <pre>
+// Android
+Widget buildAndroidView() {
+  return AndroidView(
+    viewType: 'my-custom-view',
+    creationParams: {'param1': 'value1'},
+    creationParamsCodec: StandardMessageCodec(),
+  );
+}
+
+// iOS
+Widget buildIOSView() {
+  return UiKitView(
+    viewType: 'my-custom-view',
+    creationParams: {'param1': 'value1'},
+    creationParamsCodec: StandardMessageCodec(),
+  );
+}</pre
+        >
+      </div>
+
+      <h3>9.5 Add-to-App</h3>
+      <p>Integrate Flutter into existing native applications:</p>
+
+      <h4>Flutter Module Creation</h4>
+      <div class="code-block">
+        <pre>flutter create --template=module my_flutter_module</pre>
+      </div>
+
+      <h4>Integration Approaches</h4>
+      <ul>
+        <li><strong>Full Screen:</strong> Launch Flutter as a full-screen experience</li>
+        <li><strong>Partial Screen:</strong> Embed Flutter in a portion of the native UI</li>
+        <li><strong>Multiple Instances:</strong> Run multiple Flutter instances</li>
+      </ul>
+
+      <h3>9.6 Web Platform Considerations</h3>
+
+      <h4>Web-Specific Features</h4>
+      <ul>
+        <li><strong>URL Routing:</strong> Handle browser navigation and deep links</li>
+        <li><strong>HTML Embedding:</strong> Integrate with existing web content</li>
+        <li><strong>JavaScript Interop:</strong> Call JavaScript functions from Dart</li>
+        <li><strong>PWA Support:</strong> Progressive Web App capabilities</li>
+      </ul>
+
+      <div class="code-block">
+        <pre>
+// JavaScript interop example
+@JS()
+library my_library;
+
+import 'package:js/js.dart';
+
+@JS('console.log')
+external void consoleLog(String message);
+
+@JS('window.alert')
+external void alert(String message);
+
+void main() {
+  consoleLog('Hello from Dart!');
+  alert('Flutter Web is running!');
+}</pre
+        >
+      </div>
+
+      <h3>9.7 Desktop Platform Support</h3>
+
+      <h4>Desktop-Specific Considerations</h4>
+      <ul>
+        <li><strong>Window Management:</strong> Handle window sizing and positioning</li>
+        <li><strong>Menu Bars:</strong> Implement native menu systems</li>
+        <li><strong>File System Access:</strong> Read and write files with proper permissions</li>
+        <li><strong>System Integration:</strong> Integrate with desktop environments</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>10. Deployment & Distribution</h2>
+
+      <h3>10.1 Android Deployment</h3>
+
+      <h4>Build Types</h4>
+      <ul>
+        <li><strong>Debug:</strong> Development builds with debugging information</li>
+        <li><strong>Profile:</strong> Performance profiling builds</li>
+        <li><strong>Release:</strong> Optimized builds for production</li>
+      </ul>
+
+      <h4>App Signing</h4>
+      <p>Configure app signing for Google Play Store distribution:</p>
+      <div class="code-block">
+        <pre>
+# Generate signing key
+keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA \
+        -keysize 2048 -validity 10000 -alias upload
+
+# Create key.properties file
+storePassword=&lt;password&gt;
+keyPassword=&lt;password&gt;
+keyAlias=upload
+storeFile=&lt;keystore-file-location&gt;</pre
+        >
+      </div>
+
+      <h4>Build Commands</h4>
+      <div class="code-block">
+        <pre>
+# Build APK
+flutter build apk --release
+
+# Build App Bundle (recommended)
+flutter build appbundle --release
+
+# Build with specific target architecture
+flutter build apk --target-platform android-arm64</pre
+        >
+      </div>
+
+      <h4>Gradle Configuration</h4>
+      <div class="code-block">
+        <pre>
+// android/app/build.gradle
+android {
+    compileSdkVersion 33
+    
+    defaultConfig {
+        applicationId "com.example.myapp"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
+    
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+    
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+}</pre
+        >
+      </div>
+
+      <h3>10.2 iOS Deployment</h3>
+
+      <h4>Prerequisites</h4>
+      <ul>
+        <li>Apple Developer Account</li>
+        <li>Xcode with latest iOS SDK</li>
+        <li>Valid certificates and provisioning profiles</li>
+      </ul>
+
+      <h4>App Store Connect Setup</h4>
+      <ol>
+        <li>Register Bundle ID in Apple Developer Portal</li>
+        <li>Create app record in App Store Connect</li>
+        <li>Configure app metadata and descriptions</li>
+        <li>Upload screenshots and app icons</li>
+      </ol>
+
+      <h4>Build and Archive</h4>
+      <div class="code-block">
+        <pre>
+# Build iOS release
+flutter build ipa --release
+
+# Build with specific export method
+flutter build ipa --export-method app-store
+
+# Upload to App Store Connect
+xcrun altool --upload-app --type ios -f build/ios/ipa/*.ipa \
+            --apiKey your_api_key --apiIssuer your_issuer_id</pre
+        >
+      </div>
+
+      <h3>10.3 Web Deployment</h3>
+
+      <h4>Build for Web</h4>
+      <div class="code-block">
+        <pre>
+# Build web release
+flutter build web --release
+
+# Build with specific renderer
+flutter build web --web-renderer canvaskit
+flutter build web --web-renderer html</pre
+        >
+      </div>
+
+      <h4>Hosting Options</h4>
+      <ul>
+        <li><strong>Firebase Hosting:</strong> Google's web hosting platform</li>
+        <li><strong>GitHub Pages:</strong> Free hosting for static sites</li>
+        <li><strong>Netlify:</strong> Modern web hosting with CI/CD</li>
+        <li><strong>Custom Server:</strong> Traditional web server hosting</li>
+      </ul>
+
+      <h4>Firebase Hosting Example</h4>
+      <div class="code-block">
+        <pre>
+# Install Firebase CLI
+npm install -g firebase-tools
+
+# Initialize Firebase project
+firebase init hosting
+
+# Deploy to Firebase
+firebase deploy</pre
+        >
+      </div>
+
+      <h3>10.4 Desktop Deployment</h3>
+
+      <h4>Windows</h4>
+      <div class="code-block">
+        <pre>
+# Build Windows executable
+flutter build windows --release
+
+# Create installer with MSIX
+flutter pub add msix
+flutter pub get
+flutter pub run msix:create</pre
+        >
+      </div>
+
+      <h4>macOS</h4>
+      <div class="code-block">
+        <pre>
+# Build macOS app
+flutter build macos --release
+
+# Create DMG installer
+create-dmg \
+  --volname "MyApp" \
+  --window-pos 200 120 \
+  --window-size 600 300 \
+  "MyApp.dmg" \
+  "build/macos/Build/Products/Release/"</pre
+        >
+      </div>
+
+      <h4>Linux</h4>
+      <div class="code-block">
+        <pre>
+# Build Linux executable
+flutter build linux --release
+
+# Create snap package
+snapcraft</pre
+        >
+      </div>
+
+      <h3>10.5 Continuous Integration/Continuous Deployment</h3>
+
+      <h4>GitHub Actions Example</h4>
+      <div class="code-block">
+        <pre>
+name: Build and Deploy
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.0.0'
+    
+    - name: Get dependencies
+      run: flutter pub get
+    
+    - name: Run tests
+      run: flutter test
+    
+    - name: Build APK
+      run: flutter build apk --release
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: apk
+        path: build/app/outputs/apk/release/</pre
+        >
+      </div>
+
+      <h3>10.6 App Store Optimization</h3>
+
+      <h4>Best Practices</h4>
+      <ul>
+        <li><strong>App Icons:</strong> Create compelling and recognizable icons</li>
+        <li><strong>Screenshots:</strong> Show key features and user interface</li>
+        <li><strong>Descriptions:</strong> Write clear, keyword-optimized descriptions</li>
+        <li><strong>Ratings:</strong> Encourage positive user reviews</li>
+        <li><strong>Localization:</strong> Support multiple languages and regions</li>
+      </ul>
+
+      <h4>Performance Optimization</h4>
+      <ul>
+        <li>Enable code obfuscation for release builds</li>
+        <li>Optimize images and assets</li>
+        <li>Remove unused dependencies</li>
+        <li>Use tree shaking to eliminate dead code</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>11. Best Practices & Guidelines</h2>
+
+      <h3>11.1 Code Organization</h3>
+
+      <h4>Project Structure</h4>
+      <div class="code-block">
+        <pre>
+lib/
+├── main.dart
+├── app/
+│   ├── app.dart
+│   └── routes.dart
+├── core/
+│   ├── constants/
+│   ├── errors/
+│   ├── utils/
+│   └── services/
+├── features/
+│   ├── authentication/
+│   │   ├── data/
+│   │   ├── domain/
+│   │   └── presentation/
+│   └── home/
+│       ├── data/
+│       ├── domain/
+│       └── presentation/
+└── shared/
+    ├── widgets/
+    ├── themes/
+    └── constants/</pre
+        >
+      </div>
+
+      <h4>Naming Conventions</h4>
+      <ul>
+        <li><strong>Files:</strong> Use snake_case for file names</li>
+        <li><strong>Classes:</strong> Use PascalCase for class names</li>
+        <li><strong>Variables:</strong> Use camelCase for variables and functions</li>
+        <li><strong>Constants:</strong> Use SCREAMING_SNAKE_CASE for constants</li>
+      </ul>
+
+      <h3>11.2 Performance Best Practices</h3>
+
+      <h4>Widget Optimization</h4>
+      <ul>
+        <li>Use <code>const</code> constructors whenever possible</li>
+        <li>Minimize the use of <code>Opacity</code> and <code>ClipPath</code></li>
+        <li>Prefer <code>ListView.builder</code> over <code>ListView</code> for large lists</li>
+        <li>Use <code>RepaintBoundary</code> to isolate expensive widgets</li>
+      </ul>
+
+      <div class="code-block">
+        <pre>
+// Good: Using const constructor
+const Text('Hello World')
+
+// Bad: Missing const
+Text('Hello World')
+
+// Good: ListView.builder for large lists
+ListView.builder(
+  itemCount: items.length,
+  itemBuilder: (context, index) => ItemWidget(items[index]),
+)
+
+// Bad: Creating all widgets at once
+ListView(
+  children: items.map((item) => ItemWidget(item)).toList(),
+)</pre
+        >
+      </div>
+
+      <h4>Memory Management</h4>
+      <ul>
+        <li>Dispose controllers and streams in <code>dispose()</code> method</li>
+        <li>Use <code>AutomaticKeepAliveClientMixin</code> judiciously</li>
+        <li>Optimize image loading and caching</li>
+        <li>Monitor memory usage with profiling tools</li>
+      </ul>
+
+      <h3>11.3 Security Best Practices</h3>
+
+      <h4>Data Protection</h4>
+      <ul>
+        <li>Never store sensitive data in plain text</li>
+        <li>Use secure storage for credentials and tokens</li>
+        <li>Validate all user inputs</li>
+        <li>Implement proper certificate pinning</li>
+      </ul>
+
+      <h4>Code Obfuscation</h4>
+      <div class="code-block">
+        <pre>
+# Build with obfuscation
+flutter build apk --obfuscate --split-debug-info=&lt;directory&gt;
+flutter build ipa --obfuscate --split-debug-info=&lt;directory&gt;</pre
+        >
+      </div>
+
+      <h3>11.4 Accessibility Guidelines</h3>
+
+      <h4>Semantic Widgets</h4>
+      <div class="code-block">
+        <pre>
+// Add semantic labels
+Semantics(
+  label: 'Increment counter',
+  child: FloatingActionButton(
+    onPressed: _increment,
+    child: Icon(Icons.add),
+  ),
+)
+
+// Use semantic properties
+Text(
+  'Counter: $_counter',
+  semanticsLabel: 'Current counter value is $_counter',
+)</pre
+        >
+      </div>
+
+      <h4>Focus Management</h4>
+      <ul>
+        <li>Ensure proper tab order with <code>FocusNode</code></li>
+        <li>Provide visual focus indicators</li>
+        <li>Handle keyboard navigation</li>
+        <li>Test with screen readers</li>
+      </ul>
+
+      <h3>11.5 Internationalization (i18n)</h3>
+
+      <h4>Setup</h4>
+      <div class="code-block">
+        <pre>
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
+
+flutter:
+  generate: true</pre
+        >
+      </div>
+
+      <h4>Configuration</h4>
+      <div class="code-block">
+        <pre>
+// l10n.yaml
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+
+// lib/l10n/app_en.arb
+{
+  "hello": "Hello",
+  "welcome": "Welcome {name}",
+  "@welcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
+}</pre
+        >
+      </div>
+
+      <h4>Usage</h4>
+      <div class="code-block">
+        <pre>
+MaterialApp(
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  home: MyHomePage(),
+)
+
+// In widgets
+Text(AppLocalizations.of(context)!.hello)
+Text(AppLocalizations.of(context)!.welcome('John'))</pre
+        >
+      </div>
+
+      <h3>11.6 Error Handling</h3>
+
+      <h4>Global Error Handling</h4>
+      <div class="code-block">
+        <pre>
+void main() {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    // Log to crash reporting service
+  };
+  
+  PlatformDispatcher.instance.onError = (error, stack) {
+    // Handle errors outside Flutter
+    return true;
+  };
+  
+  runApp(MyApp());
+}</pre
+        >
+      </div>
+
+      <h4>Network Error Handling</h4>
+      <div class="code-block">
+        <pre>
+Future&lt;User&gt; fetchUser() async {
+  try {
+    final response = await http.get(Uri.parse('$baseUrl/user'));
+    
+    if (response.statusCode == 200) {
+      return User.fromJson(json.decode(response.body));
+    } else {
+      throw HttpException('Failed to load user: ${response.statusCode}');
+    }
+  } on SocketException {
+    throw NetworkException('No internet connection');
+  } on TimeoutException {
+    throw NetworkException('Request timeout');
+  } catch (e) {
+    throw UnknownException('Unknown error occurred');
+  }
+}</pre
+        >
+      </div>
+
+      <h3>11.7 Documentation</h3>
+
+      <h4>Code Documentation</h4>
+      <div class="code-block">
+        <pre>
+/// A widget that displays a user's profile information.
+/// 
+/// The [ProfileWidget] requires a [User] object and optionally
+/// accepts a callback function for when the profile is tapped.
+/// 
+/// Example usage:
+/// ```dart
+/// ProfileWidget(
+///   user: currentUser,
+///   onTap: () => Navigator.push(...),
+/// )
+/// ```
+class ProfileWidget extends StatelessWidget {
+  /// The user whose profile will be displayed.
+  final User user;
+  
+  /// Called when the profile widget is tapped.
+  final VoidCallback? onTap;
+  
+  const ProfileWidget({
+    Key? key,
+    required this.user,
+    this.onTap,
+  }) : super(key: key);
+}</pre
+        >
+      </div>
+
+      <h3>11.8 Version Control</h3>
+
+      <h4>Git Best Practices</h4>
+      <ul>
+        <li>Use meaningful commit messages</li>
+        <li>Create feature branches for new development</li>
+        <li>Use pull requests for code review</li>
+        <li>Keep commits atomic and focused</li>
+      </ul>
+
+      <h4>Gitignore Example</h4>
+      <div class="code-block">
+        <pre>
+# Flutter/Dart specific
+**/generated_plugin_registrant.dart
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Sensitive files
+*.keystore
+key.properties
+google-services.json
+GoogleService-Info.plist</pre
+        >
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Conclusion</h2>
+
+      <p>
+        Flutter represents a powerful and versatile framework for cross-platform application development. Its unique
+        architecture, comprehensive widget system, and growing ecosystem make it an excellent choice for developers
+        seeking to build high-quality applications efficiently.
+      </p>
+
+      <p>
+        This documentation has covered the essential aspects of Flutter development, from basic concepts to advanced
+        deployment strategies. As Flutter continues to evolve, staying updated with the latest features, best practices,
+        and community contributions will be crucial for successful application development.
+      </p>
+
+      <p>
+        The key to mastering Flutter lies in understanding its fundamental principles: everything is a widget, state
+        management is crucial, and the framework's reactive nature enables powerful and flexible user interfaces. By
+        following the guidelines and practices outlined in this documentation, developers can create robust, performant,
+        and maintainable Flutter applications.
+      </p>
+
+      <h3>Additional Resources</h3>
+      <ul>
+        <li>Official Flutter Documentation: https://docs.flutter.dev/</li>
+        <li>Flutter API Reference: https://api.flutter.dev/</li>
+        <li>Flutter Community: https://flutter.dev/community</li>
+        <li>Dart Language Tour: https://dart.dev/guides/language/language-tour</li>
+        <li>Flutter Samples: https://github.com/flutter/samples</li>
+      </ul>
+    </div>
+  </body>
+</html>
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDilt0X11OTnxGd4CgVJJkpFkySC6xSJb9ZZOnr%2BZNgNcCzSZYmu6LlVisgsaY9zDd%2F5Ld4wIB7pVmc4Izad8Njh5PbAcN8pVk%2BhK4YvQgLcPqQQ6i1RF%2FU7iHr51q4RjW3AsVdi2xQxrQZJmRfyUAOje9Jw8EI6171T1XOAifiRcTakG5Vfrp3xjnZZiwwPNSNppUGIxO64qRrqjfNGHf8S5qSC%2FGH2uNLtq7DYqhxeLLwUcW1x9sQvFUYTMJyJjB%2F%2Ft9PH9yAn8kd%2BVg9Xc1cMhp3pnF8XtO5dCoh0mS%2FUG%2BfOGQ%2B8pTXcc3tkiV4EjIZG5mEEbYSHGqDloPaXhyTK1gvdgNxXQtA8eTUiUMO0Mw1RxP3lT2bUukq4v3qqxy60pc7kqSefNQUqOMQ%2BW0Rf%2B%2BJHhLw6EhXvDwqz91mbFg8bO9DOSSgREipgUlPklZZvlbkvr2tTt0dCjtHQ90r0t0v1zVH%2FKDQJKxdBqGZF3nB%2BHULdRRwIxLv%2B4yO4XQv5NXU6yd3kO1G9EIJVE3zeEqGKyfOzrDJYKSuJTDLMN";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDilt0X11OTnxGd4CgVJJkpFkySC6xSJb9ZZOnr+ZNgNcCzSZYmu6LlVisgsaY9zDd/5Ld4wIB7pVmc4Izad8Njh5PbAcN8pVk+hK4YvQgLcPqQQ6i1RF/U7iHr51q4RjW3AsVdi2xQxrQZJmRfyUAOje9Jw8EI6171T1XOAifiRcTakG5Vfrp3xjnZZiwwPNSNppUGIxO64qRrqjfNGHf8S5qSC/GH2uNLtq7DYqhxeLLwUcW1x9sQvFUYTMJyJjB//t9PH9yAn8kd+Vg9Xc1cMhp3pnF8XtO5dCoh0mS/UG+fOGQ+8pTXcc3tkiV4EjIZG5mEEbYSHGqDloPaXhyTK1gvdgNxXQtA8eTUiUMO0Mw1RxP3lT2bUukq4v3qqxy60pc7kqSefNQUqOMQ+W0Rf++JHhLw6EhXvDwqz91mbFg8bO9DOSSgREipgUlPklZZvlbkvr2tTt0dCjtHQ90r0t0v1zVH/KDQJKxdBqGZF3nB+HULdRRwIxLv+4yO4XQv5NXU6yd3kO1G9EIJVE3zeEqGKyfOzrDJYKSuJTDLMN";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    

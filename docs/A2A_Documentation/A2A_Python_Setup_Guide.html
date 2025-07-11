@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A2A Python Setup Guide</title>
+    <style>
+      body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 80px;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+      }
+
+      h1 {
+        font-size: 24px;
+        text-align: center;
+        margin-bottom: 32px;
+        font-weight: bold;
+        page-break-after: avoid;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        font-weight: bold;
+        page-break-after: avoid;
+      }
+
+      h3 {
+        font-size: 16px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        page-break-after: avoid;
+      }
+
+      p {
+        margin-bottom: 12px;
+        text-align: justify;
+      }
+
+      ul,
+      ol {
+        margin-bottom: 12px;
+        padding-left: 24px;
+      }
+
+      li {
+        margin-bottom: 6px;
+      }
+
+      code {
+        font-family: 'Courier New', monospace;
+        background-color: #f5f5f5;
+        padding: 2px 4px;
+        border: 1px solid #ddd;
+      }
+
+      pre {
+        font-family: 'Courier New', monospace;
+        background-color: #f5f5f5;
+        padding: 12px;
+        border: 1px solid #ddd;
+        margin: 12px 0;
+        overflow-x: visible;
+        white-space: pre-wrap;
+      }
+
+      .note {
+        background-color: #f9f9f9;
+        border-left: 4px solid #666;
+        padding: 12px;
+        margin: 12px 0;
+      }
+
+      .warning {
+        background-color: #fff3cd;
+        border-left: 4px solid #856404;
+        padding: 12px;
+        margin: 12px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f5f5f5;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>A2A Python Setup Guide</h1>
+
+    <h2>Overview</h2>
+    <p>
+      This guide provides comprehensive instructions for setting up a Python development environment for building
+      Agent2Agent (A2A) compliant applications. The Agent2Agent Protocol is an open standard designed to enable seamless
+      communication and collaboration between AI agents built using different frameworks and by different vendors.
+    </p>
+
+    <h2>Prerequisites</h2>
+    <p>Before beginning the setup process, ensure you have the following prerequisites installed on your system:</p>
+
+    <ul>
+      <li>
+        <strong>Python 3.10 or higher</strong> - The A2A Python SDK requires Python 3.10 or later versions for optimal
+        compatibility and performance.
+      </li>
+      <li><strong>Git</strong> - Version control system required for cloning the A2A samples repository.</li>
+      <li>
+        <strong>Terminal or Command Prompt</strong> - Access to a command-line interface for executing setup commands.
+      </li>
+      <li>
+        <strong>Code Editor</strong> - A text editor or IDE such as Visual Studio Code, PyCharm, or similar for
+        development work.
+      </li>
+      <li><strong>Internet Connection</strong> - Required for downloading packages and dependencies.</li>
+    </ul>
+
+    <h2>Environment Setup Process</h2>
+
+    <h3>Step 1: Clone the A2A Samples Repository</h3>
+    <p>
+      The A2A project provides a comprehensive samples repository containing example implementations and tutorials.
+      Clone this repository to access the sample code and follow along with the tutorials.
+    </p>
+
+    <pre>
+git clone https://github.com/a2aproject/a2a-samples.git -b main --depth 1
+cd a2a-samples</pre
+    >
+
+    <p>
+      The <code>--depth 1</code> flag performs a shallow clone, downloading only the latest commit to reduce download
+      time and storage requirements.
+    </p>
+
+    <h3>Step 2: Create a Python Virtual Environment</h3>
+    <p>
+      Virtual environments are essential for Python development as they provide isolated spaces for project
+      dependencies, preventing conflicts between different projects. The A2A Python SDK supports multiple virtual
+      environment management approaches.
+    </p>
+
+    <h4>Option A: Using venv (Recommended for Beginners)</h4>
+    <p>
+      The <code>venv</code> module is part of Python's standard library and provides a straightforward approach to
+      virtual environment management.
+    </p>
+
+    <p><strong>For Mac/Linux systems:</strong></p>
+    <pre>
+python -m venv .venv
+source .venv/bin/activate</pre
+    >
+
+    <p><strong>For Windows systems:</strong></p>
+    <pre>
+python -m venv .venv
+.venv\Scripts\activate</pre
+    >
+
+    <div class="note">
+      <p>
+        <strong>Note:</strong> When the virtual environment is activated, your command prompt will typically show the
+        environment name (e.g., <code>(.venv)</code>) at the beginning of the line, indicating that the virtual
+        environment is active.
+      </p>
+    </div>
+
+    <h4>Option B: Using uv (Advanced Users)</h4>
+    <p>
+      The A2A Python SDK development team uses <code>uv</code> for dependency management, which provides faster package
+      installation and better dependency resolution. If you prefer to use <code>uv</code>, install it first and then
+      create the virtual environment:
+    </p>
+
+    <pre>
+pip install uv
+uv venv
+source .venv/bin/activate  # On Mac/Linux
+# or
+.venv\Scripts\activate  # On Windows</pre
+    >
+
+    <h3>Step 3: Install A2A SDK and Dependencies</h3>
+    <p>
+      With the virtual environment activated, install the A2A Python SDK and all required dependencies using the
+      provided requirements file:
+    </p>
+
+    <pre>pip install -r samples/python/requirements.txt</pre>
+
+    <p>This command will install:</p>
+    <ul>
+      <li>The A2A Python SDK package</li>
+      <li>All required dependencies for the SDK</li>
+      <li>Additional packages needed for the sample applications</li>
+      <li>Development and testing utilities</li>
+    </ul>
+
+    <div class="note">
+      <p>
+        <strong>Installation Note:</strong> The installation process may take several minutes depending on your internet
+        connection speed and system performance. The package manager will download and install all necessary
+        dependencies automatically.
+      </p>
+    </div>
+
+    <h3>Step 4: Verify Installation</h3>
+    <p>After installation, verify that the A2A SDK has been installed correctly by testing the import functionality:</p>
+
+    <pre>python -c "import a2a; print('A2A SDK imported successfully')"</pre>
+
+    <p>
+      If the installation was successful, you should see the message "A2A SDK imported successfully" printed to the
+      console. If you encounter any errors, review the previous steps and ensure all prerequisites are met.
+    </p>
+
+    <h2>Development Environment Configuration</h2>
+
+    <h3>IDE Setup Recommendations</h3>
+    <p>For optimal development experience, configure your IDE or text editor with the following settings:</p>
+
+    <ul>
+      <li>
+        <strong>Python Interpreter:</strong> Set your IDE to use the Python interpreter from your virtual environment
+        (typically located at <code>.venv/bin/python</code> or <code>.venv\Scripts\python.exe</code>).
+      </li>
+      <li><strong>Linting:</strong> Enable Python linting tools such as pylint or flake8 for code quality checks.</li>
+      <li><strong>Code Formatting:</strong> Consider using black or autopep8 for consistent code formatting.</li>
+      <li><strong>Type Checking:</strong> Enable mypy or similar type checking tools for better code reliability.</li>
+    </ul>
+
+    <h3>Environment Variables</h3>
+    <p>
+      Some A2A applications may require environment variables for configuration. Create a <code>.env</code> file in your
+      project root directory for storing sensitive configuration values:
+    </p>
+
+    <pre>
+# .env file example
+A2A_API_KEY=your-api-key-here
+A2A_SERVER_URL=https://your-server.example.com
+DEBUG=True</pre
+    >
+
+    <div class="warning">
+      <p>
+        <strong>Security Warning:</strong> Never commit <code>.env</code> files or files containing sensitive
+        information to version control. Add <code>.env</code> to your <code>.gitignore</code> file to prevent accidental
+        commits.
+      </p>
+    </div>
+
+    <h2>Project Structure Overview</h2>
+    <p>The A2A samples repository follows a standard project structure:</p>
+
+    <pre>
+a2a-samples/
+├── samples/
+│   ├── python/
+│   │   ├── requirements.txt
+│   │   ├── helloworld/
+│   │   ├── langgraph/
+│   │   └── ...
+│   └── ...
+├── docs/
+├── README.md
+└── .gitignore</pre
+    >
+
+    <p>Key directories and files:</p>
+    <ul>
+      <li><strong>samples/python/</strong> - Contains all Python-related sample applications and tutorials</li>
+      <li><strong>requirements.txt</strong> - Lists all Python package dependencies</li>
+      <li><strong>helloworld/</strong> - Simple "Hello World" A2A agent example</li>
+      <li><strong>langgraph/</strong> - Advanced example integrating LangGraph with A2A</li>
+    </ul>
+
+    <h2>Next Steps</h2>
+    <p>
+      With your development environment successfully configured, you are ready to begin developing A2A-compliant
+      applications. Recommended next steps include:
+    </p>
+
+    <ol>
+      <li>
+        <strong>Explore the Hello World Example:</strong> Navigate to the
+        <code>samples/python/helloworld/</code> directory and examine the basic A2A agent implementation.
+      </li>
+      <li>
+        <strong>Review Agent Cards:</strong> Study how Agent Cards are structured and how they describe agent
+        capabilities and skills.
+      </li>
+      <li>
+        <strong>Understand the Agent Executor:</strong> Learn how the agent logic is implemented and how tasks are
+        processed.
+      </li>
+      <li>
+        <strong>Test Server Startup:</strong> Practice starting an A2A server and making it available for client
+        connections.
+      </li>
+      <li>
+        <strong>Experiment with Client Interactions:</strong> Send test requests to your A2A server and observe the
+        responses.
+      </li>
+      <li>
+        <strong>Explore Advanced Features:</strong> Investigate streaming capabilities, multi-turn interactions, and LLM
+        integration examples.
+      </li>
+    </ol>
+
+    <h2>Troubleshooting Common Issues</h2>
+
+    <h3>Python Version Compatibility</h3>
+    <p>If you encounter version-related errors, verify your Python version:</p>
+    <pre>python --version</pre>
+    <p>
+      Ensure you are using Python 3.10 or later. If necessary, update your Python installation or use a Python version
+      manager like pyenv.
+    </p>
+
+    <h3>Package Installation Failures</h3>
+    <p>If package installation fails, try the following solutions:</p>
+    <ul>
+      <li>Update pip to the latest version: <code>pip install --upgrade pip</code></li>
+      <li>Clear pip cache: <code>pip cache purge</code></li>
+      <li>Install packages individually to identify problematic dependencies</li>
+      <li>Check for system-specific compilation requirements for native dependencies</li>
+    </ul>
+
+    <h3>Virtual Environment Issues</h3>
+    <p>If virtual environment activation fails:</p>
+    <ul>
+      <li>Ensure the virtual environment was created successfully</li>
+      <li>Check file permissions in the virtual environment directory</li>
+      <li>Try recreating the virtual environment from scratch</li>
+      <li>Verify that your shell supports the activation script</li>
+    </ul>
+
+    <h2>Additional Resources</h2>
+    <p>For comprehensive information about the A2A protocol and development:</p>
+
+    <ul>
+      <li>
+        <strong>A2A Protocol Documentation:</strong>
+        <a href="https://a2aproject.github.io/A2A/latest/">https://a2aproject.github.io/A2A/latest/</a>
+      </li>
+      <li>
+        <strong>Python SDK Repository:</strong>
+        <a href="https://github.com/a2aproject/a2a-python">https://github.com/a2aproject/a2a-python</a>
+      </li>
+      <li>
+        <strong>Sample Applications:</strong>
+        <a href="https://github.com/a2aproject/a2a-samples">https://github.com/a2aproject/a2a-samples</a>
+      </li>
+      <li><strong>Protocol Specification:</strong> Detailed technical specifications for implementing A2A agents</li>
+      <li><strong>Community Forums:</strong> Join the A2A community for support and discussions</li>
+    </ul>
+
+    <p>
+      This setup guide provides the foundation for A2A development. With your environment properly configured, you can
+      begin building interoperable AI agents that communicate and collaborate effectively using the A2A protocol.
+    </p>
+  </body>
+</html>
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDlDAhsR9YTVUawb6IGzl6hOde5x2b5kF8BfL38rgYUtKNVPKmwE9A9EXngKGVJmY73%2BR32U5uKQGjxP1wmwPozgh%2FfdRjfjpq6ospb0n2wtaLw1ocbYD18be1gEJeGarjPT0RtBR2ybO7yEzCzYciw3QRZP%2FzsbPka%2BNx%2BQwwUiE%2F8Jz4JWLkYc4ajX%2FrDMADYVm2YhtB7eeHEtbLajS9fBntesRHgpkKlpx6QvD7%2FnXVdRtQ7VKKMtJJ7XPSRLuZM5nK6KzXstuBuK5bW6NKWf7Tw%2BO1p21htdnPczfOHFH076xSM5wGoNggoZEXLp0DrZtOknt8LVy5WLxKyZUl%2Bn49ZRDvCOLeZvwTYdsFn4hiRw0HsUdX6Y932H8WmIrCOOnE4RenGd%2F9YgHAd4pWuK7VDWLt55JtYoEWBh1U9ql2zGB%2FIJrSqEUyZAluNQ7rjfEuuKmrm8Sv1xcahteRT7vBbl4V%2FyPKLbOTGlL65Y89dkD%2BbZEPhnjNovkJAslgOA8vBjE8gxjF3LJR3Wk7vU%3D";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDlDAhsR9YTVUawb6IGzl6hOde5x2b5kF8BfL38rgYUtKNVPKmwE9A9EXngKGVJmY73+R32U5uKQGjxP1wmwPozgh/fdRjfjpq6ospb0n2wtaLw1ocbYD18be1gEJeGarjPT0RtBR2ybO7yEzCzYciw3QRZP/zsbPka+Nx+QwwUiE/8Jz4JWLkYc4ajX/rDMADYVm2YhtB7eeHEtbLajS9fBntesRHgpkKlpx6QvD7/nXVdRtQ7VKKMtJJ7XPSRLuZM5nK6KzXstuBuK5bW6NKWf7Tw+O1p21htdnPczfOHFH076xSM5wGoNggoZEXLp0DrZtOknt8LVy5WLxKyZUl+n49ZRDvCOLeZvwTYdsFn4hiRw0HsUdX6Y932H8WmIrCOOnE4RenGd/9YgHAd4pWuK7VDWLt55JtYoEWBh1U9ql2zGB/IJrSqEUyZAluNQ7rjfEuuKmrm8Sv1xcahteRT7vBbl4V/yPKLbOTGlL65Y89dkD+bZEPhnjNovkJAslgOA8vBjE8gxjF3LJR3Wk7vU=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    

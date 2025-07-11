@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A2A Technical Specification Summary</title>
+    <style>
+      body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 80px;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 32px;
+        border-bottom: 2px solid #000;
+        padding-bottom: 8px;
+      }
+
+      h2 {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 32px;
+        margin-bottom: 16px;
+        color: #000;
+      }
+
+      h3 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        color: #000;
+      }
+
+      h4 {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 16px;
+        margin-bottom: 8px;
+        color: #000;
+      }
+
+      p {
+        margin-bottom: 12px;
+        text-align: justify;
+      }
+
+      ul,
+      ol {
+        margin-bottom: 12px;
+        padding-left: 32px;
+      }
+
+      li {
+        margin-bottom: 6px;
+      }
+
+      code {
+        font-family: 'Courier New', monospace;
+        background-color: #f5f5f5;
+        padding: 2px 4px;
+        border: 1px solid #ddd;
+      }
+
+      pre {
+        font-family: 'Courier New', monospace;
+        background-color: #f5f5f5;
+        padding: 12px;
+        border: 1px solid #ddd;
+        margin: 12px 0;
+        white-space: pre-wrap;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+      }
+
+      .section {
+        margin-bottom: 24px;
+      }
+
+      .subsection {
+        margin-bottom: 16px;
+      }
+
+      .emphasis {
+        font-weight: bold;
+      }
+
+      .requirement {
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Agent2Agent (A2A) Protocol Technical Specification Summary</h1>
+
+    <div class="section">
+      <h2>1. Protocol Overview</h2>
+      <p>
+        The Agent2Agent (A2A) Protocol is an open standard designed to facilitate communication and interoperability
+        between independent, potentially opaque AI agent systems. The protocol enables agents to discover each other's
+        capabilities, negotiate interaction modalities, manage collaborative tasks, and securely exchange information
+        without requiring access to each other's internal state, memory, or tools.
+      </p>
+
+      <h3>1.1 Key Design Principles</h3>
+      <ul>
+        <li>
+          <span class="emphasis">Simple:</span> Reuse existing, well-understood standards (HTTP, JSON-RPC 2.0,
+          Server-Sent Events)
+        </li>
+        <li>
+          <span class="emphasis">Enterprise Ready:</span> Address authentication, authorization, security, privacy,
+          tracing, and monitoring
+        </li>
+        <li>
+          <span class="emphasis">Async First:</span> Designed for potentially long-running tasks and human-in-the-loop
+          interactions
+        </li>
+        <li>
+          <span class="emphasis">Modality Agnostic:</span> Support exchange of diverse content types including text,
+          files, structured data
+        </li>
+        <li>
+          <span class="emphasis">Opaque Execution:</span> Agents collaborate based on declared capabilities without
+          sharing internal implementations
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>2. Transport and Format Requirements</h2>
+
+      <h3>2.1 Transport Protocol</h3>
+      <p>
+        A2A communication <span class="requirement">must</span> occur over HTTP(S). Production deployments
+        <span class="requirement">must</span> use HTTPS with modern TLS configurations (TLS 1.3+ recommended) and strong
+        cipher suites.
+      </p>
+
+      <h3>2.2 Data Format</h3>
+      <p>
+        A2A uses JSON-RPC 2.0 as the payload format for all requests and responses. The Content-Type header for HTTP
+        requests and responses containing JSON-RPC payloads <span class="requirement">must</span> be
+        <code>application/json</code>.
+      </p>
+
+      <h3>2.3 Streaming Transport</h3>
+      <p>
+        When streaming is used, the server responds with HTTP 200 OK status and
+        <code>Content-Type: text/event-stream</code>. The response body contains Server-Sent Events (SSE) as defined by
+        the W3C specification, with each SSE data field containing a complete JSON-RPC 2.0 Response object.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>3. Security Requirements</h2>
+
+      <h3>3.1 Transport Security</h3>
+      <p>
+        Production deployments <span class="requirement">must</span> use HTTPS. A2A Clients
+        <span class="requirement">should</span> verify the A2A Server's identity by validating its TLS certificate
+        against trusted certificate authorities during the TLS handshake.
+      </p>
+
+      <h3>3.2 Authentication Process</h3>
+      <ol>
+        <li>
+          <span class="emphasis">Discovery:</span> Client discovers server's required authentication schemes via the
+          <code>authentication</code> field in the AgentCard
+        </li>
+        <li>
+          <span class="emphasis">Credential Acquisition:</span> Client obtains necessary credentials through out-of-band
+          process specific to the required authentication scheme
+        </li>
+        <li>
+          <span class="emphasis">Credential Transmission:</span> Client includes credentials in appropriate HTTP headers
+          of every A2A request
+        </li>
+      </ol>
+
+      <h3>3.3 Server Authentication Responsibilities</h3>
+      <p>
+        The A2A Server <span class="requirement">must</span> authenticate every incoming request based on provided HTTP
+        credentials and declared authentication requirements. Servers <span class="requirement">should</span> use
+        standard HTTP status codes (401 Unauthorized, 403 Forbidden) and include relevant HTTP headers with 401
+        responses.
+      </p>
+
+      <h3>3.4 Authorization</h3>
+      <p>
+        Once authenticated, the A2A Server is responsible for authorizing requests based on the authenticated
+        client/user identity and its own policies. Authorization may be enforced based on specific skills requested,
+        actions attempted, data access policies, or OAuth scopes.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>4. Core Data Objects</h2>
+
+      <h3>4.1 AgentCard Object</h3>
+      <p>
+        The AgentCard is a JSON metadata document that describes an A2A Server's identity, capabilities, skills, service
+        endpoint, and authentication requirements.
+      </p>
+
+      <table>
+        <tr>
+          <th>Field Name</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>protocolVersion</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Version of A2A protocol supported</td>
+        </tr>
+        <tr>
+          <td>name</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Human-readable name of the agent</td>
+        </tr>
+        <tr>
+          <td>description</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Human-readable description</td>
+        </tr>
+        <tr>
+          <td>url</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Base URL for agent's A2A service</td>
+        </tr>
+        <tr>
+          <td>capabilities</td>
+          <td>AgentCapabilities</td>
+          <td>Yes</td>
+          <td>Optional A2A protocol features supported</td>
+        </tr>
+        <tr>
+          <td>securitySchemes</td>
+          <td>object</td>
+          <td>No</td>
+          <td>Security scheme details for authentication</td>
+        </tr>
+        <tr>
+          <td>defaultInputModes</td>
+          <td>string[]</td>
+          <td>Yes</td>
+          <td>Input media types accepted</td>
+        </tr>
+        <tr>
+          <td>defaultOutputModes</td>
+          <td>string[]</td>
+          <td>Yes</td>
+          <td>Output media types produced</td>
+        </tr>
+        <tr>
+          <td>skills</td>
+          <td>AgentSkill[]</td>
+          <td>Yes</td>
+          <td>Array of agent capabilities</td>
+        </tr>
+      </table>
+
+      <h3>4.2 Task Object</h3>
+      <p>
+        Represents the stateful unit of work being processed by the A2A Server. Tasks progress through defined lifecycle
+        states and cannot be restarted once they reach a terminal state.
+      </p>
+
+      <table>
+        <tr>
+          <th>Field Name</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>id</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Server-generated unique task identifier</td>
+        </tr>
+        <tr>
+          <td>contextId</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Server-generated ID for contextual alignment</td>
+        </tr>
+        <tr>
+          <td>status</td>
+          <td>TaskStatus</td>
+          <td>Yes</td>
+          <td>Current status of the task</td>
+        </tr>
+        <tr>
+          <td>artifacts</td>
+          <td>Artifact[]</td>
+          <td>No</td>
+          <td>Array of outputs generated by the agent</td>
+        </tr>
+        <tr>
+          <td>history</td>
+          <td>Message[]</td>
+          <td>No</td>
+          <td>Array of recent messages exchanged</td>
+        </tr>
+        <tr>
+          <td>metadata</td>
+          <td>object</td>
+          <td>No</td>
+          <td>Arbitrary key-value metadata</td>
+        </tr>
+      </table>
+
+      <h3>4.3 Message Object</h3>
+      <p>
+        Represents a single turn of communication between a client and an agent, containing a role and one or more
+        content parts.
+      </p>
+
+      <table>
+        <tr>
+          <th>Field Name</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>role</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Either "user" or "agent"</td>
+        </tr>
+        <tr>
+          <td>parts</td>
+          <td>Part[]</td>
+          <td>Yes</td>
+          <td>Array of content parts</td>
+        </tr>
+        <tr>
+          <td>messageId</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Unique identifier for the message</td>
+        </tr>
+        <tr>
+          <td>contextId</td>
+          <td>string</td>
+          <td>No</td>
+          <td>Context identifier for grouping</td>
+        </tr>
+        <tr>
+          <td>taskId</td>
+          <td>string</td>
+          <td>No</td>
+          <td>Associated task identifier</td>
+        </tr>
+      </table>
+
+      <h3>4.4 Part Union Type</h3>
+      <p>The fundamental unit of content within Messages and Artifacts. Three types are supported:</p>
+
+      <h4>4.4.1 TextPart</h4>
+      <ul>
+        <li><code>kind</code>: "text"</li>
+        <li><code>text</code>: string content</li>
+        <li><code>metadata</code>: optional additional information</li>
+      </ul>
+
+      <h4>4.4.2 FilePart</h4>
+      <ul>
+        <li><code>kind</code>: "file"</li>
+        <li><code>file</code>: FileWithBytes or FileWithUri</li>
+        <li><code>metadata</code>: optional additional information</li>
+      </ul>
+
+      <h4>4.4.3 DataPart</h4>
+      <ul>
+        <li><code>kind</code>: "data"</li>
+        <li><code>data</code>: JSON object containing structured data</li>
+        <li><code>metadata</code>: optional additional information</li>
+      </ul>
+
+      <h3>4.5 TaskStatus Object</h3>
+      <p>Represents the current state and associated context of a Task.</p>
+
+      <table>
+        <tr>
+          <th>Field Name</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>state</td>
+          <td>TaskState</td>
+          <td>Yes</td>
+          <td>Current task state enum</td>
+        </tr>
+        <tr>
+          <td>message</td>
+          <td>Message</td>
+          <td>No</td>
+          <td>Additional context message</td>
+        </tr>
+        <tr>
+          <td>timestamp</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>ISO 8601 timestamp</td>
+        </tr>
+      </table>
+
+      <h3>4.6 TaskState Enum</h3>
+      <p>Defines the possible states of a task:</p>
+      <ul>
+        <li><code>submitted</code>: Task has been received and queued</li>
+        <li><code>working</code>: Task is actively being processed</li>
+        <li><code>input-required</code>: Task requires additional input from client</li>
+        <li><code>completed</code>: Task has been successfully completed</li>
+        <li><code>canceled</code>: Task has been canceled</li>
+        <li><code>failed</code>: Task has failed due to an error</li>
+        <li><code>rejected</code>: Task was rejected by the agent</li>
+        <li><code>auth-required</code>: Task requires additional authentication</li>
+        <li><code>unknown</code>: Task state cannot be determined</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>5. API Methods</h2>
+      <p>
+        All API methods use HTTP POST with JSON-RPC 2.0 payloads, except for the authenticated extended card endpoint
+        which uses HTTP GET.
+      </p>
+
+      <h3>5.1 message/send</h3>
+      <p>
+        Initiate or continue a task with a message. Returns either a Task object for ongoing tasks or a Message object
+        for simple replies.
+      </p>
+
+      <h3>5.2 message/stream</h3>
+      <p>
+        Similar to message/send but opens a Server-Sent Event stream for real-time updates. Streams
+        TaskStatusUpdateEvent and TaskArtifactUpdateEvent objects.
+      </p>
+
+      <h3>5.3 tasks/get</h3>
+      <p>
+        Query the current state and history of a task by ID. Used for polling-style interactions to check task
+        completion.
+      </p>
+
+      <h3>5.4 tasks/cancel</h3>
+      <p>
+        Cancel a running task by ID. Returns the latest task state, ideally with state "canceled" but may fail if the
+        task cannot be stopped.
+      </p>
+
+      <h3>5.5 tasks/pushNotificationConfig/set</h3>
+      <p>Set or update webhook URL and authentication information for push notifications on a task.</p>
+
+      <h3>5.6 tasks/pushNotificationConfig/get</h3>
+      <p>Retrieve the current push notification configuration for a task by ID.</p>
+
+      <h3>5.7 tasks/pushNotificationConfig/list</h3>
+      <p>Enumerate all push notification configurations associated with a task.</p>
+
+      <h3>5.8 tasks/pushNotificationConfig/delete</h3>
+      <p>Remove a push notification configuration from a task.</p>
+
+      <h3>5.9 tasks/resubscribe</h3>
+      <p>Reconnect to the Server-Sent Event stream for a task after connection interruption.</p>
+
+      <h3>5.10 agent/authenticatedExtendedCard</h3>
+      <p>
+        HTTP GET endpoint that provides a more detailed Agent Card after authentication, if the agent supports this
+        capability.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>6. Error Handling</h2>
+      <p>A2A follows JSON-RPC 2.0 error format with standard and protocol-specific error codes:</p>
+
+      <h3>6.1 Standard JSON-RPC Error Codes</h3>
+      <ul>
+        <li><code>-32700</code>: Parse error</li>
+        <li><code>-32600</code>: Invalid Request</li>
+        <li><code>-32601</code>: Method not found</li>
+        <li><code>-32602</code>: Invalid params</li>
+        <li><code>-32603</code>: Internal error</li>
+        <li><code>-32000 to -32099</code>: Server error range</li>
+      </ul>
+
+      <h3>6.2 A2A-Specific Error Codes</h3>
+      <ul>
+        <li><code>-32001</code>: TaskNotFound</li>
+        <li><code>-32002</code>: TaskNotCancelable</li>
+        <li><code>-32003</code>: PushNotificationNotSupported</li>
+        <li><code>-32004</code>: UnsupportedOperation</li>
+        <li><code>-32005</code>: ContentTypeNotSupported</li>
+        <li><code>-32006</code>: InvalidAgentResponse</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>7. Agent Discovery</h2>
+      <p>
+        A2A Servers <span class="requirement">must</span> make an Agent Card available through discoverable endpoints.
+        The recommended location for an agent's Agent Card is at the well-known URI:
+        <code>https://{server_domain}/.well-known/agent.json</code>
+      </p>
+
+      <h3>7.1 Discovery Mechanisms</h3>
+      <ul>
+        <li><span class="emphasis">Well-Known URI:</span> Accessing a predefined path on the agent's domain</li>
+        <li><span class="emphasis">Registries/Catalogs:</span> Querying curated catalogs of agents</li>
+        <li><span class="emphasis">Direct Configuration:</span> Pre-configured Agent Card URLs or content</li>
+      </ul>
+
+      <h3>7.2 Security Considerations</h3>
+      <p>
+        Agent Cards containing sensitive information <span class="requirement">must</span> be protected by appropriate
+        access controls. It is <span class="requirement">not recommended</span> to include plaintext secrets directly in
+        Agent Cards.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>8. Supported Modalities</h2>
+      <p>A2A supports multiple content types and interaction modalities:</p>
+
+      <h3>8.1 Content Types</h3>
+      <ul>
+        <li><span class="emphasis">Text:</span> Plain text content for conversational interactions</li>
+        <li><span class="emphasis">Structured JSON:</span> Machine-readable data for forms and parameters</li>
+        <li>
+          <span class="emphasis">Files:</span> Binary content transmitted by reference (URI) or as base64-encoded bytes
+        </li>
+        <li><span class="emphasis">Mixed Content:</span> Combinations of the above within single messages</li>
+      </ul>
+
+      <h3>8.2 Media Type Declaration</h3>
+      <p>
+        Agents declare supported input and output media types in their Agent Cards through
+        <code>defaultInputModes</code> and <code>defaultOutputModes</code> fields. Individual skills may override these
+        defaults with specific requirements.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>9. Asynchronous and Streaming Features</h2>
+
+      <h3>9.1 Streaming Support</h3>
+      <p>
+        Agents may support Server-Sent Events for real-time task updates. This capability is declared in the Agent
+        Card's <code>capabilities.streaming</code> field.
+      </p>
+
+      <h3>9.2 Push Notifications</h3>
+      <p>
+        For long-running tasks or scenarios where persistent connections are impractical, agents may support push
+        notifications to client-provided webhook URLs. This capability is declared in the Agent Card's
+        <code>capabilities.pushNotifications</code> field.
+      </p>
+
+      <h3>9.3 Task Lifecycle Management</h3>
+      <p>
+        Tasks progress through defined states and may involve multiple message exchanges. Clients can monitor task
+        progress through polling, streaming, or push notifications depending on the agent's capabilities and the
+        interaction requirements.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>10. Implementation Requirements Summary</h2>
+
+      <h3>10.1 Mandatory Requirements</h3>
+      <ul>
+        <li>HTTPS transport for production deployments</li>
+        <li>JSON-RPC 2.0 payload format</li>
+        <li>Agent Card publication at discoverable endpoint</li>
+        <li>Authentication of all incoming requests</li>
+        <li>Support for core data objects (Task, Message, Part, etc.)</li>
+        <li>Implementation of basic API methods (message/send, tasks/get)</li>
+      </ul>
+
+      <h3>10.2 Optional Features</h3>
+      <ul>
+        <li>Server-Sent Events streaming support</li>
+        <li>Push notification capabilities</li>
+        <li>Extended authentication card support</li>
+        <li>Protocol extensions</li>
+        <li>Task state transition history</li>
+      </ul>
+
+      <h3>10.3 Security Best Practices</h3>
+      <ul>
+        <li>Use modern TLS configurations (TLS 1.3+ recommended)</li>
+        <li>Implement proper input validation and sanitization</li>
+        <li>Apply rate limiting and resource management</li>
+        <li>Follow principle of least privilege for authorization</li>
+        <li>Validate webhook endpoints for push notifications</li>
+        <li>Implement proper error handling and logging</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>11. Conclusion</h2>
+      <p>
+        The A2A Protocol provides a comprehensive framework for building interoperable AI agents. By adhering to these
+        technical specifications, developers can create agents that seamlessly communicate and collaborate across
+        different platforms and vendors. The protocol's emphasis on security, flexibility, and standards compliance
+        ensures that A2A-compliant agents can operate effectively in enterprise environments while maintaining the
+        scalability needed for complex multi-agent systems.
+      </p>
+
+      <p>
+        This technical specification serves as the authoritative reference for implementing A2A-compliant agents. For
+        additional implementation guidance, sample code, and tutorials, developers should refer to the complete A2A
+        documentation and SDK resources.
+      </p>
+    </div>
+  </body>
+</html>
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDhTIZzm4L4RzmXmdKcsV5e5z8Pj4K2xl7d7GE0hkY00rU0ZNeQxEkU7aEzCODiLVsb6LSauHNvZzZlU1TUxGr4S0a%2FgvuJl5cZ1QmlfP6007yT68LG1uR77QV6ncr0%2FnVfvC0456S2m10UylXbAJ94NEKpaeBEtI6prFtt3FZXRZOIWMk4kHWwitam%2BgFZe7iHvEYsYAfbWB%2FXtPKTcFMKkb61X58q9gUcVBCHHRnp49GEJAdDBh8XZ%2Fsq0oQ5pQgb7Y2P4kfboPs5DohSEb9pnWa9KMM2qzZs1KLJww2vyAhrE3vLzm0UT156BAlaOSZVckwnG6ydxiEZ4v6P2FYWKphaEgx0%2Fbu7GEMuur8kCxqIAXnkJN9C2UvQ9Cov%2BTTwde3%2BkfwuKVMt2H7LYDZ8WnRNCVKfijWwedmX0JMkVhlf5QI4aGoKY3ba3pPchcDzViJ3XIJLOiUfJUu%2BIKM9pilVF5gQ70tQioZb79Z7BOldBG5y0rkqZaVqdTZsjKKipZ1fmWCAUkD6POguu5u0g%3D";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDhTIZzm4L4RzmXmdKcsV5e5z8Pj4K2xl7d7GE0hkY00rU0ZNeQxEkU7aEzCODiLVsb6LSauHNvZzZlU1TUxGr4S0a/gvuJl5cZ1QmlfP6007yT68LG1uR77QV6ncr0/nVfvC0456S2m10UylXbAJ94NEKpaeBEtI6prFtt3FZXRZOIWMk4kHWwitam+gFZe7iHvEYsYAfbWB/XtPKTcFMKkb61X58q9gUcVBCHHRnp49GEJAdDBh8XZ/sq0oQ5pQgb7Y2P4kfboPs5DohSEb9pnWa9KMM2qzZs1KLJww2vyAhrE3vLzm0UT156BAlaOSZVckwnG6ydxiEZ4v6P2FYWKphaEgx0/bu7GEMuur8kCxqIAXnkJN9C2UvQ9Cov+TTwde3+kfwuKVMt2H7LYDZ8WnRNCVKfijWwedmX0JMkVhlf5QI4aGoKY3ba3pPchcDzViJ3XIJLOiUfJUu+IKM9pilVF5gQ70tQioZb79Z7BOldBG5y0rkqZaVqdTZsjKKipZ1fmWCAUkD6POguu5u0g=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    

@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADK Agent Development Guide - Types & Patterns</title>
+    <style>
+      body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 80px;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+        text-align: justify;
+      }
+      h1 {
+        text-align: center;
+        font-size: 24pt;
+        font-weight: bold;
+        margin-bottom: 32px;
+        page-break-after: avoid;
+      }
+      h2 {
+        font-size: 18pt;
+        font-weight: bold;
+        margin-top: 32px;
+        margin-bottom: 16px;
+        page-break-after: avoid;
+      }
+      h3 {
+        font-size: 14pt;
+        font-weight: bold;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        page-break-after: avoid;
+      }
+      h4 {
+        font-size: 12pt;
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        page-break-after: avoid;
+      }
+      p {
+        margin-bottom: 12px;
+        text-indent: 0;
+      }
+      ul,
+      ol {
+        margin-bottom: 12px;
+        padding-left: 40px;
+      }
+      li {
+        margin-bottom: 6px;
+      }
+      code {
+        font-family: 'Courier New', monospace;
+        background-color: #f5f5f5;
+        padding: 2px 4px;
+        font-size: 10pt;
+      }
+      pre {
+        font-family: 'Courier New', monospace;
+        background-color: #f5f5f5;
+        padding: 12px;
+        border: 1px solid #ccc;
+        font-size: 9pt;
+        line-height: 1.4;
+        margin: 12px 0;
+        overflow: visible;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 16px 0;
+      }
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+      }
+      .note {
+        background-color: #f9f9f9;
+        border-left: 4px solid #ccc;
+        padding: 12px;
+        margin: 16px 0;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ADK Agent Development Guide<br />Types & Patterns</h1>
+
+    <h2>1. Introduction to Agent Development Kit (ADK)</h2>
+
+    <p>
+      The Agent Development Kit (ADK) is a flexible and modular framework for developing and deploying AI agents. While
+      optimized for Gemini and the Google ecosystem, ADK is model-agnostic, deployment-agnostic, and built for
+      compatibility with other frameworks. ADK was designed to make agent development feel more like software
+      development, enabling developers to create, deploy, and orchestrate agentic architectures ranging from simple
+      tasks to complex workflows.
+    </p>
+
+    <p>
+      In ADK, an Agent is a self-contained execution unit designed to act autonomously to achieve specific goals. Agents
+      can perform tasks, interact with users, utilize external tools, and coordinate with other agents. The foundation
+      for all agents in ADK is the BaseAgent class, which serves as the fundamental blueprint for creating functional
+      agents.
+    </p>
+
+    <h2>2. Core Agent Categories</h2>
+
+    <p>
+      ADK provides three distinct agent categories to build sophisticated applications, each serving different purposes
+      and use cases.
+    </p>
+
+    <h3>2.1 LLM Agents (LlmAgent, Agent)</h3>
+
+    <p>
+      LLM Agents utilize Large Language Models as their core engine to understand natural language, reason, plan,
+      generate responses, and dynamically decide how to proceed or which tools to use. These agents are ideal for
+      flexible, language-centric tasks that require intelligent reasoning and dynamic decision-making.
+    </p>
+
+    <h4>Key Characteristics:</h4>
+    <ul>
+      <li>
+        <strong>Intelligent Reasoning:</strong> Powered by LLMs for understanding and generating human-like responses
+      </li>
+      <li><strong>Dynamic Tool Selection:</strong> Can choose appropriate tools based on context and requirements</li>
+      <li><strong>Flexible Behavior:</strong> Non-deterministic responses that adapt to different scenarios</li>
+      <li>
+        <strong>Natural Language Processing:</strong> Excellent for conversational interfaces and text-based tasks
+      </li>
+    </ul>
+
+    <h4>Implementation Example (Python):</h4>
+    <pre>
+from google.adk.agents import Agent
+
+weather_agent = Agent(
+    name="weather_time_agent",
+    model="gemini-2.0-flash",
+    description="Agent to answer questions about time and weather in a city",
+    instruction="You are a helpful agent who can answer user questions about time and weather",
+    tools=[get_weather, get_current_time]
+)
+</pre
+    >
+
+    <h4>Implementation Example (Java):</h4>
+    <pre>
+BaseAgent weatherAgent = LlmAgent.builder()
+    .name("weather_time_agent")
+    .model("gemini-2.0-flash")
+    .description("Agent to answer questions about time and weather in a city")
+    .instruction("You are a helpful agent who can answer user questions about time and weather")
+    .tools(weatherTool, timeTool)
+    .build();
+</pre
+    >
+
+    <h3>2.2 Workflow Agents</h3>
+
+    <p>
+      Workflow Agents are specialized components designed purely for orchestrating the execution flow of sub-agents in
+      predefined, deterministic patterns. They control process flow without using an LLM for flow control itself, making
+      them perfect for structured processes requiring predictable execution.
+    </p>
+
+    <h4>2.2.1 Sequential Agent</h4>
+
+    <p>
+      The SequentialAgent executes its sub-agents in the order they are specified in the list, passing the same
+      InvocationContext sequentially to allow agents to easily pass results via shared state.
+    </p>
+
+    <h4>Implementation Example (Python):</h4>
+    <pre>
+from google.adk.agents import SequentialAgent, LlmAgent
+
+step1 = LlmAgent(name="Step1_Fetch", output_key="data")
+step2 = LlmAgent(name="Step2_Process", instruction="Process data from state key 'data'")
+
+pipeline = SequentialAgent(name="MyPipeline", sub_agents=[step1, step2])
+</pre
+    >
+
+    <h4>2.2.2 Parallel Agent</h4>
+
+    <p>
+      The ParallelAgent executes its sub-agents concurrently, dramatically speeding up workflows where tasks can be
+      performed simultaneously. Events from sub-agents may be interleaved, and all parallel children access the same
+      shared session state.
+    </p>
+
+    <h4>Implementation Example (Python):</h4>
+    <pre>
+from google.adk.agents import ParallelAgent, LlmAgent
+
+fetch_weather = LlmAgent(name="WeatherFetcher", output_key="weather")
+fetch_news = LlmAgent(name="NewsFetcher", output_key="news")
+
+gatherer = ParallelAgent(name="InfoGatherer", sub_agents=[fetch_weather, fetch_news])
+</pre
+    >
+
+    <h4>2.2.3 Loop Agent</h4>
+
+    <p>
+      The LoopAgent executes its sub-agents sequentially in a loop, repeatedly running a sequence of agents for a
+      specified number of iterations or until a termination condition is met.
+    </p>
+
+    <h4>Implementation Example (Python):</h4>
+    <pre>
+from google.adk.agents import LoopAgent, LlmAgent, BaseAgent
+
+process_step = LlmAgent(name="ProcessingStep")
+check_condition = BaseAgent(name="Checker")
+
+poller = LoopAgent(
+    name="StatusPoller",
+    max_iterations=10,
+    sub_agents=[process_step, check_condition]
+)
+</pre
+    >
+
+    <h3>2.3 Custom Agents</h3>
+
+    <p>
+      Custom Agents are created by extending BaseAgent directly, allowing implementation of unique operational logic,
+      specific control flows, or specialized integrations not covered by the standard types. These agents cater to
+      highly tailored application requirements.
+    </p>
+
+    <h4>Key Features:</h4>
+    <ul>
+      <li><strong>Ultimate Flexibility:</strong> Define arbitrary orchestration logic</li>
+      <li><strong>Specialized Integrations:</strong> Connect to specific systems or protocols</li>
+      <li><strong>Custom Control Flows:</strong> Implement unique decision-making patterns</li>
+      <li><strong>Performance Optimization:</strong> Fine-tune for specific use cases</li>
+    </ul>
+
+    <h4>Implementation Example (Python):</h4>
+    <pre>
+from google.adk.agents import BaseAgent
+from google.adk.events import Event
+from typing import AsyncGenerator
+
+class CustomProcessingAgent(BaseAgent):
+    async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+        # Custom logic implementation
+        data = ctx.session.state.get("input_data")
+        processed_result = self.custom_processing_logic(data)
+        
+        yield Event(
+            author=self.name,
+            content=types.Content(parts=[types.Part(text=processed_result)])
+        )
+</pre
+    >
+
+    <h2>3. Multi-Agent Systems</h2>
+
+    <p>
+      As agentic applications grow in complexity, structuring them as multi-agent systems offers significant advantages
+      including enhanced modularity, specialization, reusability, maintainability, and the ability to define structured
+      control flows.
+    </p>
+
+    <h3>3.1 Agent Hierarchy</h3>
+
+    <p>
+      The foundation for structuring multi-agent systems is the parent-child relationship defined in BaseAgent. You
+      create a tree structure by passing a list of agent instances to the sub_agents argument when initializing a parent
+      agent.
+    </p>
+
+    <h4>Implementation Example (Python):</h4>
+    <pre>
+from google.adk.agents import LlmAgent, BaseAgent
+
+# Define individual agents
+greeter = LlmAgent(name="Greeter", model="gemini-2.0-flash")
+task_doer = BaseAgent(name="TaskExecutor")
+
+# Create parent agent with sub-agents
+coordinator = LlmAgent(
+    name="Coordinator",
+    model="gemini-2.0-flash",
+    description="I coordinate greetings and tasks",
+    sub_agents=[greeter, task_doer]
+)
+</pre
+    >
+
+    <h3>3.2 Communication Mechanisms</h3>
+
+    <p>Agents within a system communicate through several mechanisms:</p>
+
+    <h4>3.2.1 Shared Session State</h4>
+
+    <p>
+      The most fundamental way for agents to communicate passively is through shared session state. One agent writes a
+      value, and subsequent agents read it.
+    </p>
+
+    <h4>3.2.2 LLM-Driven Delegation</h4>
+
+    <p>
+      Leverages an LLmAgent's understanding to dynamically route tasks to other suitable agents within the hierarchy
+      through transfer_to_agent function calls.
+    </p>
+
+    <h4>3.2.3 Explicit Invocation (AgentTool)</h4>
+
+    <p>
+      Allows an LLmAgent to treat another BaseAgent instance as a callable function or tool, providing synchronous,
+      controlled invocation.
+    </p>
+
+    <h3>3.3 Common Multi-Agent Patterns</h3>
+
+    <h4>3.3.1 Coordinator/Dispatcher Pattern</h4>
+
+    <p>
+      A central LLmAgent manages several specialized sub-agents, routing incoming requests to the appropriate specialist
+      agent.
+    </p>
+
+    <h4>Implementation Example:</h4>
+    <pre>
+billing_agent = LlmAgent(name="Billing", description="Handles billing inquiries")
+support_agent = LlmAgent(name="Support", description="Handles technical support")
+
+coordinator = LlmAgent(
+    name="HelpDeskCoordinator",
+    model="gemini-2.0-flash",
+    instruction="Route user requests: Use Billing for payment issues, Support for technical problems",
+    sub_agents=[billing_agent, support_agent]
+)
+</pre
+    >
+
+    <h4>3.3.2 Sequential Pipeline Pattern</h4>
+
+    <p>
+      A SequentialAgent contains sub-agents executed in a fixed order, implementing multi-step processes where output of
+      one step feeds into the next.
+    </p>
+
+    <h4>3.3.3 Parallel Processing Pattern</h4>
+
+    <p>
+      A ParallelAgent executes multiple sub-agents concurrently to gather information or perform tasks simultaneously,
+      improving overall system performance.
+    </p>
+
+    <h2>4. Tools and Implementation</h2>
+
+    <p>
+      Tools represent specific capabilities provided to AI agents, enabling them to perform actions and interact with
+      the world beyond their core text generation abilities. ADK supports several types of tools.
+    </p>
+
+    <h3>4.1 Function Tools</h3>
+
+    <p>
+      User-defined code components tailored to specific application needs. These include standard functions/methods,
+      agents-as-tools, and long-running function tools.
+    </p>
+
+    <h4>Implementation Example (Python):</h4>
+    <pre>
+def get_weather(city: str) -> dict:
+    """Retrieves the current weather report for a specified city."""
+    if city.lower() == "new york":
+        return {
+            "status": "success",
+            "report": "The weather in New York is sunny with 25°C"
+        }
+    else:
+        return {
+            "status": "error",
+            "error_message": f"Weather information for '{city}' is not available"
+        }
+</pre
+    >
+
+    <h3>4.2 Built-in Tools</h3>
+
+    <p>
+      Ready-to-use tools provided by the framework for common tasks, including Google Search, Code Execution, and
+      Retrieval-Augmented Generation (RAG).
+    </p>
+
+    <h3>4.3 Third-Party Tools</h3>
+
+    <p>
+      Tools from external libraries such as LangChain Tools or CrewAI Tools, integrated seamlessly into ADK through
+      wrapper interfaces.
+    </p>
+
+    <h3>4.4 Tool Context</h3>
+
+    <p>
+      For advanced scenarios, ADK provides ToolContext for accessing additional contextual information within tool
+      functions:
+    </p>
+
+    <ul>
+      <li><strong>state:</strong> Read and modify current session state</li>
+      <li><strong>actions:</strong> Influence agent's subsequent actions</li>
+      <li><strong>function_call_id:</strong> Unique identifier for tool invocation</li>
+      <li><strong>auth_response:</strong> Authentication credentials if required</li>
+    </ul>
+
+    <h4>Implementation Example (Python):</h4>
+    <pre>
+from google.adk.tools import ToolContext
+
+def update_user_preference(preference: str, value: str, tool_context: ToolContext):
+    """Updates a user-specific preference."""
+    user_prefs_key = "user:preferences"
+    preferences = tool_context.state.get(user_prefs_key, {})
+    preferences[preference] = value
+    tool_context.state[user_prefs_key] = preferences
+    return {"status": "success", "updated_preference": preference}
+</pre
+    >
+
+    <h2>5. Development Best Practices</h2>
+
+    <h3>5.1 Agent Design Principles</h3>
+
+    <ul>
+      <li><strong>Single Responsibility:</strong> Each agent should have a clear, well-defined purpose</li>
+      <li><strong>Clear Instructions:</strong> Provide detailed, specific instructions for LLM agents</li>
+      <li><strong>Proper Tool Documentation:</strong> Use descriptive function names and comprehensive docstrings</li>
+      <li><strong>State Management:</strong> Use appropriate state prefixes (app:, user:, temp:)</li>
+      <li><strong>Error Handling:</strong> Implement robust error handling and recovery mechanisms</li>
+    </ul>
+
+    <h3>5.2 Tool Development Guidelines</h3>
+
+    <ul>
+      <li><strong>Function Naming:</strong> Use clear, descriptive names without spaces, periods, or dashes</li>
+      <li><strong>Type Hints:</strong> Use strongly typed parameters to reduce model hallucinations</li>
+      <li><strong>Documentation:</strong> Provide detailed descriptions with concrete examples</li>
+      <li><strong>Return Values:</strong> Ensure JSON serializable outputs with status indicators</li>
+      <li><strong>Context Usage:</strong> Leverage ToolContext for state management and flow control</li>
+    </ul>
+
+    <h3>5.3 Multi-Agent Architecture Guidelines</h3>
+
+    <ul>
+      <li><strong>Hierarchy Design:</strong> Structure agent relationships logically</li>
+      <li><strong>Communication Patterns:</strong> Choose appropriate communication mechanisms</li>
+      <li><strong>Flow Control:</strong> Use workflow agents for deterministic processes</li>
+      <li><strong>Dynamic Routing:</strong> Implement LLM-driven delegation for flexible routing</li>
+      <li><strong>Performance Optimization:</strong> Use parallel processing where appropriate</li>
+    </ul>
+
+    <h2>6. Deployment Strategies</h2>
+
+    <p>
+      ADK agents can be deployed to various environments based on production readiness and flexibility requirements:
+    </p>
+
+    <h3>6.1 Agent Engine in Vertex AI</h3>
+
+    <p>
+      A fully managed auto-scaling service specifically designed for deploying, managing, and scaling AI agents built
+      with ADK. Ideal for production workloads with minimal configuration requirements.
+    </p>
+
+    <h3>6.2 Cloud Run</h3>
+
+    <p>
+      A managed auto-scaling compute platform that enables running agents as container-based applications. Requires
+      containerizing the agent application but provides excellent scalability and cost-effectiveness.
+    </p>
+
+    <h3>6.3 Google Kubernetes Engine (GKE)</h3>
+
+    <p>
+      A managed Kubernetes service providing more control over deployment configuration. Suitable for complex
+      requirements, custom infrastructure needs, or running open-source models.
+    </p>
+
+    <h2>7. Performance and Evaluation</h2>
+
+    <h3>7.1 Agent Testing</h3>
+
+    <p>ADK provides built-in testing capabilities through the web UI and API server commands:</p>
+
+    <ul>
+      <li><strong>Dev UI:</strong> Interactive testing with event inspection and tracing</li>
+      <li><strong>API Server:</strong> Local FastAPI server for cURL testing</li>
+      <li><strong>Terminal Testing:</strong> Command-line interaction for quick validation</li>
+    </ul>
+
+    <h3>7.2 Evaluation Framework</h3>
+
+    <p>
+      ADK supports systematic assessment of agent performance by evaluating both final response quality and step-by-step
+      execution trajectory against predefined test cases. This includes comparing actual trajectories to expected ones
+      to reveal errors and inefficiencies.
+    </p>
+
+    <h3>7.3 Observability and Monitoring</h3>
+
+    <p>
+      Integration with observability platforms like Arize AX provides comprehensive tracing, evaluation, and monitoring
+      capabilities for ADK applications, enabling performance optimization and issue debugging.
+    </p>
+
+    <h2>8. Advanced Topics</h2>
+
+    <h3>8.1 Streaming and Real-time Interactions</h3>
+
+    <p>
+      ADK supports streaming capabilities for low-latency voice and video communication, enabling real-time agent
+      interactions with users through multimodal interfaces.
+    </p>
+
+    <h3>8.2 Memory and Context Management</h3>
+
+    <p>
+      Advanced memory management techniques allow agents to maintain context across interactions and sessions,
+      supporting long-running conversations and complex workflows.
+    </p>
+
+    <h3>8.3 Safety and Security</h3>
+
+    <p>
+      ADK includes built-in patterns and best practices for building safe and secure agents, including authentication
+      management, input validation, and responsible AI implementation.
+    </p>
+
+    <h2>9. Conclusion</h2>
+
+    <p>
+      The Agent Development Kit provides a comprehensive framework for building sophisticated AI applications through
+      modular agent design. By understanding the different agent types, communication patterns, and development best
+      practices outlined in this guide, developers can create robust, scalable, and maintainable agentic systems that
+      leverage the full potential of modern AI capabilities.
+    </p>
+
+    <p>
+      Whether building simple single-agent applications or complex multi-agent systems, ADK's flexible architecture and
+      extensive tooling support enable developers to focus on creating value while the framework handles the underlying
+      complexities of agent orchestration, communication, and deployment.
+    </p>
+
+    <div class="note">
+      <strong>Note:</strong> This guide provides a comprehensive overview of ADK agent development. For the most current
+      information, detailed API references, and additional examples, consult the official ADK documentation at
+      google.github.io/adk-docs/.
+    </div>
+  </body>
+</html>
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDuBRG%2FpfA27t6yFLRgtpL7CjEDq0aVEatMidLhUn0XQloKXYNIIATbkZaA9mQ7YAwYlHE40V1hdjZaMrxcpoqmaZ5oYh4rbtLlObV0cZCzuSL0oI%2BBq8%2BD583IoVoNJhQFv9syKXU7kVJQT%2FT7V2gVCLoerNl6SABLbd3wWY5Ef0CB9uSv8EMyUiatpeb%2BPIZZpV3el25gg4wqYfdT5sT%2Byw8sJWbt9qym68UYglg7getDcsVH9Y3Qnb1jzTaUHCwZfOxOkhFd0C2%2BEcGJxerayReyaeEktW9801g10Eq3w26BkDL8MkQDol6kxy%2BC0MmiHJPDejSi8sqyhQ1xQXE0WieqMzoMqYxAME8oQYC0J0r%2B6AcuYSFnKNwwI2wqp4kadIMaS01QrZZenYnauLZXuza4zrMWxbzPqjCsKyXlQzokSQSdq5uB1OwrMpQGz9eL6w6RO%2BZeBAYgOAifZcSVfLi%2FT2qGbXGfgcdLUos7WYgNLICGHlm3O1osfPt12QkvFdQxy5KExsWllygX8br%2Fo%3D";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDuBRG/pfA27t6yFLRgtpL7CjEDq0aVEatMidLhUn0XQloKXYNIIATbkZaA9mQ7YAwYlHE40V1hdjZaMrxcpoqmaZ5oYh4rbtLlObV0cZCzuSL0oI+Bq8+D583IoVoNJhQFv9syKXU7kVJQT/T7V2gVCLoerNl6SABLbd3wWY5Ef0CB9uSv8EMyUiatpeb+PIZZpV3el25gg4wqYfdT5sT+yw8sJWbt9qym68UYglg7getDcsVH9Y3Qnb1jzTaUHCwZfOxOkhFd0C2+EcGJxerayReyaeEktW9801g10Eq3w26BkDL8MkQDol6kxy+C0MmiHJPDejSi8sqyhQ1xQXE0WieqMzoMqYxAME8oQYC0J0r+6AcuYSFnKNwwI2wqp4kadIMaS01QrZZenYnauLZXuza4zrMWxbzPqjCsKyXlQzokSQSdq5uB1OwrMpQGz9eL6w6RO+ZeBAYgOAifZcSVfLi/T2qGbXGfgcdLUos7WYgNLICGHlm3O1osfPt12QkvFdQxy5KExsWllygX8br/o=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    
