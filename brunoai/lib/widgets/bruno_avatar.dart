@@ -198,7 +198,7 @@ class _BrunoAvatarState extends State<BrunoAvatar>
       case BrunoMood.concerned:
         return AppColors.foodAccent;
       case BrunoMood.thinking:
-        return AppColors.interactiveBlue;
+        return AppColors.instacartGreen;
       case BrunoMood.helpful:
         return AppColors.primary;
       case BrunoMood.sleepy:

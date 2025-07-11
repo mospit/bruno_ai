@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
+import 'bruno_typography.dart';
+import '../animations/bruno_animations.dart';
 
 /// Modern Bruno AI Theme - 2025 Design
 /// Unified color system matching the beautiful website design
@@ -18,74 +20,8 @@ class ModernTheme {
       scaffoldBackgroundColor: AppColors.background,
       colorScheme: AppColors.lightColorScheme,
       
-      // Modern Typography - Inter Font (matching website)
-      textTheme: GoogleFonts.interTextTheme().copyWith(
-        displayLarge: GoogleFonts.inter(
-          fontSize: 32,
-          fontWeight: FontWeight.w800,
-          color: AppColors.gray900,
-          letterSpacing: -0.04,
-          height: 1.1,
-        ),
-        displayMedium: GoogleFonts.inter(
-          fontSize: 28,
-          fontWeight: FontWeight.w700,
-          color: AppColors.gray900,
-          letterSpacing: -0.03,
-          height: 1.1,
-        ),
-        headlineLarge: GoogleFonts.inter(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          color: AppColors.gray900,
-          letterSpacing: -0.025,
-          height: 1.2,
-        ),
-        headlineMedium: GoogleFonts.inter(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: AppColors.gray900,
-          letterSpacing: -0.02,
-          height: 1.2,
-        ),
-        titleLarge: GoogleFonts.inter(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: AppColors.gray900,
-          letterSpacing: -0.01,
-          height: 1.3,
-        ),
-        titleMedium: GoogleFonts.inter(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: AppColors.gray900,
-          height: 1.4,
-        ),
-        bodyLarge: GoogleFonts.inter(
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          color: AppColors.gray600,
-          height: 1.7,
-        ),
-        bodyMedium: GoogleFonts.inter(
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          color: AppColors.gray600,
-          height: 1.6,
-        ),
-        bodySmall: GoogleFonts.inter(
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
-          color: AppColors.gray500,
-          height: 1.5,
-        ),
-        labelLarge: GoogleFonts.inter(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: AppColors.primary,
-          letterSpacing: 0.1,
-        ),
-      ),
+      // Bruno Typography - Nunito Font (warm, bear-themed)
+      textTheme: BrunoTypography.lightTextTheme,
       
       // App Bar Theme - Modern Glass Effect
       appBarTheme: AppBarTheme(
@@ -378,6 +314,14 @@ class ModernTheme {
         color: AppColors.primary,
         size: 24,
       ),
+      
+      // Bruno AI Page Transitions
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: BrunoPageTransition(),
+          TargetPlatform.iOS: BrunoPageTransition(),
+        },
+      ),
     );
   }
   
@@ -390,74 +334,8 @@ class ModernTheme {
       scaffoldBackgroundColor: AppColors.backgroundDark,
       colorScheme: AppColors.darkColorScheme,
       
-      // Modern Typography - Inter Font (matching website)
-      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
-        displayLarge: GoogleFonts.inter(
-          fontSize: 32,
-          fontWeight: FontWeight.w800,
-          color: AppColors.gray100,
-          letterSpacing: -0.04,
-          height: 1.1,
-        ),
-        displayMedium: GoogleFonts.inter(
-          fontSize: 28,
-          fontWeight: FontWeight.w700,
-          color: AppColors.gray100,
-          letterSpacing: -0.03,
-          height: 1.1,
-        ),
-        headlineLarge: GoogleFonts.inter(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          color: AppColors.gray100,
-          letterSpacing: -0.025,
-          height: 1.2,
-        ),
-        headlineMedium: GoogleFonts.inter(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: AppColors.gray100,
-          letterSpacing: -0.02,
-          height: 1.2,
-        ),
-        titleLarge: GoogleFonts.inter(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: AppColors.gray100,
-          letterSpacing: -0.01,
-          height: 1.3,
-        ),
-        titleMedium: GoogleFonts.inter(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: AppColors.gray100,
-          height: 1.4,
-        ),
-        bodyLarge: GoogleFonts.inter(
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          color: AppColors.gray400,
-          height: 1.7,
-        ),
-        bodyMedium: GoogleFonts.inter(
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          color: AppColors.gray400,
-          height: 1.6,
-        ),
-        bodySmall: GoogleFonts.inter(
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
-          color: AppColors.gray500,
-          height: 1.5,
-        ),
-        labelLarge: GoogleFonts.inter(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: AppColors.primaryLight,
-          letterSpacing: 0.1,
-        ),
-      ),
+      // Bruno Typography - Nunito Font (warm, bear-themed)
+      textTheme: BrunoTypography.darkTextTheme,
       
       // App Bar Theme - Dark Glass Effect
       appBarTheme: AppBarTheme(
@@ -522,8 +400,13 @@ class ModernTheme {
         ),
       ),
       
-      // Additional dark theme properties...
-      // (Similar structure but adapted for dark mode colors)
+      // Bruno AI Page Transitions
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: BrunoPageTransition(),
+          TargetPlatform.iOS: BrunoPageTransition(),
+        },
+      ),
     );
   }
 }

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
 /// Bruno AI Unified Color System - 2025 Design
-/// Matches the website's modern indigo/purple palette
+/// Bear-themed warm earth tones following the Bruno AI Style Guide
 class AppColors {
   // Private constructor to prevent instantiation
   AppColors._();
 
   // === PRIMARY BRAND COLORS ===
   /// Bruno's signature brown - main brand color
-  static const Color primary = Color(0xFF8B4513); // Bruno brown
+  static const Color primary = Color(0xFF8B4513); // Warm Brown
   static const Color primaryLight = Color(0xFFD2691E); // Light brown
-  static const Color primaryDark = Color(0xFF6B3410); // Dark brown
+  static const Color primaryDark = Color(0xFF5A3A1F); // Dark brown (dark mode)
   
-  /// Interactive elements - modern indigo for buttons and accents
-  static const Color interactiveBlue = Color(0xFF6366F1); // indigo-500
-  static const Color interactiveBlueLight = Color(0xFF8B5CF6); // purple-500  
-  static const Color interactiveBlueDark = Color(0xFF4F46E5); // indigo-600
+  /// Instacart Integration - keep brand consistency
+  static const Color instacartGreen = Color(0xFF43B02A); // Instacart Green
+  static const Color instacartGreenLight = Color(0xFF5CBF41); // Light green
+  static const Color instacartGreenDark = Color(0xFF2E7D1C); // Dark green
 
   // === SUCCESS & FEEDBACK COLORS ===
   static const Color success = Color(0xFF10B981); // emerald-500
@@ -61,10 +61,19 @@ class AppColors {
   static const Color shadowMedium = Color(0x15000000);
   static const Color shadowDark = Color(0x25000000);
 
-  // === SEMANTIC COLORS ===
+  // === BRUNO AI STYLE GUIDE COLORS ===
+  /// Secondary colors from style guide
+  static const Color softBeige = Color(0xFFD2B48C); // Soft Beige
+  static const Color deepForestGreen = Color(0xFF228B22); // Deep Forest Green
+  static const Color lightGray = Color(0xFFF5F5F5); // Light Gray
+  
+  /// Accent colors from style guide
+  static const Color goldenYellow = Color(0xFFFFD700); // Golden Yellow
+  static const Color errorRed = Color(0xFFFF4500); // Error Red (softened)
+  static const Color successBlueGreen = Color(0xFF20B2AA); // Success Blue-Green
+  
   /// Food and meal related colors
   static const Color foodAccent = Color(0xFFFF8C42); // warm orange
-  static const Color instacartGreen = Color(0xFF43B02A); // keep for brand consistency
   
   /// Interactive states
   static const Color hover = Color(0x08000000);
@@ -100,8 +109,8 @@ class AppColors {
   static ColorScheme get lightColorScheme => ColorScheme.light(
     primary: primary, // Bruno brown
     primaryContainer: primaryLight.withValues(alpha: 0.1),
-    secondary: interactiveBlue, // Indigo for buttons
-    secondaryContainer: interactiveBlue.withValues(alpha: 0.1),
+    secondary: instacartGreen, // Instacart green for buttons
+    secondaryContainer: instacartGreen.withValues(alpha: 0.1),
     tertiary: foodAccent,
     tertiaryContainer: foodAccent.withValues(alpha: 0.1),
     surface: background,
@@ -111,7 +120,7 @@ class AppColors {
     onPrimary: white,
     onPrimaryContainer: primaryDark,
     onSecondary: white,
-    onSecondaryContainer: interactiveBlueDark,
+    onSecondaryContainer: instacartGreenDark,
     onTertiary: white,
     onTertiaryContainer: Color(0xFFB8460C),
     onSurface: gray900,
@@ -131,8 +140,8 @@ class AppColors {
   static ColorScheme get darkColorScheme => ColorScheme.dark(
     primary: primaryLight, // Light brown for dark mode
     primaryContainer: primaryDark,
-    secondary: interactiveBlueLight, // Light indigo for buttons
-    secondaryContainer: interactiveBlueDark,
+    secondary: instacartGreenLight, // Light green for buttons
+    secondaryContainer: instacartGreenDark,
     tertiary: foodAccent,
     tertiaryContainer: Color(0xFF9F3A00),
     surface: backgroundDark,
@@ -142,7 +151,7 @@ class AppColors {
     onPrimary: gray900,
     onPrimaryContainer: primaryLight,
     onSecondary: gray900,
-    onSecondaryContainer: interactiveBlueLight,
+    onSecondaryContainer: instacartGreenLight,
     onTertiary: gray900,
     onTertiaryContainer: foodAccent,
     onSurface: gray100,

@@ -136,6 +136,12 @@ class BrunoProvider extends ChangeNotifier {
     notifyListeners();
   }
   
+  void clearChatHistory() {
+    _messages.clear();
+    _isTyping = false;
+    notifyListeners();
+  }
+  
 // Pantry state
   List<PantryItem> _pantryList = [
     PantryItem(

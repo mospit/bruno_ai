@@ -77,7 +77,7 @@ class _ChatInterfaceState extends State<ChatInterface>
           children: [
             // Messages List
             Expanded(
-              child: _buildMessagesList(provider),
+              child: _buildChatMessages(provider),
             ),
             
             // Typing Indicator
@@ -92,6 +92,28 @@ class _ChatInterfaceState extends State<ChatInterface>
   }
 
 
+  Widget _buildChatMessages(BrunoProvider provider) {
+    return ListView(
+      controller: _scrollController,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      children: [
+        // Sample conversation matching wireframe
+        _buildWireframeBrunoMessage("Got your query..."),
+        _buildRefineButtonRow(),
+        const SizedBox(height: 16),
+        
+        _buildWireframeUserMessage("Caribbean for 4 \$200"),
+        const SizedBox(height: 16),
+        
+        _buildWireframeBrunoMessage("Here's a plan..."),
+        _buildSampleList(),
+        _buildFeedbackButtons(),
+        
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+  
   Widget _buildMessagesList(BrunoProvider provider) {
     if (provider.messages.isEmpty) {
       return _buildWelcomeScreen(provider);
@@ -567,10 +589,10 @@ class _ChatInterfaceState extends State<ChatInterface>
         children: [
           if (!isUser) ...[
             Container(
-              margin: const EdgeInsets.only(right: 10, bottom: 4),
+              margin: const EdgeInsets.only(right: 12, bottom: 4),
               child: BrunoAvatar(
                 mood: message.message.getBrunoMood(),
-                size: 36,
+                size: 40,
                 animate: true,
                 isBreathing: false,
                 enableHaptics: true,
@@ -580,8 +602,8 @@ class _ChatInterfaceState extends State<ChatInterface>
           Flexible(
             child: Container(
               constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.78,
-                minWidth: 80,
+                maxWidth: MediaQuery.of(context).size.width * 0.75,
+                minWidth: 120,
               ),
               child: Column(
                 crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -589,57 +611,37 @@ class _ChatInterfaceState extends State<ChatInterface>
                   // Main message bubble
                   Container(
                     decoration: BoxDecoration(
-                      gradient: isUser
-                          ? LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Theme.of(context).primaryColor,
-                                Theme.of(context).primaryColor.withOpacity(0.9),
-                              ],
-                            )
-                          : LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Colors.white,
-                                Colors.grey[50]!,
-                              ],
-                            ),
+                      // Brown bubble for Bruno, beige for user
+                      color: isUser
+                          ? const Color(0xFFF5F1E8) // Beige color
+                          : const Color(0xFF8B4513), // Brown color
                       borderRadius: _getBubbleBorderRadius(isUser),
-                      border: Border.all(
-                        color: isUser
-                            ? Colors.transparent
-                            : Colors.grey.withOpacity(0.12),
-                        width: 1,
-                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: isUser
-                              ? Theme.of(context).primaryColor.withOpacity(0.25)
-                              : Colors.black.withOpacity(0.06),
-                          blurRadius: 16,
-                          offset: const Offset(0, 4),
-                          spreadRadius: 0,
-                        ),
-                        BoxShadow(
-                          color: isUser
-                              ? Theme.of(context).primaryColor.withOpacity(0.1)
-                              : Colors.black.withOpacity(0.02),
-                          blurRadius: 4,
-                          offset: const Offset(0, 1),
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                           spreadRadius: 0,
                         ),
                       ],
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: isUser ? 16 : 18,
-                        vertical: isUser ? 12 : 16,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
                       ),
                       child: _buildMessageContent(context, message, isUser),
                     ),
                   ),
+                  
+                  // Inline refine button for user messages
+                  if (isUser && message.message.contains('budget')) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      margin: const EdgeInsets.only(right: 12),
+                      child: _buildRefineButton(),
+                    ),
+                  ],
                   
                   // Suggestion chips (only for Bruno messages)
                   if (!isUser && message.suggestions.isNotEmpty) ...[
@@ -655,58 +657,30 @@ class _ChatInterfaceState extends State<ChatInterface>
                       ),
                     ),
                   ],
-                  
-                  // Message timestamp (subtle)
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: 4,
-                      left: isUser ? 0 : 12,
-                      right: isUser ? 12 : 0,
-                    ),
-                    child: Text(
-                      _formatMessageTime(DateTime.now()),
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey[500],
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
           ),
           if (isUser) ...[
             Container(
-              width: 36,
-              height: 36,
-              margin: const EdgeInsets.only(left: 10, bottom: 4),
+              width: 40,
+              height: 40,
+              margin: const EdgeInsets.only(left: 12, bottom: 4),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).primaryColor.withOpacity(0.2),
-                    Theme.of(context).primaryColor.withOpacity(0.15),
-                  ],
-                ),
-                border: Border.all(
-                  color: Theme.of(context).primaryColor.withOpacity(0.3),
-                  width: 1.5,
-                ),
+                color: const Color(0xFF8B4513), // Brown color for user avatar
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
-                    blurRadius: 8,
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
                 ],
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.person_rounded,
-                color: Theme.of(context).primaryColor,
-                size: 18,
+                color: Colors.white,
+                size: 20,
               ),
             ),
           ],
@@ -783,6 +757,55 @@ class _ChatInterfaceState extends State<ChatInterface>
               letterSpacing: 0.1,
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRefineButton() {
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        // Show refine options or edit previous message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Refine functionality coming soon!'),
+            backgroundColor: const Color(0xFF8B4513), // Brown color
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: const Color(0xFF8B4513), // Brown color
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+              spreadRadius: 0,
+            ),
+          ],
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.tune_rounded,
+              color: Colors.white,
+              size: 14,
+            ),
+            SizedBox(width: 4),
+            Text(
+              'Refine',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -1288,21 +1311,18 @@ class _ChatInterfaceState extends State<ChatInterface>
       return Text(
         message.message,
         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: Colors.white,
+          color: const Color(0xFF5D4037), // Dark brown text for beige bubble
         ),
       );
     }
 
-    // Enhanced content for Bruno messages
-    if (message.message.toLowerCase().contains('recipe') && message.message.contains('\$')) {
-      return _buildRecipeMessageCard(context, message);
-    } else if (message.message.toLowerCase().contains('budget') && message.message.contains('\$')) {
-      return _buildBudgetMessageCard(context, message);
-    } else if (message.message.toLowerCase().contains('shopping') || message.message.toLowerCase().contains('cart')) {
-      return _buildShoppingMessageCard(context, message);
-    } else {
-      return _buildStandardMessageCard(context, message);
-    }
+    // Bruno messages with white text on brown background
+    return Text(
+      message.message,
+      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+        color: Colors.white,
+      ),
+    );
   }
 
   Widget _buildStandardMessageCard(BuildContext context, ChatMessage message) {
@@ -1714,6 +1734,272 @@ class _ChatInterfaceState extends State<ChatInterface>
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // Wireframe-specific methods
+  Widget _buildWireframeBrunoMessage(String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(right: 12, bottom: 4),
+          child: BrunoAvatar(
+            mood: BrunoMood.helpful,
+            size: 40,
+            animate: true,
+          ),
+        ),
+        Flexible(
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.75,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFF8B4513), // Brown color
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(6),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWireframeUserMessage(String text) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Flexible(
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.75,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF5F1E8), // Beige color
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(6),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: const Color(0xFF5D4037), // Dark brown text
+                ),
+              ),
+            ),
+          ),
+        ),
+        Container(
+          width: 40,
+          height: 40,
+          margin: const EdgeInsets.only(left: 12, bottom: 4),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFF8B4513), // Brown color
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: const Icon(
+            Icons.person_rounded,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRefineButtonRow() {
+    return Row(
+      children: [
+        const SizedBox(width: 52), // Space for avatar
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          child: _buildRefineButton(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSampleList() {
+    return Container(
+      margin: const EdgeInsets.only(left: 52, top: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF43B02A).withOpacity(0.1), // Instacart Green background
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFF43B02A).withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'List:',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF43B02A),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              const Icon(
+                Icons.check_circle,
+                color: Color(0xFF43B02A),
+                size: 16,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Rice & Beans - \$10',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              const Icon(
+                Icons.check_circle,
+                color: Color(0xFF43B02A),
+                size: 16,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Plantains - \$8',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              const Icon(
+                Icons.check_circle,
+                color: Color(0xFF43B02A),
+                size: 16,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Coconut Milk - \$6',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeedbackButtons() {
+    return Container(
+      margin: const EdgeInsets.only(left: 52, top: 12),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              HapticFeedback.lightImpact();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Thanks for the positive feedback!'),
+                  backgroundColor: Color(0xFF43B02A),
+                ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFF43B02A).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: const Color(0xFF43B02A).withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: const Icon(
+                Icons.thumb_up_rounded,
+                color: Color(0xFF43B02A),
+                size: 20,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          GestureDetector(
+            onTap: () {
+              HapticFeedback.lightImpact();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Thanks for the feedback! Let me improve.'),
+                  backgroundColor: Colors.orange,
+                ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.orange.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: const Icon(
+                Icons.thumb_down_rounded,
+                color: Colors.orange,
+                size: 20,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
