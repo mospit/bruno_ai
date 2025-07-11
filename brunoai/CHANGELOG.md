@@ -1,11 +1,39 @@
 # Changelog
 
-All notable changes to Bruno AI will be documented in this file.
+All notable changes to the Bruno AI project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.0.0] - 2025-01-11
+
+### Added
+- **🎉 UI Redesign Complete**: Successfully merged comprehensive UI redesign into main branch
+- **📁 Documentation Restructure**: Moved old documentation to `archived/` folder
+- **📚 New Documentation**: Added comprehensive project documentation in `docs/` folder
+  - Bruno AI UI Design and Style Guide
+  - Flutter Development Documentation
+  - Google ADK Documentation
+  - Instacart API Documentation
+  - A2A Protocol Documentation
+
+### Changed
+- **🔄 Branch Merge**: Successfully merged `UI` branch into `main` branch
+- **📖 README Update**: Updated README to reflect project completion status
+- **🎨 Design System**: Finalized warm bear-themed color palette and typography
+- **📱 All Screens**: Completed redesign of all application screens with modern UX
+
+### Fixed
+- **🔧 Layout Issues**: Resolved all RenderFlex overflow issues
+- **🎯 Wireframe Compliance**: Ensured UI matches exact design specifications
+- **📐 Responsive Design**: Fixed mobile layout constraints and spacing
+
+### Migration Notes
+- Old documentation has been moved to `archived/` folder
+- New documentation structure provides comprehensive development guides
+- All UI components now follow the new design system standards
 
 ### Added
 - **Comprehensive Animation System** - Complete implementation of Bruno AI Animation Standards
