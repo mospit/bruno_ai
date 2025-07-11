@@ -1128,7 +1128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 0.85,
+                childAspectRatio: 0.65, // Further increased height to prevent overflow
               ),
               itemCount: mealIdeas.length,
               itemBuilder: (context, index) {
@@ -1197,25 +1197,27 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: AppColors.textSecondary(context),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 6),
                         Text(
                           'Ingredients:',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w600,
+                            fontSize: 11,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          (meal['ingredients'] as List<String>).join(', '),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.textSecondary(context),
-                            fontSize: 10,
+                        const SizedBox(height: 2),
+                        Expanded(
+                          child: Text(
+                            (meal['ingredients'] as List<String>).join(', '),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: AppColors.textSecondary(context),
+                              fontSize: 9,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                        const Spacer(),
                         // Customize button in brown as specified in wireframe
                         SizedBox(
                           width: double.infinity,
@@ -1232,7 +1234,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary, // Brown button
-                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              padding: const EdgeInsets.symmetric(vertical: 6),
+                              minimumSize: const Size(0, 32),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -1241,7 +1244,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Customize',
                               style: TextStyle(
                                 color: AppColors.white,
-                                fontSize: 12,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
