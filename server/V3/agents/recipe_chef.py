@@ -1,35 +1,60 @@
 """
 Recipe Chef Agent - Bruno AI V3.1
+Enhanced with token optimization, adaptive planning, and improved A2A collaboration
 Uses Claude 4 Sonnet for complex reasoning and adaptive meal planning
 """
 
 import json
+import logging
 from typing import Dict, List, Any, Optional
-from .base_agent import TokenOptimizedAgent
+from datetime import datetime
+from .base_agent import BaseAgent
 
-class RecipeChefAgent(TokenOptimizedAgent):
-    """Generates meal prep ideas and recipes with complex reasoning"""
+class RecipeChefAgent(BaseAgent):
+    """Generates meal prep ideas and recipes with complex reasoning, optimized for tokens and collaboration"""
     
-    def __init__(self):
-        super().__init__(
-            model="anthropic:claude-4-sonnet",
-            instructions="""
-            You are Bruno's master recipe chef and meal planning specialist. Your role is to:
-            - Create adaptive meal plans based on user preferences and constraints
-            - Generate detailed recipes with clear instructions
-            - Collaborate with other agents for budget validation and ingredient sourcing
-            - Suggest creative alternatives and substitutions
-            - Consider dietary restrictions, allergies, and cultural preferences
-            - Optimize meals for nutrition, taste, and budget efficiency
+    def __init__(self, redis_url: str = None, postgres_url: str = None):
+        super().__init__(agent_id="recipe_chef", model_name="claude-3-5-sonnet-20241022",
+                         redis_url=redis_url, postgres_url=postgres_url)
+        self.logger = logging.getLogger(f"bruno.{agent_id}")
+        
+    def _get_system_prompt(self) -> str:
+        """Get system prompt for the Recipe Chef Agent"""
+        return """
+        You are Bruno's meal planning and recipe specialist. Your role is to:
+        - Generate adaptive, non-prescriptive meal plans
+        - Optimize ingredients and costs
+        - Collaborate with other agents for comprehensive solutions
+        - Keep user wants central to suggestions
+        
+        Focus on helpful, friendly guidance without dictating choices.
+        Present suggestions as options ("You might enjoy...", "Consider trying...").
+        """
+    
+    async def _compress_context(self, context: Dict) -> str:
+        """Compress context using Haiku for token efficiency before Sonnet calls"""
+        if not context:
+            return ""
             
-            Always maintain Bruno's warm, encouraging personality while providing expert culinary guidance.
-            Focus on practical, achievable recipes that respect user wants and limitations.
-            """,
-            agent_name="recipe_chef"
-        )
+        summary_query = f"Summarize keeping user wants like budget/cuisine/dietary: {json.dumps(context)}"
+        try:
+            compressed = await self.compress_context(summary_query, max_tokens=500)
+            return compressed
+        except Exception as e:
+            self.logger.warning(f"Context compression failed: {e}")
+            return json.dumps(context)[:500]  # Fallback truncation
     
     async def create_meal_plan(self, requirements: Dict[str, Any], context_id: str = None) -> Dict[str, Any]:
-        """Create comprehensive meal plan based on requirements"""
+        """Create comprehensive meal plan with validation and compression"""
+        
+        # Input validation
+        if not isinstance(requirements, dict):
+            return {'success': False, 'error': 'Requirements must be a dictionary'}
+        
+        required_keys = ['budget', 'cuisine_preferences', 'dietary_restrictions', 'family_size', 'duration_days', 'pantry_items']
+        for key in required_keys:
+            if key not in requirements:
+                self.logger.warning(f"Missing key in requirements: {key}")
         
         # Extract requirements
         budget = requirements.get('budget')
@@ -54,11 +79,17 @@ class RecipeChefAgent(TokenOptimizedAgent):
         - Prep time estimates
         - Nutritional balance considerations
         - Cost-effective ingredient usage
+        
+        Adapt to user wants without prescription.
         """
         
-        # Get additional context
-        if context_id:
-            context = self.get_context(context_id)
+        try:
+            # Get and compress context
+            context = await self.get_context(context_id) if context_id else {}
+            compressed_context = await self._compress_context(context)
+            if compressed_context:
+                query += f"\nCompressed user context: {compressed_context}"
+            
             previous_meals = context.get('previous_meals', [])
             user_preferences = context.get('preferences', {})
             
@@ -66,30 +97,39 @@ class RecipeChefAgent(TokenOptimizedAgent):
                 query += f"\nAvoid repeating these recent meals: {', '.join(previous_meals[-10:])}"
             if user_preferences:
                 query += f"\nUser preferences: {json.dumps(user_preferences)}"
-        
-        meal_plan = await self.process_with_optimization(query, context_id)
-        
-        # Structure the response
-        result = {
-            'meal_plan': meal_plan,
-            'duration_days': duration_days,
-            'family_size': family_size,
-            'estimated_budget_used': self._estimate_budget_usage(budget, family_size, duration_days),
-            'shopping_list_preview': await self._generate_shopping_preview(meal_plan, context_id),
-            'prep_recommendations': await self._generate_prep_recommendations(meal_plan, context_id)
-        }
-        
-        # Update context with meal plan
-        if context_id:
-            context = self.get_context(context_id)
-            context['current_meal_plan'] = result
-            context['meal_plan_created'] = True
-            self.set_context(context_id, context)
-        
-        return result
+            
+            meal_plan = await self.process_with_optimization(query, context_id)
+            
+            # Structure the response
+            result = {
+                'meal_plan': meal_plan,
+                'duration_days': duration_days,
+                'family_size': family_size,
+                'estimated_budget_used': self._estimate_budget_usage(budget, family_size, duration_days),
+                'shopping_list_preview': await self._generate_shopping_preview(meal_plan, context_id),
+                'prep_recommendations': await self._generate_prep_recommendations(meal_plan, context_id)
+            }
+            
+            # Update context with meal plan
+            if context_id:
+                context['current_meal_plan'] = result
+                context['meal_plan_created'] = True
+                await self.set_context(context_id, context)
+            
+            return {'success': True, 'data': result}
+            
+        except Exception as e:
+            self.logger.error(f"Meal plan creation failed: {str(e)}")
+            return {'success': False, 'error': str(e)}
     
-    async def suggest_recipe_adaptations(self, recipe: str, constraints: Dict[str, Any], context_id: str = None) -> str:
-        """Suggest adaptations for existing recipes based on constraints"""
+    async def suggest_recipe_adaptations(self, recipe: str, constraints: Dict[str, Any], context_id: str = None) -> Dict[str, Any]:
+        """Suggest adaptations with validation and compression"""
+        
+        # Input validation
+        if not isinstance(recipe, str) or not recipe:
+            return {'success': False, 'error': 'Recipe must be a non-empty string'}
+        if not isinstance(constraints, dict):
+            return {'success': False, 'error': 'Constraints must be a dictionary'}
         
         query = f"""
         Adapt this recipe based on the following constraints:
@@ -109,12 +149,31 @@ class RecipeChefAgent(TokenOptimizedAgent):
         - Portion adjustments
         - Cost-saving alternatives
         - Time-saving techniques
+        
+        Adapt to user wants.
         """
         
-        return await self.process_with_optimization(query, context_id)
+        try:
+            # Get and compress context
+            context = await self.get_context(context_id) if context_id else {}
+            compressed_context = await self._compress_context(context)
+            if compressed_context:
+                query += f"\nCompressed context: {compressed_context}"
+            
+            result = await self.process_with_optimization(query, context_id)
+            return {'success': True, 'adaptations': result}
+        except Exception as e:
+            self.logger.error(f"Recipe adaptation failed: {str(e)}")
+            return {'success': False, 'error': str(e)}
     
     async def collaborate_with_budget_agent(self, meal_ideas: List[str], budget: float, context_id: str = None) -> Dict[str, Any]:
-        """Prepare A2A request for budget analysis of meal ideas"""
+        """Prepare A2A request for budget analysis with JSON-RPC format"""
+        
+        # Input validation
+        if not isinstance(meal_ideas, list) or not all(isinstance(m, str) for m in meal_ideas):
+            return {'success': False, 'error': 'Meal ideas must be a list of strings'}
+        if not isinstance(budget, (int, float)):
+            return {'success': False, 'error': 'Budget must be a number'}
         
         query = f"""
         Prepare detailed cost analysis request for these meal ideas:
@@ -129,32 +188,59 @@ class RecipeChefAgent(TokenOptimizedAgent):
         - Budget optimization suggestions
         """
         
-        analysis_prep = await self.process_with_optimization(query, context_id)
-        
-        # Prepare A2A message for Budget Analyst
-        a2a_request = {
-            'context_id': context_id,
-            'agent_id': 'recipe_chef',
-            'meal_ideas': meal_ideas,
-            'target_budget': budget,
-            'analysis_request': analysis_prep,
-            'request_type': 'cost_analysis'
-        }
-        
-        return a2a_request
+        try:
+            # Get and compress context
+            context = await self.get_context(context_id) if context_id else {}
+            compressed_context = await self._compress_context(context)
+            if compressed_context:
+                query += f"\nCompressed context: {compressed_context}"
+            
+            analysis_prep = await self.process_with_optimization(query, context_id)
+            
+            # Prepare A2A message with JSON-RPC format
+            a2a_request = {
+                'jsonrpc': '2.0',
+                'method': 'handle_cost_analysis',
+                'id': f"recipe_chef_{datetime.now().timestamp()}",
+                'params': {
+                    'context_id': context_id,
+                    'agent_id': 'recipe_chef',
+                    'meal_ideas': meal_ideas,
+                    'target_budget': budget,
+                    'analysis_request': analysis_prep,
+                    'request_type': 'cost_analysis'
+                }
+            }
+            
+            return {'success': True, 'a2a_request': a2a_request}
+            
+        except Exception as e:
+            self.logger.error(f"Budget collaboration failed: {str(e)}")
+            return {'success': False, 'error': str(e)}
     
     async def process_a2a_response(self, response: Dict[str, Any]) -> Dict[str, Any]:
-        """Process A2A response from other agents (Budget, Instacart)"""
+        """Process A2A response from other agents with comprehensive error handling"""
+        
+        # Input validation
+        if not isinstance(response, dict):
+            return {'success': False, 'error': 'Response must be a dictionary'}
         
         agent_id = response.get('agent_id')
         context_id = response.get('context_id')
         
-        if agent_id == 'budget_analyst':
-            return await self._process_budget_response(response, context_id)
-        elif agent_id == 'instacart_integration':
-            return await self._process_instacart_response(response, context_id)
-        else:
-            return {'status': 'unknown_agent', 'response': response}
+        try:
+            if agent_id == 'budget_analyst':
+                result = await self._process_budget_response(response, context_id)
+            elif agent_id == 'instacart_integration':
+                result = await self._process_instacart_response(response, context_id)
+            else:
+                result = {'status': 'unknown_agent', 'response': response}
+            
+            return {'success': True, 'data': result}
+            
+        except Exception as e:
+            self.logger.error(f"A2A processing failed: {str(e)}")
+            return {'success': False, 'error': str(e)}
     
     async def _process_budget_response(self, response: Dict[str, Any], context_id: str = None) -> Dict[str, Any]:
         """Process budget analysis response and refine meal recommendations"""
@@ -256,10 +342,16 @@ class RecipeChefAgent(TokenOptimizedAgent):
         return await self.process_with_optimization(query, context_id)
     
     def _estimate_budget_usage(self, budget: Optional[float], family_size: int, duration_days: int) -> float:
-        """Estimate budget usage based on meal plan complexity"""
+        """Improved budget estimation with base costs and per-person scaling"""
         if not budget:
             return 0.0
         
-        # Simple estimation formula (can be enhanced)
-        per_person_per_day = budget / (family_size * duration_days)
-        return round(per_person_per_day * family_size * duration_days, 2)
+        # Enhanced formula: base cost + per-person scaling
+        base_cost = 50  # Base weekly cost for staples
+        per_person_per_day = 10  # Average per person per day
+        
+        # Calculate estimated usage
+        estimated_usage = base_cost + (per_person_per_day * family_size * duration_days)
+        
+        # Cap at budget to prevent overestimation
+        return round(min(estimated_usage, budget), 2)

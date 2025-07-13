@@ -263,7 +263,9 @@ context = agent_b.get_context(context_id)
 
 ## 🧪 Testing
 
-### Run Tests
+### Comprehensive Test Suite
+
+Bruno AI V3.1 includes an extensive testing framework that validates both individual agent functionality and complete user scenarios:
 
 ```bash
 # Unit tests
@@ -274,7 +276,122 @@ python -m pytest tests/integration/ -v
 
 # Agent collaboration tests
 python -m pytest tests/agents/ -v
+
+# Complete user scenario simulation
+python test_user_scenario.py
 ```
+
+### User Scenario Testing System
+
+The `test_user_scenario.py` script provides comprehensive end-to-end testing that simulates realistic user interactions:
+
+**Example User Task**: *"I need healthy dinner ideas for this week with a $80 budget"*
+
+#### 5-Step Agent Collaboration Workflow:
+
+1. **🔍 Pantry Analysis** - PantryManagerAgent checks available ingredients
+2. **🍳 Meal Generation** - RecipeChefAgent creates diet-compliant meal ideas  
+3. **💰 Budget Optimization** - BudgetAnalystAgent analyzes costs and suggests savings
+4. **🛒 Shopping Planning** - InstacartAgent determines needed items and pricing
+5. **📋 Plan Validation** - ReflectionFeedbackAgent reviews effectiveness and compliance
+
+#### Mock User Profile:
+
+```python
+user_profile = {
+    "family_size": 4,
+    "dietary_preferences": ["healthy", "low-carb", "quick-prep"],
+    "dietary_restrictions": ["no-nuts"],
+    "cooking_skill": "intermediate",
+    "time_constraints": ["weeknight meals under 30 min"],
+    "favorite_cuisines": ["mediterranean", "asian", "mexican"]
+}
+```
+
+#### Mock Pantry Inventory:
+
+```python
+mock_pantry = {
+    "proteins": ["chicken breast", "salmon fillets", "ground turkey", "eggs"],
+    "vegetables": ["broccoli", "spinach", "bell peppers", "onions", "tomatoes"],
+    "pantry_staples": ["olive oil", "garlic", "rice", "quinoa", "canned beans"],
+    "dairy": ["greek yogurt", "parmesan cheese", "milk"],
+    "herbs_spices": ["basil", "oregano", "cumin", "paprika", "black pepper"],
+    "low_stock": ["olive oil", "onions"],
+    "expiring_soon": ["spinach", "greek yogurt"]
+}
+```
+
+#### Test Results Example:
+
+```bash
+🚀 Starting Bruno AI V3.1 Agent System Test
+============================================================
+
+🍽️  USER REQUEST: 'I need healthy dinner ideas for this week with a $80 budget'
+
+🔍 STEP 1: Checking pantry inventory...
+📦 Pantry Status:
+  - Available proteins: chicken breast, salmon fillets, ground turkey, eggs
+  - Available vegetables: broccoli, spinach, bell peppers, onions, tomatoes
+  - Low stock items: olive oil, onions
+  - Expiring soon: spinach, greek yogurt
+
+🍳 STEP 2: Generating meal ideas...
+🍽️  Generated Meal Ideas:
+  1. Mediterranean Chicken with Quinoa and Roasted Vegetables
+  2. Asian Salmon Teriyaki with Steamed Broccoli
+  3. Mexican Turkey and Bean Bowl with Peppers
+  4. Greek Yogurt Marinated Chicken with Spinach
+  5. Healthy Stir-Fry with Ground Turkey and Mixed Vegetables
+  6. Mediterranean Quinoa Salad with Grilled Chicken
+  7. Asian-Style Salmon with Garlic Roasted Vegetables
+
+💰 STEP 3: Analyzing budget requirements...
+📊 Budget Analysis:
+  - Target budget: $80
+  - Estimated cost per meal: $11.43
+  - Potential savings: $12.00
+
+🛒 STEP 4: Checking shopping requirements...
+🛍️  Shopping Analysis:
+  - Fresh herbs (basil, cilantro)
+  - Additional vegetables (zucchini, carrots)
+  - Quinoa (bulk)
+  - Olive oil (replacement)
+  - Onions (replacement)
+  - Estimated shopping cost: $65.00
+
+📋 STEP 5: Generating final meal plan...
+✅ Final Meal Plan Summary:
+  - Total meals planned: 7 dinners
+  - Budget utilization: $80.00
+  - Estimated shopping cost: $65.00
+  - Dietary compliance: healthy, low-carb, quick-prep
+  - Using available pantry items: Yes
+
+🎉 SCENARIO COMPLETE - BRUNO AI V3.1 AGENT COLLABORATION SUCCESS!
+
+📊 Results Summary:
+  ✅ Pantry analyzed: 4 proteins, 5 vegetables
+  ✅ Meal ideas generated: 7 healthy dinner options
+  ✅ Budget analyzed: $80 budget with optimization suggestions
+  ✅ Shopping list created: ~$65 estimated cost
+  ✅ Final plan validated: High effectiveness rating
+
+✅ SUCCESS
+```
+
+### Performance Validation
+
+The user scenario testing validates:
+
+- **Agent Collaboration**: A2A communication between all 5 agents
+- **Context Sharing**: Consistent user profile and preferences across agents
+- **Budget Optimization**: Cost analysis and savings identification
+- **Dietary Compliance**: Adherence to health and restriction requirements
+- **Practical Usability**: Realistic meal suggestions using available ingredients
+- **Graceful Degradation**: Fallback mechanisms when agent calls fail
 
 ### Test Agent Communication
 

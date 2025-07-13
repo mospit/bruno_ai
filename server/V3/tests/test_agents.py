@@ -9,12 +9,12 @@ from datetime import datetime, timedelta
 import json
 
 # Import all agents
-from base_agent import BaseAgent
-from pantry_manager import PantryManagerAgent
-from instacart_agent import InstacartIntegrationAgent
-from recipe_chef import RecipeChefAgent
-from budget_analyst import BudgetAnalystAgent
-from reflection_feedback import ReflectionFeedbackAgent
+from agents.base_agent import BaseAgent
+from agents.pantry_manager import PantryManagerAgent
+from agents.instacart_agent import InstacartIntegrationAgent
+from agents.recipe_chef import RecipeChefAgent
+from agents.budget_analyst import BudgetAnalystAgent
+from agents.reflection_feedback import ReflectionFeedbackAgent
 
 
 class TestBaseAgent:

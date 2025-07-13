@@ -4,53 +4,166 @@ Uses Claude 4 Sonnet for nuanced iterations and continuous improvement
 """
 
 import json
+import asyncio
+import logging
 from typing import Dict, List, Any, Optional
 from datetime import datetime, timedelta
-from .base_agent import TokenOptimizedAgent
+from .base_agent import BaseAgent
 
-class ReflectionFeedbackAgent(TokenOptimizedAgent):
+class ReflectionFeedbackAgent(BaseAgent):
     """Reviews outputs and adapts based on user wants and feedback"""
     
-    def __init__(self):
-        super().__init__(
-            model="anthropic:claude-4-sonnet",
-            instructions="""
-            You are Bruno's reflection and feedback specialist, responsible for continuous improvement. Your role is to:
-            - Review and analyze outputs from all other agents
-            - Gather and interpret user feedback on recommendations
-            - Identify patterns in user preferences and satisfaction
-            - Suggest improvements to agent interactions and recommendations
-            - Adapt the system's approach based on user wants and outcomes
-            - Ensure all recommendations align with user goals and constraints
+    def __init__(self, redis_url: str = None, postgres_url: str = None):
+        super().__init__(agent_id="reflection_feedback", model_name="claude-3-5-sonnet-20241022",
+                         redis_url=redis_url, postgres_url=postgres_url)
+        self.logger = logging.getLogger(__name__)
+        self.haiku_model = "claude-3-haiku-20240307"
+        self.cache = {}  # Simple cache for common queries
+        
+    def _validate_input(self, data: Dict[str, Any], required_fields: List[str]) -> Dict[str, Any]:
+        """Validate input data and return validation result"""
+        errors = []
+        for field in required_fields:
+            if field not in data:
+                errors.append(f"Missing required field: {field}")
+        
+        if errors:
+            return {"success": False, "errors": errors}
+        return {"success": True}
+    
+    async def _compress_context(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Compress context using Haiku model for token savings"""
+        try:
+            if not context:
+                return {}
             
-            Always maintain Bruno's warm, learning-oriented personality. Focus on making the experience 
-            better for users while respecting their preferences and feedback.
-            """,
-            agent_name="reflection_feedback"
-        )
+            # Use Haiku for compression
+            compression_query = f"""
+            Compress this context to essential information while preserving key insights:
+            {json.dumps(context, indent=2)}
+            
+            Return only the most relevant information in JSON format.
+            """
+            
+            compressed = await self.agent.run(compression_query, model=self.haiku_model)
+            # Try to parse as JSON, fallback to original context if parsing fails
+            try:
+                return json.loads(compressed)
+            except json.JSONDecodeError:
+                return context
+        except Exception as e:
+            self.logger.error(f"Context compression failed: {e}")
+            return context
+    
+    async def _get_context_with_compression(self, context_id: str) -> Dict[str, Any]:
+        """Get context with compression for token efficiency"""
+        try:
+            context = await self.get_context(context_id) if context_id else {}
+            return await self._compress_context(context)
+        except Exception as e:
+            self.logger.error(f"Error getting context: {e}")
+            return {}
+    
+    async def _set_context_with_history(self, context_id: str, context: Dict[str, Any]) -> None:
+        """Set context with history tracking"""
+        try:
+            if context_id:
+                # Add timestamp to context updates
+                context["last_updated"] = datetime.now().isoformat()
+                await self.set_context(context_id, context)
+        except Exception as e:
+            self.logger.error(f"Error setting context: {e}")
+    
+    async def handle_a2a_request(self, request: Dict[str, Any], context_id: str = None) -> Dict[str, Any]:
+        """Handle agent-to-agent communication using JSON-RPC format"""
+        try:
+            # Validate A2A request format
+            validation = self._validate_input(request, ["method", "params", "id"])
+            if not validation["success"]:
+                return {
+                    "success": False,
+                    "error": "Invalid A2A request format",
+                    "details": validation["errors"]
+                }
+            
+            method = request["method"]
+            params = request["params"]
+            request_id = request["id"]
+            
+            # Process different A2A methods
+            if method == "analyze_performance":
+                result = await self.analyze_system_performance(params.get("interaction_data", {}), context_id)
+                return {
+                    "success": True,
+                    "result": result,
+                    "id": request_id
+                }
+            elif method == "process_feedback":
+                result = await self.process_user_feedback(params.get("feedback", {}), context_id)
+                return {
+                    "success": True,
+                    "result": result,
+                    "id": request_id
+                }
+            elif method == "review_outputs":
+                result = await self.review_agent_outputs(
+                    params.get("agent_outputs", {}),
+                    params.get("user_query", ""),
+                    context_id
+                )
+                return {
+                    "success": True,
+                    "result": result,
+                    "id": request_id
+                }
+            elif method == "adapt_behavior":
+                result = await self.adapt_system_behavior(params.get("adaptation_data", {}), context_id)
+                return {
+                    "success": True,
+                    "result": result,
+                    "id": request_id
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": f"Unknown method: {method}",
+                    "id": request_id
+                }
+        except Exception as e:
+            self.logger.error(f"Error handling A2A request: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "id": request.get("id", "unknown")
+            }
     
     async def analyze_system_performance(self, interaction_data: Dict[str, Any], context_id: str = None) -> Dict[str, Any]:
         """Analyze overall system performance and user satisfaction"""
-        
-        query = f"""
-        Analyze this interaction data to assess system performance:
-        
-        Interaction Data: {json.dumps(interaction_data)}
-        
-        Evaluate:
-        - User satisfaction indicators
-        - Recommendation accuracy and relevance
-        - System response times and efficiency
-        - Goal achievement rates
-        - Areas needing improvement
-        - Patterns in user behavior and preferences
-        
-        Provide specific recommendations for enhancement.
-        """
-        
-        # Get historical performance data
-        if context_id:
-            context = self.get_context(context_id)
+        try:
+            # Input validation
+            if not interaction_data:
+                return {"success": False, "error": "No interaction data provided"}
+            
+            # Use compressed context for token savings
+            context = await self._get_context_with_compression(context_id)
+            
+            query = f"""
+            Analyze this interaction data to assess system performance:
+            
+            Interaction Data: {json.dumps(interaction_data)}
+            
+            Evaluate:
+            - User satisfaction indicators
+            - Recommendation accuracy and relevance
+            - System response times and efficiency
+            - Goal achievement rates
+            - Areas needing improvement
+            - Patterns in user behavior and preferences
+            
+            Provide specific recommendations for enhancement.
+            """
+            
+            # Add compressed historical data
             performance_history = context.get('performance_history', [])
             user_feedback_history = context.get('feedback_history', [])
             
@@ -58,31 +171,35 @@ class ReflectionFeedbackAgent(TokenOptimizedAgent):
                 query += f"\nHistorical performance: {json.dumps(performance_history[-5:])}"
             if user_feedback_history:
                 query += f"\nUser feedback history: {json.dumps(user_feedback_history[-5:])}"
-        
-        analysis = await self.process_with_optimization(query, context_id)
-        
-        result = {
-            'performance_analysis': analysis,
-            'interaction_timestamp': datetime.now().isoformat(),
-            'satisfaction_score': self._calculate_satisfaction_score(interaction_data),
-            'improvement_recommendations': await self._generate_improvement_recommendations(analysis, context_id),
-            'system_adaptations': await self._suggest_system_adaptations(interaction_data, context_id),
-            'next_review_suggestions': await self._plan_next_review(analysis, context_id)
-        }
-        
-        # Update performance history
-        if context_id:
-            context = self.get_context(context_id)
-            history = context.get('performance_history', [])
-            history.append({
-                'timestamp': datetime.now().isoformat(),
-                'satisfaction_score': result['satisfaction_score'],
-                'key_insights': analysis[:200]  # Store summary
-            })
-            context['performance_history'] = history[-10:]  # Keep last 10 entries
-            self.set_context(context_id, context)
-        
-        return result
+            
+            analysis = await self.process_with_optimization(query, context_id)
+            
+            result = {
+                'success': True,
+                'performance_analysis': analysis,
+                'interaction_timestamp': datetime.now().isoformat(),
+                'satisfaction_score': self._calculate_satisfaction_score(interaction_data),
+                'improvement_recommendations': await self._generate_improvement_recommendations(analysis, context_id),
+                'system_adaptations': await self._suggest_system_adaptations(interaction_data, context_id),
+                'next_review_suggestions': await self._plan_next_review(analysis, context_id)
+            }
+            
+            # Update performance history with timestamp
+            if context_id:
+                history = context.get('performance_history', [])
+                history.append({
+                    'timestamp': datetime.now().isoformat(),
+                    'satisfaction_score': result['satisfaction_score'],
+                    'key_insights': analysis[:200]  # Store summary
+                })
+                context['performance_history'] = history[-10:]  # Keep last 10 entries
+                await self._set_context_with_history(context_id, context)
+            
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"Error analyzing system performance: {e}")
+            return {"success": False, "error": str(e)}
     
     async def process_user_feedback(self, feedback: Dict[str, Any], context_id: str = None) -> Dict[str, Any]:
         """Process and learn from user feedback"""
