@@ -142,50 +142,104 @@ class ServerManager:
         """Initialize database tables if they don't exist"""
         
         try:
-            with self.postgres_conn.cursor() as cursor:
-                # Create agent memory table
-                cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS agent_memory (
-                        id SERIAL PRIMARY KEY,
-                        agent_id VARCHAR(100) NOT NULL,
-                        session_id VARCHAR(100),
-                        memory_type VARCHAR(50) NOT NULL,
-                        content JSONB NOT NULL,
-                        metadata JSONB,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """)
+            # Read and execute the complete database schema
+            schema_path = Path(__file__).parent / "database_schema.sql"
+            
+            if schema_path.exists():
+                with open(schema_path, 'r') as f:
+                    schema_sql = f.read()
                 
-                # Create performance metrics table
-                cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS performance_metrics (
-                        id SERIAL PRIMARY KEY,
-                        agent_id VARCHAR(100) NOT NULL,
-                        endpoint VARCHAR(100) NOT NULL,
-                        response_time FLOAT NOT NULL,
-                        token_usage INTEGER,
-                        status_code INTEGER,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """)
-                
-                # Create user feedback table
-                cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS user_feedback (
-                        id SERIAL PRIMARY KEY,
-                        session_id VARCHAR(100) NOT NULL,
-                        agent_id VARCHAR(100) NOT NULL,
-                        rating INTEGER CHECK (rating >= 1 AND rating <= 5),
-                        feedback_text TEXT,
-                        feedback_type VARCHAR(50),
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """)
-                
-                self.postgres_conn.commit()
-                self.logger.info("Database tables initialized successfully")
-                return True
+                with self.postgres_conn.cursor() as cursor:
+                    cursor.execute(schema_sql)
+                    self.postgres_conn.commit()
+                    self.logger.info("Complete database schema initialized successfully")
+            else:
+                # Fallback to minimal schema if file doesn't exist
+                with self.postgres_conn.cursor() as cursor:
+                    # Create essential tables
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS user_contexts (
+                            id SERIAL PRIMARY KEY,
+                            context_id VARCHAR(255) NOT NULL UNIQUE,
+                            user_id VARCHAR(100),
+                            data JSONB NOT NULL,
+                            preferences JSONB DEFAULT '{}',
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            expires_at TIMESTAMP
+                        )
+                    """)
+                    
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS agent_history (
+                            id SERIAL PRIMARY KEY,
+                            agent_id VARCHAR(100) NOT NULL,
+                            context_id VARCHAR(255) NOT NULL,
+                            user_id VARCHAR(100),
+                            action_type VARCHAR(100) NOT NULL,
+                            data JSONB NOT NULL,
+                            request_tokens INTEGER DEFAULT 0,
+                            response_tokens INTEGER DEFAULT 0,
+                            processing_time FLOAT DEFAULT 0,
+                            success BOOLEAN DEFAULT TRUE,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        )
+                    """)
+                    
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS agent_memory (
+                            id SERIAL PRIMARY KEY,
+                            agent_id VARCHAR(100) NOT NULL,
+                            session_id VARCHAR(100),
+                            context_id VARCHAR(255),
+                            memory_type VARCHAR(50) NOT NULL,
+                            content JSONB NOT NULL,
+                            metadata JSONB DEFAULT '{}',
+                            ttl_seconds INTEGER DEFAULT 3600,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            expires_at TIMESTAMP
+                        )
+                    """)
+                    
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS performance_metrics (
+                            id SERIAL PRIMARY KEY,
+                            agent_id VARCHAR(100) NOT NULL,
+                            endpoint VARCHAR(100) NOT NULL,
+                            context_id VARCHAR(255),
+                            response_time FLOAT NOT NULL,
+                            token_usage INTEGER DEFAULT 0,
+                            cache_hit BOOLEAN DEFAULT FALSE,
+                            compression_ratio FLOAT DEFAULT 1.0,
+                            status_code INTEGER DEFAULT 200,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        )
+                    """)
+                    
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS user_feedback (
+                            id SERIAL PRIMARY KEY,
+                            session_id VARCHAR(100) NOT NULL,
+                            agent_id VARCHAR(100) NOT NULL,
+                            context_id VARCHAR(255),
+                            user_id VARCHAR(100),
+                            rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+                            feedback_text TEXT,
+                            feedback_type VARCHAR(50),
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        )
+                    """)
+                    
+                    # Create indexes
+                    cursor.execute("CREATE INDEX IF NOT EXISTS idx_user_contexts_context_id ON user_contexts (context_id)")
+                    cursor.execute("CREATE INDEX IF NOT EXISTS idx_agent_history_context_id ON agent_history (context_id)")
+                    cursor.execute("CREATE INDEX IF NOT EXISTS idx_agent_memory_context_id ON agent_memory (context_id)")
+                    
+                    self.postgres_conn.commit()
+                    self.logger.info("Fallback database schema initialized successfully")
+                    
+            return True
                 
         except Exception as e:
             self.logger.error(f"Database initialization failed: {e}")
