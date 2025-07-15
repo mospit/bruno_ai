@@ -1,0 +1,170 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Project Infrastructure and Dependencies",
+        "description": "Initialize the project repository with required dependencies including FastA2A, PydanticAI, Anthropic Claude API, Redis, Postgres, and Flutter setup",
+        "details": "Create project structure with Python 3.12+ backend and Flutter mobile app. Install core dependencies: FastA2A v2.0+, PydanticAI v3.0, Anthropic SDK, Redis v7+, Postgres v15+, scikit-learn. Setup Kubernetes deployment configs with Uvicorn servers. Configure environment variables for API keys (Claude, Instacart). Initialize Git repository with proper .gitignore for Python/Flutter. Setup CI/CD pipeline basics.",
+        "testStrategy": "Verify all dependencies install correctly, test basic connectivity to Redis/Postgres, validate API key configurations, ensure Kubernetes configs are valid",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Implement Multi-Agent System Architecture",
+        "description": "Build the 5-agent system using PydanticAI with FastA2A for agent-to-agent communication: Pantry Manager, Instacart Integration, Recipe Chef, Budget Analyst, and Reflection & Feedback agents",
+        "details": "Create PydanticAI agents with specific roles: Pantry Manager (Haiku for inventory), Recipe Chef (Sonnet 4 for complex reasoning), Budget Analyst, Instacart Integration, Reflection & Feedback. Implement FastA2A JSON-RPC over HTTP/SSE for A2A communication with context_id sharing. Each agent should handle specific tools and maintain <500ms latency. Setup async communication patterns and error handling with retries.",
+        "testStrategy": "Unit tests for each agent, integration tests for A2A communication, latency testing to ensure <500ms response times, test multi-turn interactions and context sharing",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Develop Memory and Context Persistence System",
+        "description": "Implement layered memory system with short-term (Redis), long-term (Postgres), and agent-specific context persistence using context_id for cross-session recall",
+        "details": "Build 3-layer memory: L1 (Agent RAM), L2 (Redis with 1hr TTL), L3 (Postgres for long-term). Implement context_id system for sharing data between agents and sessions. Create compression using Haiku for context summarization. Store user preferences like '$200 budget' with 100% recall accuracy. Implement cache invalidation and fallback mechanisms. Use standardized A2A message format: {'context_id': 'abc123', 'data': {...}}.",
+        "testStrategy": "Test cache hit ratio targets (85%), verify cross-session context recall, test compression effectiveness, validate fallback mechanisms, measure cache performance",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Implement Token Management and Optimization",
+        "description": "Build intelligent token routing system between Claude Haiku and Sonnet 4, implement compression techniques, and batch A2A messages for 25-40% cost savings",
+        "details": "Create routing logic: Haiku for simple queries (<2K tokens), Sonnet 4 for complex reasoning. Implement prompt compression achieving 40-60% reduction. Build CompressedWorker class for batching A2A messages. Add token monitoring with <16K token limits per query. Implement retry logic with compression on token overflows. Track pre/post metrics for cost validation. Setup alerts for >10K tokens/query.",
+        "testStrategy": "Measure token usage before/after optimization, validate 25-40% cost savings, test routing accuracy, verify compression doesn't affect quality, test retry mechanisms",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Integrate Instacart API and External Services",
+        "description": "Implement Instacart API integration for real-time pricing and shopping list generation, with proper error handling and rate limiting",
+        "details": "Integrate Instacart Developer API for pricing data and shopping lists. Create API client with proper authentication and rate limiting. Implement schema handling for items array and prices. Add error handling for API failures with fallback to cached data. Build tools for agents to interact with Instacart services. Ensure compliance with API usage limits and implement exponential backoff for retries.",
+        "testStrategy": "Test API connectivity and authentication, validate pricing data accuracy, test rate limiting and error handling, verify fallback mechanisms work correctly",
+        "priority": "medium",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Build Flutter Mobile Application with Core Features",
+        "description": "Develop cross-platform Flutter mobile app with voice-first interface, offline support using SQLite, and integration with backend A2A system",
+        "details": "Create Flutter app supporting iOS 15+ and Android 10+. Implement voice-first interface using speech-to-text plugin with >95% accuracy. Build offline mode with SQLite for local caching, sync on reconnect with batch processing (<10 items). Create UI for agent interactions and context management. Implement dark mode auto-detect and responsive design. Add proper error handling and loading states.",
+        "testStrategy": "Test voice transcription accuracy, verify offline functionality and sync, test cross-platform compatibility, validate UI responsiveness, test error handling",
+        "priority": "high",
+        "dependencies": [
+          4,
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Implement Adaptive Personalization System",
+        "description": "Build ML-powered personalization using scikit-learn to predict user preferences from historical data and usage patterns",
+        "details": "Implement scikit-learn models for predicting user preferences based on historical interactions. Create pattern recognition for common behaviors (e.g., '$200 budget suggests rice'). Build recommendation engine that learns from user feedback and context. Implement privacy-compliant data collection with user consent. Create feedback loops for continuous improvement. Ensure predictions integrate seamlessly with agent responses.",
+        "testStrategy": "Test prediction accuracy against historical data, validate privacy compliance, test feedback loop effectiveness, measure recommendation relevance",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Develop Single-Page Marketing Website",
+        "description": "Create responsive single-page website with hero section, features, testimonials, newsletter signup, and app download links using HTML/CSS/JS with Tailwind",
+        "details": "Build SPA with sections: Hero, Features (3-column cards), How It Works (steps), Testimonials (auto-advancing carousel every 5s), Newsletter form with email validation, Download/Footer. Implement dark mode toggle and PWA support. Use Tailwind CSS for styling with mobile-first responsive design (<768px breakpoint). Optimize for <2s load time with lazy-loading images. Ensure WCAG AA compliance with >4.5:1 contrast ratio.",
+        "testStrategy": "Test load time performance, verify responsive design across devices, validate accessibility compliance, test form functionality and carousel behavior",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement Security and Authentication System",
+        "description": "Build comprehensive security system with JWT authentication, AES-256 encryption, role-based access control, and GDPR compliance",
+        "details": "Implement JWT authentication for A2A communication and user sessions. Setup AES-256 encryption for data at rest in Redis and Postgres. Create role-based access control for user contexts and admin functions. Implement input sanitization to prevent injection attacks. Add rate limiting on APIs. Build audit trails for security operations. Ensure GDPR compliance with user consent management and right to deletion.",
+        "testStrategy": "Security penetration testing, validate encryption implementation, test authentication flows, verify GDPR compliance features, test rate limiting effectiveness",
+        "priority": "high",
+        "dependencies": [
+          3,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Build Monitoring and Analytics System",
+        "description": "Implement comprehensive monitoring for token usage, cache performance, system health, and user analytics with real-time dashboards",
+        "details": "Create monitoring dashboard showing KPIs: token usage, cache hit ratios (target 85%), latency metrics, cost tracking. Implement health monitoring for memory leaks and system performance. Setup alerts for >10K tokens/query and system anomalies. Build audit logs for security and compliance. Integrate with app analytics for user engagement metrics. Create automated reports for stakeholders.",
+        "testStrategy": "Verify all metrics are accurately tracked, test alert systems, validate dashboard functionality, ensure audit logs are comprehensive",
+        "priority": "medium",
+        "dependencies": [
+          4,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Conduct End-to-End Testing and Performance Optimization",
+        "description": "Perform comprehensive testing including load testing, integration testing, and performance optimization to meet all KPI targets",
+        "details": "Execute end-to-end testing covering all user flows from voice input to agent responses. Conduct load testing for 10K concurrent users and 5x scale handling. Optimize performance to achieve <1s response for 95% of tasks. Test offline/online sync scenarios. Validate all acceptance criteria from PRD. Perform A/B testing on key features. Fix performance bottlenecks and optimize token usage.",
+        "testStrategy": "Load testing with realistic user scenarios, performance benchmarking against KPI targets, integration testing across all components, user acceptance testing",
+        "priority": "high",
+        "dependencies": [
+          9,
+          10
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Deploy Production System and Launch Preparation",
+        "description": "Deploy the complete system to production environment with Kubernetes, setup monitoring, and prepare for beta/GA launch",
+        "details": "Deploy backend services to Kubernetes with auto-scaling (min 2 instances). Setup Redis clustering and Postgres sharding for scalability. Deploy mobile app to app stores (iOS/Android). Launch marketing website with SEO optimization. Configure production monitoring and alerting. Setup backup and disaster recovery procedures. Prepare launch materials and user documentation. Conduct final security audit.",
+        "testStrategy": "Production deployment testing, verify auto-scaling works, test disaster recovery procedures, validate monitoring in production, final security audit",
+        "priority": "high",
+        "dependencies": [
+          11
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-07-15T20:04:45.445Z",
+      "updated": "2025-07-15T20:04:45.445Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
