@@ -120,7 +120,9 @@ class TokenManager:
         # Check for reasoning keywords
         reasoning_matches = sum(1 for keyword in complexity_indicators['reasoning_keywords'] 
                               if keyword in query_lower)
-        complexity_score += reasoning_matches * 0.3
+        complexity_score += reasoning_matches * 0.4
+        if reasoning_matches > 0:
+            reasoning_required = True
         
         # Check for simple keywords (reduces complexity)
         simple_matches = sum(1 for keyword in complexity_indicators['simple_keywords'] 
@@ -160,12 +162,16 @@ class TokenManager:
             complexity_score += 0.3
         
         # Determine recommended model
-        if token_estimate < self.HAIKU_THRESHOLD and complexity_score < 0.5:
-            recommended_model = ModelType.HAIKU
-            confidence = 0.9
-        elif complexity_score > 0.7 or reasoning_required:
+        # First check if reasoning is required (highest priority)
+        if reasoning_required:
             recommended_model = ModelType.SONNET
             confidence = 0.8
+        elif complexity_score > 0.15 or token_estimate > 2500:
+            recommended_model = ModelType.SONNET
+            confidence = 0.8
+        elif token_estimate < self.HAIKU_THRESHOLD and complexity_score < 0.3:
+            recommended_model = ModelType.HAIKU
+            confidence = 0.9
         else:
             # Borderline case - consider token count
             if token_estimate > 1500:

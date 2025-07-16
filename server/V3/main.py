@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Bruno AI V3.1 Server - Main Entry Point
+Bruno AI V3.2 Server - Main Entry Point
 
-Implements the complete V3.1 architecture with:
+Implements the complete V3.2 architecture with:
 - 5 specialized agents using Claude models
 - FastA2A protocol for agent-to-agent communication
-- Token optimization and memory management
+- Advanced token optimization and memory management
 - Real-time collaboration and streaming
+- Intelligent model routing and compression
 """
 
 import os
@@ -29,13 +30,14 @@ import uvicorn
 from redis import Redis
 from dotenv import load_dotenv
 
-# Import our V3 agents
+# Import our V3 agents and token management
 sys.path.append(str(Path(__file__).parent))
 from agents.pantry_manager import PantryManagerAgent
 from agents.instacart_agent import InstacartIntegrationAgent
 from agents.recipe_chef import RecipeChefAgent
 from agents.budget_analyst import BudgetAnalystAgent
 from agents.reflection_feedback import ReflectionFeedbackAgent
+from token_manager import initialize_token_manager, get_token_manager
 
 # Load Environment Variables
 load_dotenv()
@@ -56,13 +58,21 @@ class BrunoV3Server:
     
     def __init__(self):
         self.app = FastAPI(
-            title="Bruno AI V3.1 Server",
+            title="Bruno AI V3.2 Server",
             description="Multi-agent meal planning and grocery assistant with A2A protocol",
-            version="3.1.0"
+            version="3.2.0"
         )
         
         # Initialize Redis
         self.redis = Redis.from_url(os.getenv('REDIS_URL', 'redis://localhost:6379'))
+        
+        # Initialize token management system
+        self.token_manager = initialize_token_manager(
+            redis_url=os.getenv('REDIS_URL', 'redis://localhost:6379'),
+            postgres_url=os.getenv('POSTGRES_URL', 'postgresql://localhost:5432/bruno_ai'),
+            anthropic_api_key=os.getenv('ANTHROPIC_API_KEY')
+        )
+        logger.info("Token management system initialized")
         
         # Initialize agents
         self.agents = self._initialize_agents()
@@ -71,7 +81,7 @@ class BrunoV3Server:
         self._setup_middleware()
         self._setup_routes()
         
-        logger.info("Bruno AI V3.1 Server initialized successfully")
+        logger.info("Bruno AI V3.2 Server initialized successfully")
     
     def _initialize_agents(self) -> Dict[str, Any]:
         """Initialize all V3.1 agents"""
@@ -116,11 +126,23 @@ class BrunoV3Server:
             """Health check endpoint"""
             return {
                 'status': 'healthy',
-                'version': '3.1.0',
+                'version': '3.2.0',
                 'timestamp': datetime.now().isoformat(),
                 'agents': list(self.agents.keys()),
-                'redis_connected': await self._check_redis_connection()
+                'redis_connected': await self._check_redis_connection(),
+                'token_management': 'enabled'
             }
+        
+        @self.app.get("/v3/token-stats")
+        async def get_token_statistics():
+            """Get token usage statistics"""
+            try:
+                hours = 24  # Default to 24 hours
+                stats = await self.token_manager.get_usage_statistics(hours=hours)
+                return JSONResponse(stats)
+            except Exception as e:
+                logger.error(f"Error getting token statistics: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
         
         @self.app.post("/v3/meal-plan")
         async def create_meal_plan(request: Request):
