@@ -180,6 +180,131 @@ class BaseAgent:
             self.logger.error(f"Agent processing failed: {e}")
             raise
     
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
+    async def _run_with_provider_error_handling(self, query: str) -> str:
+        """Run query with provider-specific error handling and retries."""
+        try:
+            # Run with the selected model
+            result = await self.agent.run(query)
+            result_data = result.data if hasattr(result, 'data') else str(result)
+            
+            # Update performance metrics
+            self.request_count += 1
+            self.total_tokens_used += self.estimate_tokens(query)
+            
+            return result_data
+            
+        except Exception as e:
+            self.error_count += 1
+            error_type = type(e).__name__
+            
+            # Provider-specific error handling
+            if self.llm_config.provider == LLMProvider.ANTHROPIC:
+                await self._handle_anthropic_error(e, query)
+            elif self.llm_config.provider == LLMProvider.OPENAI:
+                await self._handle_openai_error(e, query)
+            elif self.llm_config.provider == LLMProvider.GOOGLE:
+                await self._handle_google_error(e, query)
+            
+            # Try fallback if available
+            if self.error_count < 3:  # Avoid infinite loops
+                fallback_model, fallback_config = self.llm_router._get_fallback_llm(
+                    self.llm_config.model
+                )
+                
+                self.logger.warning(f"Trying fallback model: {fallback_model}")
+                
+                # Update agent with fallback
+                self.agent = Agent(
+                    fallback_model,
+                    system_prompt=self._get_system_prompt()
+                )
+                self.model_string = fallback_model
+                self.llm_config = fallback_config
+                
+                # Retry with fallback
+                return await self._run_with_provider_error_handling(query)
+            
+            # If all retries failed, raise the original exception
+            raise
+    
+    async def _handle_anthropic_error(self, error: Exception, query: str):
+        """Handle Anthropic-specific errors."""
+        error_msg = str(error).lower()
+        
+        if "rate limit" in error_msg or "429" in error_msg:
+            self.logger.warning(f"Anthropic rate limit hit for {self.agent_id}")
+            # Exponential backoff is handled by retry decorator
+            await asyncio.sleep(2)
+            
+        elif "token limit" in error_msg or "context length" in error_msg:
+            self.logger.warning(f"Anthropic token limit exceeded for {self.agent_id}")
+            # Compress query further
+            if len(query) > 4000:
+                compressed = await self.compress_context(query, max_tokens=2000)
+                self.logger.info(f"Compressed query from {len(query)} to {len(compressed)} chars")
+                
+        elif "api key" in error_msg or "unauthorized" in error_msg:
+            self.logger.error(f"Anthropic API key issue for {self.agent_id}: {error}")
+            raise RuntimeError(f"Anthropic authentication failed: {error}")
+            
+        elif "service unavailable" in error_msg or "500" in error_msg:
+            self.logger.warning(f"Anthropic service unavailable for {self.agent_id}")
+            await asyncio.sleep(5)
+            
+        else:
+            self.logger.error(f"Unexpected Anthropic error for {self.agent_id}: {error}")
+    
+    async def _handle_openai_error(self, error: Exception, query: str):
+        """Handle OpenAI-specific errors."""
+        error_msg = str(error).lower()
+        
+        if "rate limit" in error_msg or "429" in error_msg:
+            self.logger.warning(f"OpenAI rate limit hit for {self.agent_id}")
+            await asyncio.sleep(3)
+            
+        elif "context_length_exceeded" in error_msg or "maximum context length" in error_msg:
+            self.logger.warning(f"OpenAI context length exceeded for {self.agent_id}")
+            if len(query) > 8000:
+                compressed = await self.compress_context(query, max_tokens=4000)
+                self.logger.info(f"Compressed query for OpenAI: {len(query)} -> {len(compressed)} chars")
+                
+        elif "invalid_api_key" in error_msg or "401" in error_msg:
+            self.logger.error(f"OpenAI API key issue for {self.agent_id}: {error}")
+            raise RuntimeError(f"OpenAI authentication failed: {error}")
+            
+        elif "service_unavailable" in error_msg or "503" in error_msg:
+            self.logger.warning(f"OpenAI service unavailable for {self.agent_id}")
+            await asyncio.sleep(10)
+            
+        else:
+            self.logger.error(f"Unexpected OpenAI error for {self.agent_id}: {error}")
+    
+    async def _handle_google_error(self, error: Exception, query: str):
+        """Handle Google Gemini-specific errors."""
+        error_msg = str(error).lower()
+        
+        if "quota" in error_msg or "429" in error_msg:
+            self.logger.warning(f"Google Gemini quota exceeded for {self.agent_id}")
+            await asyncio.sleep(1)
+            
+        elif "request too large" in error_msg or "payload too large" in error_msg:
+            self.logger.warning(f"Google Gemini request too large for {self.agent_id}")
+            if len(query) > 6000:
+                compressed = await self.compress_context(query, max_tokens=3000)
+                self.logger.info(f"Compressed query for Gemini: {len(query)} -> {len(compressed)} chars")
+                
+        elif "api_key" in error_msg or "403" in error_msg:
+            self.logger.error(f"Google API key issue for {self.agent_id}: {error}")
+            raise RuntimeError(f"Google authentication failed: {error}")
+            
+        elif "service unavailable" in error_msg or "503" in error_msg:
+            self.logger.warning(f"Google Gemini service unavailable for {self.agent_id}")
+            await asyncio.sleep(7)
+            
+        else:
+            self.logger.error(f"Unexpected Google Gemini error for {self.agent_id}: {error}")
+    
     async def get_context(self, context_id: str) -> Dict[str, Any]:
         """Get shared context from Redis."""
         if not isinstance(context_id, str):

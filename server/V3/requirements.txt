@@ -1,12 +1,17 @@
-# Bruno AI V3.1 Server Dependencies
+# Bruno AI V3.2 Server Dependencies
 # FastA2A for Agent-to-Agent protocol
 fasta2a>=0.2.5
 
 # PydanticAI for agent framework
 pydantic-ai-slim[a2a]>=0.1.0
 
-# Claude API integration
+# Multi-provider LLM support
 anthropic>=0.34.0
+openai>=1.0.0
+google-generativeai>=0.3.0
+
+# Retry and resilience
+tenacity>=8.2.0
 
 # Data storage and caching
 redis>=5.0.0

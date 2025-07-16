@@ -1,0 +1,97 @@
+{
+  "validation_date": "2025-07-16T05:35:22.505001",
+  "target_savings_range": "25-40%",
+  "results": [
+    {
+      "scenario": "Simple Query Set",
+      "baseline_cost_sonnet": 6.6e-05,
+      "baseline_cost_haiku": 5.5e-06,
+      "optimized_cost": 5.5e-06,
+      "savings_vs_sonnet": 91.66666666666667,
+      "savings_vs_haiku": 0.0,
+      "actual_savings": 91.66666666666667,
+      "expected_savings": 35,
+      "meets_target": true,
+      "routing_stats": {
+        "haiku_count": 5,
+        "sonnet_count": 0,
+        "total_queries": 5,
+        "haiku_percentage": 100.0,
+        "sonnet_percentage": 0.0
+      },
+      "compression_stats": {
+        "queries_tested": 5,
+        "queries_compressed": 0,
+        "total_original_tokens": 22,
+        "total_compressed_tokens": 22,
+        "compression_ratio": 1.0,
+        "cost_savings": 0.0
+      }
+    },
+    {
+      "scenario": "Complex Query Set",
+      "baseline_cost_sonnet": 0.00031200000000000005,
+      "baseline_cost_haiku": 2.6000000000000002e-05,
+      "optimized_cost": 0.00025975000000000005,
+      "savings_vs_sonnet": 16.74679487179487,
+      "savings_vs_haiku": -899.0384615384617,
+      "actual_savings": 16.74679487179487,
+      "expected_savings": 25,
+      "meets_target": false,
+      "routing_stats": {
+        "haiku_count": 1,
+        "sonnet_count": 4,
+        "total_queries": 5,
+        "haiku_percentage": 20.0,
+        "sonnet_percentage": 80.0
+      },
+      "compression_stats": {
+        "queries_tested": 5,
+        "queries_compressed": 0,
+        "total_original_tokens": 104,
+        "total_compressed_tokens": 104,
+        "compression_ratio": 1.0,
+        "cost_savings": 0.0
+      }
+    },
+    {
+      "scenario": "Mixed Workload",
+      "baseline_cost_sonnet": 0.000237,
+      "baseline_cost_haiku": 1.975e-05,
+      "optimized_cost": 0.000138,
+      "savings_vs_sonnet": 41.77215189873418,
+      "savings_vs_haiku": -598.7341772151899,
+      "actual_savings": 41.77215189873418,
+      "expected_savings": 30,
+      "meets_target": true,
+      "routing_stats": {
+        "haiku_count": 5,
+        "sonnet_count": 3,
+        "total_queries": 8,
+        "haiku_percentage": 62.5,
+        "sonnet_percentage": 37.5
+      },
+      "compression_stats": {
+        "queries_tested": 8,
+        "queries_compressed": 0,
+        "total_original_tokens": 79,
+        "total_compressed_tokens": 79,
+        "compression_ratio": 1.0,
+        "cost_savings": 0.0
+      }
+    }
+  ],
+  "overall_metrics": {
+    "average_savings": 50.06187114573191,
+    "minimum_savings": 16.74679487179487,
+    "maximum_savings": 91.66666666666667,
+    "meets_minimum_target": false,
+    "within_target_range": false,
+    "scenarios_meeting_target": 2
+  },
+  "validation_status": "FAIL",
+  "recommendations": [
+    "Cost savings below 25% minimum target. Consider adjusting routing thresholds.",
+    "Savings exceed 40% target. Consider if this indicates too aggressive cost-cutting."
+  ]
+}

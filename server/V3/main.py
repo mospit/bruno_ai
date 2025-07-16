@@ -37,6 +37,7 @@ from agents.instacart_agent import InstacartIntegrationAgent
 from agents.recipe_chef import RecipeChefAgent
 from agents.budget_analyst import BudgetAnalystAgent
 from agents.reflection_feedback import ReflectionFeedbackAgent
+from agents.llm_router import get_llm_router
 from token_manager import initialize_token_manager, get_token_manager
 
 # Load Environment Variables
@@ -142,6 +143,47 @@ class BrunoV3Server:
                 return JSONResponse(stats)
             except Exception as e:
                 logger.error(f"Error getting token statistics: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
+        
+        @self.app.get("/v3/providers/health")
+        async def get_provider_health():
+            """Get health status of all LLM providers"""
+            try:
+                router = get_llm_router()
+                health_status = {}
+                
+                # Check each provider's API key availability
+                for provider_name, config in router.llm_configs.items():
+                    api_key_available = bool(os.getenv(config.api_key_env))
+                    health_status[provider_name] = {
+                        'provider': config.provider.value,
+                        'model': config.model,
+                        'api_key_configured': api_key_available,
+                        'cost_per_token': config.cost_per_token,
+                        'avg_latency': config.avg_latency,
+                        'max_tokens': config.max_tokens,
+                        'status': 'healthy' if api_key_available else 'unavailable'
+                    }
+                
+                return JSONResponse({
+                    'providers': health_status,
+                    'total_providers': len(health_status),
+                    'healthy_providers': len([p for p in health_status.values() if p['status'] == 'healthy']),
+                    'checked_at': datetime.now().isoformat()
+                })
+            except Exception as e:
+                logger.error(f"Error getting provider health: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
+        
+        @self.app.get("/v3/providers/routing-stats")
+        async def get_routing_statistics():
+            """Get LLM routing statistics"""
+            try:
+                router = get_llm_router()
+                stats = router.get_routing_stats()
+                return JSONResponse(stats)
+            except Exception as e:
+                logger.error(f"Error getting routing statistics: {e}")
                 raise HTTPException(status_code=500, detail=str(e))
         
         @self.app.post("/v3/meal-plan")
