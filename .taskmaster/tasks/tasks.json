@@ -9,7 +9,7 @@
         "testStrategy": "Verify all dependencies install correctly, test basic connectivity to Redis/Postgres, validate API key configurations, ensure Kubernetes configs are valid",
         "priority": "high",
         "dependencies": [],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -22,7 +22,7 @@
         "dependencies": [
           1
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -35,7 +35,7 @@
         "dependencies": [
           2
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -48,7 +48,7 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": []
       },
       {
@@ -159,6 +159,90 @@
         ],
         "status": "pending",
         "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Implement V3.2 Multi-Provider LLM Support",
+        "description": "Upgrade Bruno AI V3.1 to V3.2 with multi-provider LLM support (Claude, OpenAI, Gemini) for enhanced flexibility, cost-efficiency, and performance optimization",
+        "details": "Implement multi-provider LLM routing system based on agent roles and task complexity. Update BaseAgent to support dynamic LLM selection: Gemini 2.5 Flash for fast/simple tasks (Pantry Manager, Instacart Integration), Claude 4 Sonnet for reasoning/creative tasks (Recipe Chef, Reflection & Feedback), OpenAI GPT-4o for complex forecasts and financial analysis (Budget Analyst). Add LLM router with fallback mechanisms, provider-specific error handling, and cost optimization strategies. Target 30% latency reduction and 20-40% cost savings via optimal routing.",
+        "testStrategy": "Test LLM routing accuracy, validate fallback mechanisms, measure latency improvements, verify cost savings, test provider-specific error handling, validate response quality across providers",
+        "priority": "high",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create LLM Router System",
+            "description": "Implement dynamic LLM selection based on agent roles and task complexity",
+            "details": "Create llm_router function that selects optimal LLM provider based on agent_id: Gemini 2.5 Flash for pantry/instacart (fast tasks), Claude 4 Sonnet for recipe/reflection (reasoning), GPT-4o for budget (financial analysis). Include fallback logic to Claude if primary fails. Add cost and latency tracking.",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Update BaseAgent for Multi-Provider Support",
+            "description": "Modify BaseAgent class to support multiple LLM providers with unified interface",
+            "details": "Update BaseAgent.__init__ to use llm_router for model selection. Add provider-specific API key handling (OPENAI_API_KEY, GOOGLE_API_KEY, ANTHROPIC_API_KEY). Implement unified error handling for all providers. Add provider-specific retry logic and rate limiting.",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Update Agent Implementations",
+            "description": "Modify each agent to use its optimal LLM provider",
+            "details": "Update PantryManagerAgent to use Gemini 2.5 Flash for fast inventory checks. Update InstacartAgent to use Gemini 2.5 Flash for efficient API handling. Update RecipeChefAgent to use Claude 4 Sonnet for creative reasoning. Update BudgetAnalystAgent to use GPT-4o for financial analysis. Update ReflectionAgent to use Claude 4 Sonnet for nuanced iterations.",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Add Provider-Specific Error Handling",
+            "description": "Implement comprehensive error handling for each LLM provider",
+            "details": "Add OpenAI-specific error handling (rate limits, API downtime). Add Google Gemini error handling (quota limits, service errors). Add Anthropic Claude error handling (token limits, model availability). Implement exponential backoff for each provider. Add fallback routing when primary provider fails.",
+            "status": "pending"
+          },
+          {
+            "id": 5,
+            "title": "Update Requirements and Dependencies",
+            "description": "Add new LLM provider dependencies to requirements.txt",
+            "details": "Add OpenAI Python SDK (openai>=1.0.0). Add Google Generative AI SDK (google-generativeai>=0.3.0). Update PydanticAI to support multiple providers. Add environment variable configuration for all API keys. Update .env.example with new variables.",
+            "status": "pending"
+          },
+          {
+            "id": 6,
+            "title": "Implement Cost Optimization Strategies",
+            "description": "Add intelligent routing to minimize costs while maintaining quality",
+            "details": "Implement cost-per-token tracking for each provider. Add smart routing to use cheapest provider for appropriate tasks. Implement response caching to reduce API calls. Add batch processing for multiple simple queries. Create cost monitoring dashboard.",
+            "status": "pending"
+          },
+          {
+            "id": 7,
+            "title": "Update A2A Server for Multi-Provider Support",
+            "description": "Extend A2A server to handle multiple LLM providers",
+            "details": "Update A2A server to support provider-specific agent routing. Add health checks for all LLM providers. Implement provider-specific workers in FastA2A. Add load balancing between providers when multiple options exist. Update A2A message format to include provider info.",
+            "status": "pending"
+          },
+          {
+            "id": 8,
+            "title": "Update Main Application",
+            "description": "Modify main.py to support multi-provider agent initialization",
+            "details": "Update agent initialization in main.py to use new multi-provider setup. Add provider health monitoring endpoints. Update API responses to include provider information. Add provider-specific configuration management. Update logging to track provider usage.",
+            "status": "pending"
+          },
+          {
+            "id": 9,
+            "title": "Add Comprehensive Testing",
+            "description": "Create tests for multi-provider LLM functionality",
+            "details": "Add unit tests for LLM router functionality. Create integration tests for each provider. Add fallback mechanism tests. Create performance benchmarks for provider comparison. Add cost tracking validation tests. Test provider-specific error scenarios.",
+            "status": "pending"
+          },
+          {
+            "id": 10,
+            "title": "Update Documentation",
+            "description": "Update documentation to reflect V3.2 multi-provider architecture",
+            "details": "Update README.md with V3.2 features and setup instructions. Add provider configuration guide. Update API documentation with new endpoints. Create troubleshooting guide for provider issues. Add performance metrics and cost optimization guide.",
+            "status": "pending"
+          }
+        ]
       }
     ],
     "metadata": {

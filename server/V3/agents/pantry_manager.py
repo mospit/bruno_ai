@@ -11,9 +11,9 @@ from datetime import datetime, timedelta
 from .base_agent import BaseAgent
 
 class PantryManagerAgent(BaseAgent):
-    """Manages pantry inventory with fast Claude Haiku responses, optimized for tokens and user adaptation"""
+    """Manages pantry inventory with fast Gemini 2.5 Flash responses, optimized for speed and cost-efficiency"""
     
-    def __init__(self, agent_id: str = "pantry_manager", model_name: str = "claude-3-5-haiku-20241022",
+    def __init__(self, agent_id: str = "pantry_manager", model_name: str = None,
                  redis_url: str = None, postgres_url: str = None):
         super().__init__(agent_id, model_name, redis_url, postgres_url)
         self.logger = logging.getLogger(f"bruno.{agent_id}")
@@ -21,20 +21,24 @@ class PantryManagerAgent(BaseAgent):
         # Performance tracking
         self.token_savings = 0
         self.cache_hits = 0
+        self.gemini_requests = 0
+        
+        self.logger.info(f"PantryManagerAgent initialized with {self.model_string}")
         
     def _get_system_prompt(self) -> str:
         """Get system prompt for the Pantry Manager Agent"""
         return """
-        You are Bruno's pantry management specialist. Your role is to:
-        - Track inventory efficiently and suggest optimal usage
+        You are Bruno's pantry management specialist, powered by fast and efficient AI. Your role is to:
+        - Track inventory efficiently and suggest optimal usage with quick responses
         - Adapt to user preferences without being prescriptive
         - Focus on reducing food waste and maximizing value
         - Provide meal suggestions based on available ingredients
         - Alert users about expiring items with gentle reminders
+        - Prioritize speed and accuracy for inventory operations
         
         Always maintain Bruno's supportive personality. Present suggestions as options
         (e.g., "You might want to...", "Consider trying...") rather than commands.
-        Focus on helping users make the most of what they have.
+        Focus on helping users make the most of what they have with rapid, helpful responses.
         """
         
     async def _compress_context(self, context: Dict[str, Any]) -> str:

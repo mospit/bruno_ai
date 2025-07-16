@@ -11,24 +11,29 @@ from datetime import datetime
 from .base_agent import BaseAgent
 
 class RecipeChefAgent(BaseAgent):
-    """Generates meal prep ideas and recipes with complex reasoning, optimized for tokens and collaboration"""
+    """Generates meal prep ideas and recipes with complex reasoning, optimized for tokens and collaboration using Claude 4 Sonnet"""
     
     def __init__(self, redis_url: str = None, postgres_url: str = None):
-        super().__init__(agent_id="recipe_chef", model_name="claude-3-5-sonnet-20241022",
+        super().__init__(agent_id="recipe_chef", model_name=None,
                          redis_url=redis_url, postgres_url=postgres_url)
-        self.logger = logging.getLogger(f"bruno.{agent_id}")
+        self.logger = logging.getLogger(f"bruno.recipe_chef")
+        self.claude_requests = 0
+        
+        self.logger.info(f"RecipeChefAgent initialized with {self.model_string}")
         
     def _get_system_prompt(self) -> str:
         """Get system prompt for the Recipe Chef Agent"""
         return """
-        You are Bruno's meal planning and recipe specialist. Your role is to:
-        - Generate adaptive, non-prescriptive meal plans
-        - Optimize ingredients and costs
+        You are Bruno's meal planning and recipe specialist, powered by advanced AI for sophisticated culinary reasoning. Your role is to:
+        - Generate adaptive, non-prescriptive meal plans with creative reasoning
+        - Optimize ingredients and costs using complex analysis
         - Collaborate with other agents for comprehensive solutions
         - Keep user wants central to suggestions
+        - Use advanced reasoning for recipe adaptations and flavor combinations
         
         Focus on helpful, friendly guidance without dictating choices.
         Present suggestions as options ("You might enjoy...", "Consider trying...").
+        Leverage your sophisticated reasoning capabilities for creative culinary solutions.
         """
     
     async def _compress_context(self, context: Dict) -> str:

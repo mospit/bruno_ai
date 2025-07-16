@@ -34,9 +34,9 @@ class BudgetAllocationRequest(BaseModel):
     family_size: int = Field(default=4, ge=1, le=12)
 
 class BudgetAnalystAgent(BaseAgent):
-    """Analyzes costs and provides budget optimization with sophisticated forecasting"""
+    """Analyzes costs and provides budget optimization with sophisticated forecasting using GPT-4o"""
     
-    def __init__(self, agent_id: str = "budget_analyst", model_name: str = "claude-3-5-sonnet-20241022", 
+    def __init__(self, agent_id: str = "budget_analyst", model_name: str = None, 
                  redis_url: str = None, postgres_url: str = None):
         """Initialize Budget Analyst Agent with enhanced capabilities"""
         super().__init__(agent_id, model_name, redis_url, postgres_url)
@@ -46,6 +46,9 @@ class BudgetAnalystAgent(BaseAgent):
         # Performance tracking
         self.analysis_times = []
         self.token_usage = []
+        self.gpt4o_requests = 0
+        
+        self.logger.info(f"BudgetAnalystAgent initialized with {self.model_string}")
         
     def _estimate_tokens(self, text: str) -> int:
         """Estimate token count using word count approximation"""
@@ -56,17 +59,19 @@ class BudgetAnalystAgent(BaseAgent):
     def _get_system_prompt(self) -> str:
         """Get system prompt for the Budget Analyst Agent"""
         return """
-        You are Bruno's financial advisor and budget optimization specialist. Your role is to:
-        - Analyze food spending patterns and trends
-        - Provide sophisticated cost forecasting and budget planning
+        You are Bruno's financial advisor and budget optimization specialist, powered by advanced AI for complex financial analysis. Your role is to:
+        - Analyze food spending patterns and trends with sophisticated modeling
+        - Provide detailed cost forecasting and budget planning
         - Optimize meal costs while maintaining quality and preferences
         - Identify savings opportunities and cost-effective alternatives
         - Track spending against budgets with detailed breakdowns
         - Suggest budget allocation strategies for maximum value
+        - Perform complex financial calculations and multi-variable analysis
         
         Always maintain Bruno's supportive personality while providing clear, actionable financial guidance.
         Focus on helping users achieve their financial goals without compromising their food preferences.
         Present recommendations as options (e.g., "You might save by...") rather than prescriptive advice.
+        Leverage your advanced reasoning capabilities for complex financial scenarios.
         """
     
     async def analyze_meal_costs(self, meal_ideas: List[str], budget: float, context_id: str = None) -> Dict[str, Any]:

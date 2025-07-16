@@ -11,25 +11,79 @@ import psycopg2
 from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor
 
+# Multi-provider LLM support
+import openai
+from google.generativeai import configure as configure_gemini
+from .llm_router import get_llm_router, LLMProvider
+import time
+from tenacity import retry, stop_after_attempt, wait_exponential
+
 load_dotenv()
+
+# Import the new token management system
+try:
+    from ..token_manager import get_token_manager, TokenManager
+except ImportError:
+    # Fallback for testing
+    get_token_manager = lambda: None
 
 
 class BaseAgent:
-    """Base class for all Bruno AI V3.1 agents with token optimization and A2A support."""
+    """Base class for all Bruno AI V3.2 agents with multi-provider LLM support and A2A communication."""
     
-    def __init__(self, agent_id: str, model_name: str, redis_url: str, postgres_url: str):
+    def __init__(self, agent_id: str, model_name: str = None, redis_url: str = None, postgres_url: str = None):
         self.agent_id = agent_id
-        self.model_name = model_name
-        self.redis_client = redis.from_url(redis_url)
-        self.postgres_conn = psycopg2.connect(postgres_url)
-        self.anthropic_client = AsyncAnthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
+        self.redis_client = redis.from_url(redis_url or os.getenv('REDIS_URL', 'redis://localhost:6379'))
+        self.postgres_conn = psycopg2.connect(postgres_url or os.getenv('POSTGRES_URL', 'postgresql://localhost:5432/bruno_ai'))
         self.logger = logging.getLogger(f"bruno.{agent_id}")
         
-        # Initialize PydanticAI agent
+        # Initialize LLM router and get optimal model
+        self.llm_router = get_llm_router()
+        self.model_string, self.llm_config = self.llm_router.select_llm_for_agent(agent_id)
+        self.model_name = model_name or self.llm_config.model
+        
+        # Initialize provider-specific clients
+        self._init_provider_clients()
+        
+        # Initialize PydanticAI agent with selected model
         self.agent = Agent(
-            f'anthropic:{model_name}',
+            self.model_string,
             system_prompt=self._get_system_prompt()
         )
+        
+        # Performance tracking
+        self.request_count = 0
+        self.total_tokens_used = 0
+        self.total_cost = 0.0
+        self.error_count = 0
+        
+        self.logger.info(f"BaseAgent initialized with {self.model_string} for {agent_id}")
+    
+    def _init_provider_clients(self):
+        """Initialize provider-specific API clients"""
+        # Anthropic client
+        anthropic_key = os.getenv('ANTHROPIC_API_KEY')
+        if anthropic_key:
+            self.anthropic_client = AsyncAnthropic(api_key=anthropic_key)
+        else:
+            self.anthropic_client = None
+        
+        # OpenAI client
+        openai_key = os.getenv('OPENAI_API_KEY')
+        if openai_key:
+            self.openai_client = openai.AsyncOpenAI(api_key=openai_key)
+        else:
+            self.openai_client = None
+        
+        # Google Gemini client
+        google_key = os.getenv('GOOGLE_API_KEY')
+        if google_key:
+            configure_gemini(api_key=google_key)
+            self.google_client = True  # Gemini uses global configuration
+        else:
+            self.google_client = False
+            
+        self.logger.info(f"Initialized clients for available providers")
     
     def _get_system_prompt(self) -> str:
         """Get dynamic system prompt."""
@@ -78,7 +132,7 @@ class BaseAgent:
             self.logger.error(f"Cache set failed: {e}")
     
     async def process_with_optimization(self, query: str, context_id: str = None) -> str:
-        """Process query with optimization."""
+        """Process query with advanced token optimization and routing."""
         if not isinstance(query, str) or not query.strip():
             raise ValueError("Query must be a non-empty string.")
         
@@ -88,14 +142,40 @@ class BaseAgent:
             self.logger.info("Cache hit - returning cached result")
             return cached_result
         
+        # Try to use the advanced token manager if available
+        try:
+            token_manager = get_token_manager()
+            if token_manager:
+                # Get context for complexity analysis
+                context = await self.get_context(context_id) if context_id else None
+                
+                # Use advanced token management
+                result, metrics = await token_manager.process_with_routing(
+                    query, context_id, context
+                )
+                
+                # Cache the result
+                await self.cache_set(cache_key, result)
+                
+                # Log metrics
+                self.logger.info(f"Query processed with token optimization: "
+                               f"tokens={metrics.total_tokens}, "
+                               f"model={metrics.model_used}, "
+                               f"compression={metrics.compression_ratio:.2f}, "
+                               f"cost=${metrics.cost_estimate:.4f}")
+                
+                return result
+        except Exception as e:
+            self.logger.warning(f"Token manager not available, falling back to basic optimization: {e}")
+        
+        # Fallback to basic optimization
         optimized_query = await self.compress_context(query)
         
         try:
-            result = await self.agent.run(optimized_query)  # Assume PydanticAI run is async-compatible
-            result_data = result.data if hasattr(result, 'data') else str(result)
-            await self.cache_set(cache_key, result_data)
+            result = await self._run_with_provider_error_handling(optimized_query)
+            await self.cache_set(cache_key, result)
             self.logger.info(f"Query processed - estimated tokens: {self.estimate_tokens(optimized_query)}")
-            return result_data
+            return result
         except Exception as e:
             self.logger.error(f"Agent processing failed: {e}")
             raise
