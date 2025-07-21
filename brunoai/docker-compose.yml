@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: bruno-ai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bruno_ai
+      POSTGRES_USER: bruno_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bruno_secure_pass_2024}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - bruno-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bruno_user -d bruno_ai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: bruno-ai-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_secure_pass_2024}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - bruno-network
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli --no-auth-warning -a ${REDIS_PASSWORD:-redis_secure_pass_2024} ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API Service
+  bruno-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bruno-ai-api
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://bruno_user:${POSTGRES_PASSWORD:-bruno_secure_pass_2024}@postgres:5432/bruno_ai
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-redis_secure_pass_2024}@redis:6379
+      - JWT_SECRET=${JWT_SECRET:-bruno_jwt_secret_key_2024}
+      - API_PORT=3000
+      - CORS_ORIGIN=http://localhost:3000,https://bruno-ai.app
+      - INSTACART_API_KEY=${INSTACART_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - bruno-network
+    volumes:
+      - ./backend/logs:/app/logs
+      - ./backend/uploads:/app/uploads
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy (Production)
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: bruno-ai-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - bruno-api
+    networks:
+      - bruno-network
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  bruno-network:
+    driver: bridge

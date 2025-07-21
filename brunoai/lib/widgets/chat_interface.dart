@@ -1058,8 +1058,8 @@ class _ChatInterfaceState extends State<ChatInterface>
                               height: 48,
                               margin: const EdgeInsets.all(4),
                               child: VoiceInputButton(
-                                controller: _voiceController,
-                                onRecognitionComplete: _onVoiceRecognitionComplete,
+                                voiceController: _voiceController,
+                                onTap: () => _onVoiceRecognitionComplete(_voiceController.recognizedText),
                                 size: 48.0,
                               ),
                             )

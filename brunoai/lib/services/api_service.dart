@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/chat_message.dart';
 import '../models/shopping_item.dart';
 import '../models/pantry_item.dart';
@@ -25,7 +26,7 @@ class ApiService {
     
     // Initialize SharedPreferences
     _prefs = await SharedPreferences.getInstance();
-    _loadTokensFromStorage();
+    await _loadTokensFromStorage();
     
     _dio = Dio(BaseOptions(
       baseUrl: constants.AppConstants.apiBaseUrl,
@@ -99,17 +100,19 @@ class ApiService {
     return _authToken;
   }
 
-  void _loadTokensFromStorage() {
-    _authToken = _prefs?.getString('auth_token');
-    _refreshToken = _prefs?.getString('refresh_token');
+final _secureStorage = FlutterSecureStorage();
+
+  Future<void> _loadTokensFromStorage() async {
+    _authToken = await _secureStorage.read(key: 'auth_token');
+    _refreshToken = await _secureStorage.read(key: 'refresh_token');
   }
 
-  Future<void> _saveTokensToStorage() async {
+Future<void> _saveTokensToStorage() async {
     if (_authToken != null) {
-      await _prefs?.setString('auth_token', _authToken!);
+      await _secureStorage.write(key: 'auth_token', value: _authToken);
     }
     if (_refreshToken != null) {
-      await _prefs?.setString('refresh_token', _refreshToken!);
+      await _secureStorage.write(key: 'refresh_token', value: _refreshToken);
     }
   }
 
@@ -448,11 +451,11 @@ class ApiService {
     }
   }
 
-  Future<void> clearAuth() async {
+Future<void> clearAuth() async {
     _authToken = null;
     _refreshToken = null;
-    await _prefs?.remove('auth_token');
-    await _prefs?.remove('refresh_token');
+    await _secureStorage.delete(key: 'auth_token');
+    await _secureStorage.delete(key: 'refresh_token');
   }
 
   bool get isAuthenticated => _authToken != null;

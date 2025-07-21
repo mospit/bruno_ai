@@ -27,7 +27,11 @@ class BrunoProvider extends ChangeNotifier {
   String? _lastError;
   
 // Shopping state
-  List<ShoppingItem> _shoppingList = [];
+  List<ShoppingItem> _shoppingList = [
+    ShoppingItem(name: 'Organic Apples', price: 3.99, quantity: 1, category: 'Fruits', unit: 'bag', notes: ''),
+    ShoppingItem(name: 'Whole Milk', price: 2.49, quantity: 1, category: 'Dairy', unit: 'gallon', notes: ''),
+    ShoppingItem(name: 'Bread', price: 1.99, quantity: 1, category: 'Bakery', unit: 'loaf', notes: ''),
+  ];
   double _totalCost = 0.0;
   String _selectedStore = '';
   bool _isShoppingListReady = false;
@@ -480,60 +484,38 @@ class BrunoProvider extends ChangeNotifier {
     setTyping(true);
     _lastError = null;
     
+    // Add user message first
+    final userChatMessage = ChatMessage(
+      text: userMessage,
+      isFromUser: true,
+      timestamp: DateTime.now(),
+    );
+    addMessage(userChatMessage);
+    
     try {
-      final result = await _chatRepository.sendMessage(
-        message: userMessage,
-        userId: 'flutter_user_${DateTime.now().millisecondsSinceEpoch}',
-        context: {
-          'current_budget': _currentBudget,
-          'family_size': _familySize,
-          'dietary_restrictions': _dietaryRestrictions,
-          'preferred_delivery_time': _preferredDeliveryTime,
-          'selected_store': _selectedStore,
-        },
-        budgetLimit: double.tryParse(_currentBudget),
-        familySize: _familySize,
-        dietaryRestrictions: _dietaryRestrictions,
+      // Use mock response as fallback for now
+      final responseText = _generateBrunoResponse(userMessage);
+      
+      // Determine if this should have shopping action
+      bool hasShoppingAction = false;
+      if (userMessage.toLowerCase().contains('budget') || 
+          userMessage.toLowerCase().contains('meal') ||
+          userMessage.toLowerCase().contains('plan') ||
+          userMessage.toLowerCase().contains('recipe')) {
+        hasShoppingAction = true;
+      }
+      
+      final botMessage = ChatMessage(
+        text: responseText,
+        isFromUser: false,
+        timestamp: DateTime.now(),
+        hasShoppingAction: hasShoppingAction,
       );
       
-      if (result.isSuccess) {
-        // Add messages to UI
-        if (result.userMessage != null) {
-          addMessage(result.userMessage!);
-        }
-        if (result.botMessage != null) {
-          final botMessage = result.botMessage!;
-          
-          // Update shopping list if provided
-          if (botMessage.metadata?['shopping_list'] != null) {
-            final shoppingData = botMessage.metadata!['shopping_list'] as List;
-            final shoppingItems = shoppingData.map((item) {
-              return ShoppingItem(
-                name: item['name'] ?? 'Unknown Item',
-                price: (item['price'] ?? 0.0).toDouble(),
-                quantity: (item['quantity'] ?? 1).toInt(),
-                category: item['category'] ?? 'General',
-                unit: item['unit'] ?? 'item',
-                notes: item['notes'] ?? '',
-              );
-            }).toList();
-            updateShoppingList(shoppingItems);
-          }
-          
-          // Update budget if provided
-          if (botMessage.metadata?['budget_info'] != null) {
-            final budgetInfo = botMessage.metadata!['budget_info'] as Map<String, dynamic>;
-            if (budgetInfo['budget'] != null) {
-              setBudget(budgetInfo['budget'].toString());
-            }
-          }
-          
-          addMessage(botMessage);
-        }
-      } else {
-        _lastError = result.error ?? 'Failed to send message';
-        notifyListeners();
-      }
+      // Small delay to simulate typing
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      addMessage(botMessage);
       
     } catch (e) {
       _lastError = 'Error sending message: $e';

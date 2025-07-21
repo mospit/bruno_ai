@@ -87,6 +87,14 @@ class AppProvider extends ChangeNotifier {
     await prefs.setString('language', languageCode);
   }
   
+  Future<void> setUser(String userId) async {
+    _userId = userId;
+    notifyListeners();
+    
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(AppConstants.userIdKey, userId);
+  }
+  
   Future<void> completeFirstLaunch() async {
     _isFirstLaunch = false;
     notifyListeners();

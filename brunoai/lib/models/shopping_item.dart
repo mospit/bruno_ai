@@ -11,7 +11,7 @@ class ShoppingItem {
   final String? imageUrl;
   final String? brandName;
   final bool isOnSale;
-  final double? originalPrice;
+  final double? _originalPrice;
   final String? store;
   final DateTime? dateAdded;
 
@@ -20,17 +20,22 @@ class ShoppingItem {
     required this.name,
     required this.price,
     required this.quantity,
-    this.category = 'Other',
+    this.category = 'General',
     this.unit = 'item',
     this.notes = '',
     this.imageUrl,
     this.brandName,
-    this.isOnSale = false,
-    this.originalPrice,
+    bool? isOnSale,
+    double? originalPrice,
     this.store,
     DateTime? dateAdded,
-  })  : id = id ?? const Uuid().v4(),
-        dateAdded = dateAdded ?? DateTime.now();
+  })  : assert(name.isNotEmpty, 'Name cannot be empty'),
+        assert(price >= 0, 'Price cannot be negative'),
+        assert(quantity > 0, 'Quantity must be positive'),
+        id = id ?? const Uuid().v4(),
+        dateAdded = dateAdded ?? DateTime.now(),
+        _originalPrice = originalPrice,
+        isOnSale = isOnSale ?? (originalPrice != null && originalPrice > price);
 
   factory ShoppingItem.fromJson(Map<String, dynamic> json) {
     return ShoppingItem(
@@ -44,7 +49,7 @@ class ShoppingItem {
       imageUrl: json['imageUrl'] as String? ?? json['image_url'] as String?,
       brandName: json['brandName'] as String? ?? json['brand'] as String?,
       isOnSale: json['isOnSale'] as bool? ?? (json['sale_price'] != null),
-      originalPrice: (json['originalPrice'] as num?)?.toDouble() ?? (json['sale_price'] != null ? (json['price'] as num?)?.toDouble() : null),
+      originalPrice: (json['originalPrice'] as num?)?.toDouble(),
       store: json['store'] as String? ?? json['store_name'] as String?,
       dateAdded: json['dateAdded'] != null
           ? DateTime.parse(json['dateAdded'] as String)
@@ -64,7 +69,8 @@ class ShoppingItem {
       'imageUrl': imageUrl,
       'brandName': brandName,
       'isOnSale': isOnSale,
-      'originalPrice': originalPrice,
+      'originalPrice': _originalPrice ?? price,
+      'totalPrice': totalPrice,
       'store': store,
       'dateAdded': dateAdded?.toIso8601String(),
     };
@@ -96,29 +102,35 @@ class ShoppingItem {
       imageUrl: imageUrl ?? this.imageUrl,
       brandName: brandName ?? this.brandName,
       isOnSale: isOnSale ?? this.isOnSale,
-      originalPrice: originalPrice ?? this.originalPrice,
+      originalPrice: originalPrice ?? this._originalPrice,
       store: store ?? this.store,
       dateAdded: dateAdded ?? this.dateAdded,
     );
   }
 
+  /// Get original price, defaults to current price if not set
+  double get originalPrice => _originalPrice ?? price;
+
   double get totalPrice => price * quantity;
 
   double get savings {
-    if (originalPrice != null && originalPrice! > price) {
-      return (originalPrice! - price) * quantity;
+    if (_originalPrice != null && _originalPrice! > price) {
+      return (_originalPrice! - price) * quantity;
     }
     return 0.0;
   }
 
   double get savingsPercentage {
-    if (originalPrice != null && originalPrice! > 0) {
-      return ((originalPrice! - price) / originalPrice!) * 100;
+    if (_originalPrice != null && _originalPrice! > 0) {
+      return ((_originalPrice! - price) / _originalPrice!) * 100;
     }
     return 0.0;
   }
 
   String get displayPrice {
+    if (_originalPrice != null && _originalPrice! > price) {
+      return '\$${price.toStringAsFixed(2)} (was \$${_originalPrice!.toStringAsFixed(2)})';
+    }
     return '\$${price.toStringAsFixed(2)}';
   }
 
@@ -138,6 +150,25 @@ class ShoppingItem {
       return '1';
     }
     return '$quantity ${quantity == 1 ? unit : _pluralizeUnit(unit)}';
+  }
+
+  /// Alias for displayQuantity for test compatibility
+  String get unitDisplay => displayQuantity;
+  
+  /// Computed discount amount
+  double get discountAmount {
+    if (_originalPrice != null && _originalPrice! > price) {
+      return _originalPrice! - price;
+    }
+    return 0.0;
+  }
+  
+  /// Computed discount percentage
+  double get discountPercentage {
+    if (_originalPrice != null && _originalPrice! > 0) {
+      return ((_originalPrice! - price) / _originalPrice!) * 100;
+    }
+    return 0.0;
   }
 
   String _pluralizeUnit(String unit) {
@@ -221,7 +252,7 @@ extension ShoppingItemExtensions on ShoppingItem {
   
   String get categoryEmoji => categoryEnum.emoji;
   
-  bool get hasDiscount => isOnSale && originalPrice != null && originalPrice! > price;
+  bool get hasDiscount => _originalPrice != null && _originalPrice! > price;
   
   bool get isExpensive => price > 20.0;
   

@@ -204,6 +204,15 @@ class AppColors {
   static Color borderStrong(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark ? gray600 : gray300;
   }
+  
+  // === LEGACY COMPATIBILITY GETTERS ===
+  static Color primaryColor(BuildContext context) {
+    return primary;
+  }
+  
+  static Color secondaryColor(BuildContext context) {
+    return instacartGreen;
+  }
 }
 
 /// Extension to add convenience methods to Color class
