@@ -1,0 +1,11 @@
+# Task ID: 8
+# Title: Develop Single-Page Marketing Website
+# Status: pending
+# Dependencies: 1
+# Priority: medium
+# Description: Create responsive single-page website with hero section, features, testimonials, newsletter signup, and app download links using HTML/CSS/JS with Tailwind
+# Details:
+Build SPA with sections: Hero, Features (3-column cards), How It Works (steps), Testimonials (auto-advancing carousel every 5s), Newsletter form with email validation, Download/Footer. Implement dark mode toggle and PWA support. Use Tailwind CSS for styling with mobile-first responsive design (<768px breakpoint). Optimize for <2s load time with lazy-loading images. Ensure WCAG AA compliance with >4.5:1 contrast ratio.
+
+# Test Strategy:
+Test load time performance, verify responsive design across devices, validate accessibility compliance, test form functionality and carousel behavior

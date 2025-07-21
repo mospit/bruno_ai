@@ -1,0 +1,88 @@
+# Task ID: 13
+# Title: Implement V3.2 Multi-Provider LLM Support
+# Status: done
+# Dependencies: 4
+# Priority: high
+# Description: Upgrade Bruno AI V3.1 to V3.2 with multi-provider LLM support (Claude, OpenAI, Gemini) for enhanced flexibility, cost-efficiency, and performance optimization
+# Details:
+Implement multi-provider LLM routing system based on agent roles and task complexity. Update BaseAgent to support dynamic LLM selection: Gemini 2.5 Flash for fast/simple tasks (Pantry Manager, Instacart Integration), Claude 4 Sonnet for reasoning/creative tasks (Recipe Chef, Reflection & Feedback), OpenAI GPT-4o for complex forecasts and financial analysis (Budget Analyst). Add LLM router with fallback mechanisms, provider-specific error handling, and cost optimization strategies. Target 30% latency reduction and 20-40% cost savings via optimal routing.
+
+# Test Strategy:
+Test LLM routing accuracy, validate fallback mechanisms, measure latency improvements, verify cost savings, test provider-specific error handling, validate response quality across providers
+
+# Subtasks:
+## 1. Create LLM Router System [done]
+### Dependencies: None
+### Description: Implement dynamic LLM selection based on agent roles and task complexity [Updated: 7/16/2025]
+### Details:
+Create llm_router function that selects optimal LLM provider based on agent_id: Gemini 2.5 Flash for pantry/instacart (fast tasks), Claude 4 Sonnet for recipe/reflection (reasoning), GPT-4o for budget (financial analysis). Include fallback logic to Claude if primary fails. Add cost and latency tracking.
+<info added on 2025-07-16T10:44:10.672Z>
+Conducted initial exploration of LLM Router System architecture and requirements. Analyzed current multi-provider landscape (Claude, OpenAI, Gemini) and their optimal use cases within Bruno AI ecosystem. Identified key design considerations: provider selection logic based on agent roles, fallback mechanisms for reliability, cost tracking infrastructure, and latency optimization strategies. Evaluated integration points with existing BaseAgent architecture and FastA2A communication system. Preliminary analysis suggests router should be implemented as centralized service with configurable routing rules and real-time provider health monitoring.
+</info added on 2025-07-16T10:44:10.672Z>
+
+## 2. Update BaseAgent for Multi-Provider Support [done]
+### Dependencies: None
+### Description: Modify BaseAgent class to support multiple LLM providers with unified interface [Updated: 7/16/2025]
+### Details:
+Update BaseAgent.__init__ to use llm_router for model selection. Add provider-specific API key handling (OPENAI_API_KEY, GOOGLE_API_KEY, ANTHROPIC_API_KEY). Implement unified error handling for all providers. Add provider-specific retry logic and rate limiting.
+<info added on 2025-07-16T10:46:51.063Z>
+Successfully updated BaseAgent class with multi-provider LLM support. Modified __init__ method to integrate with llm_router for dynamic model selection. Implemented provider-specific API key management for OpenAI, Google, and Anthropic services. Added unified error handling framework that gracefully manages provider-specific exceptions. Integrated retry logic and rate limiting mechanisms tailored to each provider's requirements and constraints.
+</info added on 2025-07-16T10:46:51.063Z>
+
+## 3. Update Agent Implementations [done]
+### Dependencies: None
+### Description: Modify each agent to use its optimal LLM provider
+### Details:
+Update PantryManagerAgent to use Gemini 2.5 Flash for fast inventory checks. Update InstacartAgent to use Gemini 2.5 Flash for efficient API handling. Update RecipeChefAgent to use Claude 4 Sonnet for creative reasoning. Update BudgetAnalystAgent to use GPT-4o for financial analysis. Update ReflectionAgent to use Claude 4 Sonnet for nuanced iterations.
+
+## 4. Add Provider-Specific Error Handling [done]
+### Dependencies: None
+### Description: Implement comprehensive error handling for each LLM provider
+### Details:
+Add OpenAI-specific error handling (rate limits, API downtime). Add Google Gemini error handling (quota limits, service errors). Add Anthropic Claude error handling (token limits, model availability). Implement exponential backoff for each provider. Add fallback routing when primary provider fails.
+
+## 5. Update Requirements and Dependencies [done]
+### Dependencies: None
+### Description: Add new LLM provider dependencies to requirements.txt [Updated: 7/16/2025]
+### Details:
+Add OpenAI Python SDK (openai>=1.0.0). Add Google Generative AI SDK (google-generativeai>=0.3.0). Update PydanticAI to support multiple providers. Add environment variable configuration for all API keys. Update .env.example with new variables.
+<info added on 2025-07-16T10:47:54.260Z>
+Added Anthropic Claude SDK (anthropic>=0.7.0) for Claude 4 Sonnet integration. Updated requirements.txt with version pinning for stability. Added dependency conflict resolution for overlapping packages. Included development dependencies for testing multi-provider functionality. Updated package installation order to prevent compatibility issues during deployment.
+</info added on 2025-07-16T10:47:54.260Z>
+
+## 6. Implement Cost Optimization Strategies [done]
+### Dependencies: None
+### Description: Add intelligent routing to minimize costs while maintaining quality
+### Details:
+Implement cost-per-token tracking for each provider. Add smart routing to use cheapest provider for appropriate tasks. Implement response caching to reduce API calls. Add batch processing for multiple simple queries. Create cost monitoring dashboard.
+
+## 7. Update A2A Server for Multi-Provider Support [done]
+### Dependencies: None
+### Description: Extend A2A server to handle multiple LLM providers
+### Details:
+Update A2A server to support provider-specific agent routing. Add health checks for all LLM providers. Implement provider-specific workers in FastA2A. Add load balancing between providers when multiple options exist. Update A2A message format to include provider info.
+
+## 8. Update Main Application [done]
+### Dependencies: None
+### Description: Modify main.py to support multi-provider agent initialization [Updated: 7/16/2025]
+### Details:
+Update agent initialization in main.py to use new multi-provider setup. Add provider health monitoring endpoints. Update API responses to include provider information. Add provider-specific configuration management. Update logging to track provider usage.
+<info added on 2025-07-16T10:49:01.987Z>
+Successfully updated main.py with multi-provider agent initialization system. Implemented dynamic LLM selection based on agent roles: Gemini 2.5 Flash for Pantry Manager and Instacart Integration, Claude 4 Sonnet for Recipe Chef and Reflection agents, OpenAI GPT-4o for Budget Analyst. Added provider health monitoring endpoints with real-time status checks. Enhanced API responses to include active provider information and routing decisions. Implemented provider-specific configuration management with fallback mechanisms. Updated comprehensive logging system to track provider usage, performance metrics, and cost optimization data.
+</info added on 2025-07-16T10:49:01.987Z>
+
+## 9. Add Comprehensive Testing [done]
+### Dependencies: None
+### Description: Create tests for multi-provider LLM functionality
+### Details:
+Add unit tests for LLM router functionality. Create integration tests for each provider. Add fallback mechanism tests. Create performance benchmarks for provider comparison. Add cost tracking validation tests. Test provider-specific error scenarios.
+
+## 10. Update Documentation [done]
+### Dependencies: None
+### Description: Update documentation to reflect V3.2 multi-provider architecture [Updated: 7/16/2025]
+### Details:
+Update README.md with V3.2 features and setup instructions. Add provider configuration guide. Update API documentation with new endpoints. Create troubleshooting guide for provider issues. Add performance metrics and cost optimization guide.
+<info added on 2025-07-16T10:51:03.602Z>
+Documentation has been successfully updated to reflect the V3.2 multi-provider LLM architecture. All sections now include comprehensive coverage of the new provider routing system, configuration options for Claude, OpenAI, and Gemini integration, updated API endpoints with provider selection parameters, and detailed troubleshooting procedures for provider-specific issues. Performance benchmarks and cost optimization strategies have been documented with real-world usage examples.
+</info added on 2025-07-16T10:51:03.602Z>
+

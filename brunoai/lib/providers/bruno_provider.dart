@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import '../models/chat_message.dart';
 import '../models/shopping_item.dart';
 import '../models/pantry_item.dart';
-import '../services/api_service.dart';
+import '../repositories/chat_repository.dart';
+import '../repositories/pantry_repository.dart';
+import '../repositories/meal_plan_repository.dart';
+import '../repositories/auth_repository.dart';
+import '../services/instacart_service.dart';
 
 class BrunoProvider extends ChangeNotifier {
   // Chat state
@@ -11,42 +15,56 @@ class BrunoProvider extends ChangeNotifier {
   String _currentBudget = '';
   int _familySize = 1;
   
-  // API Service
-  final ApiService _apiService = ApiService();
-  bool _isApiInitialized = false;
+  // Repositories
+  final ChatRepository _chatRepository = ChatRepository();
+  final PantryRepository _pantryRepository = PantryRepository();
+  final MealPlanRepository _mealPlanRepository = MealPlanRepository();
+  final AuthRepository _authRepository = AuthRepository();
+  bool _isInitialized = false;
+  
+  // State flags
+  bool _isLoading = false;
+  String? _lastError;
   
 // Shopping state
-  List<ShoppingItem> _shoppingList = [
-    ShoppingItem(
-      name: 'Organic Chicken Breast', 
-      price: 12.99, 
-      quantity: 2,
-      category: 'Meat',
-      unit: 'lbs',
-      notes: 'Boneless, skinless'
-    ),
-    ShoppingItem(
-      name: 'Fresh Broccoli',
-      price: 3.49, 
-      quantity: 1,
-      category: 'Vegetables',
-      unit: 'bunch',
-      notes: 'Organic preferred'
-    ),
-    ShoppingItem(
-      name: 'Brown Rice', 
-      price: 4.99, 
-      quantity: 1,
-      category: 'Grains',
-      unit: 'bag',
-      notes: '2 lbs bag'
-    ),
-  ];
+  List<ShoppingItem> _shoppingList = [];
   double _totalCost = 0.0;
   String _selectedStore = '';
   bool _isShoppingListReady = false;
   
-  // User preferences
+// Generated shopping list
+  Future<void> generateShoppingList({
+    required List<String> keywords,
+    required String store,
+    bool mockMode = false,
+  }) async {
+    final instacartService = InstacartService();
+    await instacartService.initialize(mockMode: mockMode);
+
+    List<ShoppingItem> fetchedItems = [];
+
+    for (final keyword in keywords) {
+      final response = await instacartService.searchProducts(query: keyword, store: store);
+      if (response.isSuccess && response.data != null) {
+        fetchedItems.addAll(response.data!);
+      }
+    }
+
+    if (fetchedItems.isEmpty) {
+      _lastError = 'Failed to generate shopping list. Try again later.';
+    } else {
+      _shoppingList = fetchedItems;
+      _totalCost = _calculateTotalCost();
+      _isShoppingListReady = true;
+      _lastError = null;
+    }
+
+    notifyListeners();
+  }
+
+  double _calculateTotalCost() {
+    return _shoppingList.fold(0.0, (total, item) => total + item.totalPrice);
+  }
   List<String> _dietaryRestrictions = [];
   String _preferredDeliveryTime = '';
   
@@ -207,38 +225,68 @@ class BrunoProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addToPantry(PantryItem item) {
-    _pantryList.add(item);
-    notifyListeners();
+  Future<void> addToPantry(PantryItem item) async {
+    try {
+      await _pantryRepository.addPantryItem(item);
+      // Reload the list to reflect changes
+      await loadPantryData();
+    } catch (e) {
+      _lastError = 'Failed to add item to pantry: $e';
+      notifyListeners();
+    }
   }
 
-  void removePantryItem(String id) {
-    _pantryList.removeWhere((item) => item.id == id);
-    notifyListeners();
-  }
-  
-  void updatePantryItem(String id, PantryItem updatedItem) {
-    final index = _pantryList.indexWhere((item) => item.id == id);
-    if (index != -1) {
-      _pantryList[index] = updatedItem;
+  Future<void> removePantryItem(String id) async {
+    try {
+      await _pantryRepository.deletePantryItem(id);
+      // Reload the list to reflect changes
+      await loadPantryData();
+    } catch (e) {
+      _lastError = 'Failed to remove pantry item: $e';
       notifyListeners();
     }
   }
   
-  void updatePantryQuantity(String id, double newQuantity) {
-    final index = _pantryList.indexWhere((item) => item.id == id);
-    if (index != -1) {
-      _pantryList[index] = _pantryList[index].copyWith(quantity: newQuantity);
+  Future<void> updatePantryItem(String id, PantryItem updatedItem) async {
+    try {
+      await _pantryRepository.updatePantryItem(updatedItem);
+      // Reload the list to reflect changes
+      await loadPantryData();
+    } catch (e) {
+      _lastError = 'Failed to update pantry item: $e';
       notifyListeners();
     }
   }
   
-  void markItemAsUsed(String id, double usedQuantity) {
-    final index = _pantryList.indexWhere((item) => item.id == id);
-    if (index != -1) {
-      final item = _pantryList[index];
-      final newQuantity = (item.quantity - usedQuantity).clamp(0.0, double.infinity);
-      _pantryList[index] = item.copyWith(quantity: newQuantity);
+  Future<void> updatePantryQuantity(String id, double newQuantity) async {
+    try {
+      final result = await _pantryRepository.updateItemQuantity(id, newQuantity);
+      if (result.isSuccess) {
+        // Reload the list to reflect changes
+        await loadPantryData();
+      } else {
+        _lastError = result.message;
+        notifyListeners();
+      }
+    } catch (e) {
+      _lastError = 'Failed to update pantry quantity: $e';
+      notifyListeners();
+    }
+  }
+  
+  Future<void> markItemAsUsed(String id, double usedQuantity) async {
+    try {
+      final index = _pantryList.indexWhere((item) => item.id == id);
+      if (index != -1) {
+        final item = _pantryList[index];
+        final newQuantity = (item.quantity - usedQuantity).clamp(0.0, double.infinity);
+        final updatedItem = item.copyWith(quantity: newQuantity);
+        await _pantryRepository.updatePantryItem(updatedItem);
+        // Reload the list to reflect changes
+        await loadPantryData();
+      }
+    } catch (e) {
+      _lastError = 'Failed to mark item as used: $e';
       notifyListeners();
     }
   }
@@ -375,36 +423,65 @@ class BrunoProvider extends ChangeNotifier {
     notifyListeners();
   }
   
-  // Initialize API service
-  Future<void> _initializeApiService() async {
-    if (!_isApiInitialized) {
-      try {
-        await _apiService.initialize();
-        _isApiInitialized = true;
-      } catch (e) {
-        print('Failed to initialize API service: $e');
-      }
+  // Additional getters for new state
+  bool get isLoading => _isLoading;
+  String? get lastError => _lastError;
+  
+  // Initialize repositories and load data
+  Future<void> initialize() async {
+    if (_isInitialized) return;
+    
+    try {
+      _isLoading = true;
+      _lastError = null;
+      notifyListeners();
+      
+      // Load chat history
+      await loadChatHistory();
+      
+      // Load pantry data
+      await loadPantryData();
+      
+      _isInitialized = true;
+    } catch (e) {
+      _lastError = 'Failed to initialize: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
   
-  // Send message to Bruno AI server
+  // Load chat history from repository
+  Future<void> loadChatHistory() async {
+    try {
+      final history = await _chatRepository.getChatHistory();
+      _messages.clear();
+      _messages.addAll(history);
+      notifyListeners();
+    } catch (e) {
+      print('Failed to load chat history: $e');
+    }
+  }
+  
+  // Load pantry data from repository  
+  Future<void> loadPantryData() async {
+    try {
+      final items = await _pantryRepository.getPantryItems();
+      _pantryList = items;
+      notifyListeners();
+    } catch (e) {
+      print('Failed to load pantry data: $e');
+      // Keep default mock data if loading fails
+    }
+  }
+  
+  // Send message to Bruno using ChatRepository
   Future<void> sendMessageToBruno(String userMessage) async {
-    // Add user message
-    addMessage(ChatMessage(
-      text: userMessage,
-      isFromUser: true,
-      timestamp: DateTime.now(),
-    ));
-    
-    // Show typing indicator
     setTyping(true);
+    _lastError = null;
     
     try {
-      // Initialize API service if needed
-      await _initializeApiService();
-      
-      // Send message to Bruno AI server
-      final response = await _apiService.sendMessageToBruno(
+      final result = await _chatRepository.sendMessage(
         message: userMessage,
         userId: 'flutter_user_${DateTime.now().millisecondsSinceEpoch}',
         context: {
@@ -419,63 +496,51 @@ class BrunoProvider extends ChangeNotifier {
         dietaryRestrictions: _dietaryRestrictions,
       );
       
-      if (response.isSuccess && response.data != null) {
-        final brunoMessage = response.data!;
-        
-        // Update shopping list if provided
-        if (brunoMessage.metadata?['shopping_list'] != null) {
-          final shoppingData = brunoMessage.metadata!['shopping_list'] as List;
-          final shoppingItems = shoppingData.map((item) {
-            return ShoppingItem(
-              name: item['name'] ?? 'Unknown Item',
-              price: (item['price'] ?? 0.0).toDouble(),
-              quantity: (item['quantity'] ?? 1).toInt(),
-              category: item['category'] ?? 'General',
-              unit: item['unit'] ?? 'item',
-              notes: item['notes'] ?? '',
-            );
-          }).toList();
-          updateShoppingList(shoppingItems);
+      if (result.isSuccess) {
+        // Add messages to UI
+        if (result.userMessage != null) {
+          addMessage(result.userMessage!);
         }
-        
-        // Update budget if provided
-        if (brunoMessage.metadata?['budget_info'] != null) {
-          final budgetInfo = brunoMessage.metadata!['budget_info'] as Map<String, dynamic>;
-          if (budgetInfo['budget'] != null) {
-            setBudget(budgetInfo['budget'].toString());
+        if (result.botMessage != null) {
+          final botMessage = result.botMessage!;
+          
+          // Update shopping list if provided
+          if (botMessage.metadata?['shopping_list'] != null) {
+            final shoppingData = botMessage.metadata!['shopping_list'] as List;
+            final shoppingItems = shoppingData.map((item) {
+              return ShoppingItem(
+                name: item['name'] ?? 'Unknown Item',
+                price: (item['price'] ?? 0.0).toDouble(),
+                quantity: (item['quantity'] ?? 1).toInt(),
+                category: item['category'] ?? 'General',
+                unit: item['unit'] ?? 'item',
+                notes: item['notes'] ?? '',
+              );
+            }).toList();
+            updateShoppingList(shoppingItems);
           }
+          
+          // Update budget if provided
+          if (botMessage.metadata?['budget_info'] != null) {
+            final budgetInfo = botMessage.metadata!['budget_info'] as Map<String, dynamic>;
+            if (budgetInfo['budget'] != null) {
+              setBudget(budgetInfo['budget'].toString());
+            }
+          }
+          
+          addMessage(botMessage);
         }
-        
-        // Add Bruno response
-        addMessage(brunoMessage);
-        
       } else {
-        // Fallback to mock response if API fails
-        String fallbackResponse = _generateBrunoResponse(userMessage);
-        addMessage(ChatMessage(
-          text: '⚠️ Server connection issue. Using offline mode:\n\n$fallbackResponse',
-          isFromUser: false,
-          timestamp: DateTime.now(),
-          hasShoppingAction: userMessage.toLowerCase().contains('budget') || 
-                            userMessage.toLowerCase().contains('meal'),
-        ));
+        _lastError = result.error ?? 'Failed to send message';
+        notifyListeners();
       }
       
     } catch (e) {
-      print('Error sending message to Bruno: $e');
-      
-      // Fallback to mock response on error
-      String fallbackResponse = _generateBrunoResponse(userMessage);
-      addMessage(ChatMessage(
-        text: '⚠️ Connection error. Using offline mode:\n\n$fallbackResponse',
-        isFromUser: false,
-        timestamp: DateTime.now(),
-        hasShoppingAction: userMessage.toLowerCase().contains('budget') || 
-                          userMessage.toLowerCase().contains('meal'),
-      ));
+      _lastError = 'Error sending message: $e';
+      notifyListeners();
+    } finally {
+      setTyping(false);
     }
-    
-    setTyping(false);
   }
   
   // Keep the mock response as fallback

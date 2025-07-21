@@ -33,7 +33,14 @@ class BrunoAIApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => BrunoProvider()),
+        ChangeNotifierProvider(
+          create: (_) {
+            final provider = BrunoProvider();
+            // Initialize the provider asynchronously
+            provider.initialize();
+            return provider;
+          },
+        ),
       ],
       child: MaterialApp(
         title: 'Bruno AI',

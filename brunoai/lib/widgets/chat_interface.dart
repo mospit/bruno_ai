@@ -4,9 +4,11 @@ import 'package:provider/provider.dart';
 import '../providers/bruno_provider.dart';
 import '../models/chat_message.dart';
 import '../theme/app_colors.dart';
+import '../controllers/voice_input_controller.dart';
 import 'liquid_glass_container.dart';
 import 'bruno_avatar.dart';
 import 'meal_card.dart';
+import 'voice_input_button.dart';
 import 'dart:math' as math;
 
 class ChatInterface extends StatefulWidget {
@@ -20,6 +22,7 @@ class _ChatInterfaceState extends State<ChatInterface>
     with TickerProviderStateMixin {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final VoiceInputController _voiceController = VoiceInputController();
   late AnimationController _typingAnimationController;
   late Animation<double> _typingAnimation;
 
@@ -38,6 +41,9 @@ class _ChatInterfaceState extends State<ChatInterface>
       curve: Curves.easeInOut,
     ));
     _typingAnimationController.repeat(reverse: true);
+    
+    // Initialize voice controller
+    _voiceController.initialize();
   }
 
   @override
@@ -45,6 +51,7 @@ class _ChatInterfaceState extends State<ChatInterface>
     _messageController.dispose();
     _scrollController.dispose();
     _typingAnimationController.dispose();
+    _voiceController.dispose();
     super.dispose();
   }
 
@@ -66,6 +73,48 @@ class _ChatInterfaceState extends State<ChatInterface>
       context.read<BrunoProvider>().sendMessageToBruno(message);
       _messageController.clear();
       _scrollToBottom();
+    }
+  }
+  
+  void _onVoiceRecognitionComplete(String recognizedText) {
+    if (recognizedText.isNotEmpty) {
+      // Append recognized text to current text or replace if empty
+      final currentText = _messageController.text.trim();
+      if (currentText.isEmpty) {
+        _messageController.text = recognizedText;
+      } else {
+        _messageController.text = '$currentText $recognizedText';
+      }
+      
+      // Move cursor to end
+      _messageController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _messageController.text.length),
+      );
+      
+      // Refresh UI
+      setState(() {});
+      
+      // Show feedback
+      if (_voiceController.recognizedText.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.mic_rounded, color: Colors.white, size: 16),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Voice input: "$recognizedText"',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: Theme.of(context).primaryColor,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 
@@ -1002,33 +1051,42 @@ class _ChatInterfaceState extends State<ChatInterface>
                         ),
                       ),
                       
-                      // Send button positioned on the right edge
-                      Container(
-                        width: 48,
-                        height: 48,
-                        margin: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(24),
-                            onTap: _messageController.text.trim().isEmpty ? null : () {
-                              HapticFeedback.lightImpact();
-                              _sendMessage();
-                            },
-                            child: Icon(
-                              Icons.arrow_upward_rounded,
-                              color: _messageController.text.trim().isEmpty
-                                  ? Colors.white.withOpacity(0.6)
-                                  : Colors.white,
-                              size: 20,
+                      // Voice input button when empty, send button when text present
+                      _messageController.text.trim().isEmpty
+                          ? Container(
+                              width: 48,
+                              height: 48,
+                              margin: const EdgeInsets.all(4),
+                              child: VoiceInputButton(
+                                controller: _voiceController,
+                                onRecognitionComplete: _onVoiceRecognitionComplete,
+                                size: 48.0,
+                              ),
+                            )
+                          : Container(
+                              width: 48,
+                              height: 48,
+                              margin: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(24),
+                                  onTap: () {
+                                    HapticFeedback.lightImpact();
+                                    _sendMessage();
+                                  },
+                                  child: const Icon(
+                                    Icons.arrow_upward_rounded,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),

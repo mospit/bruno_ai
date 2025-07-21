@@ -75,6 +75,12 @@ class AppColors {
   /// Food and meal related colors
   static const Color foodAccent = Color(0xFFFF8C42); // warm orange
   
+  // === INTERACTIVE COLORS ===
+  /// Interactive blue colors for buttons and interactive elements
+  static const Color interactiveBlue = Color(0xFF6366F1); // Indigo-500
+  static const Color interactiveBlueLight = Color(0xFF8B5CF6); // Violet-500
+  static const Color interactiveBlueDark = Color(0xFF4F46E5); // Indigo-600
+  
   /// Interactive states
   static const Color hover = Color(0x08000000);
   static const Color pressed = Color(0x12000000);
